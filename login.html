@@ -1,35 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login Test</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signup</title>
 </head>
 <body>
-  <h2>Login Form</h2>
-  <input type="text" id="nameInput" placeholder="Enter Name">
-  <button onclick="submitForm()">Submit</button>
+  <h2>Signup Form</h2>
+  <form id="signupForm">
+    <label>Full Name:</label><br />
+    <input type="text" name="fullName" required /><br /><br />
 
-  <p id="responseMsg"></p>
+    <label>Mobile:</label><br />
+    <input type="tel" name="mobile" required /><br /><br />
+
+    <label>Username:</label><br />
+    <input type="text" name="username" required /><br /><br />
+
+    <label>Password:</label><br />
+    <input type="password" name="password" required /><br /><br />
+
+    <label>Course:</label><br />
+    <input type="text" name="course" required /><br /><br />
+
+    <label>City:</label><br />
+    <input type="text" name="city" required /><br /><br />
+
+    <button type="submit">Sign Up</button>
+  </form>
 
   <script>
-    async function submitForm() {
-      const name = document.getElementById("nameInput").value;
+    const form = document.getElementById('signupForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      const formData = new FormData();
-      formData.append("name", name);
+      const formData = {
+        fullName: form.fullName.value.trim(),
+        mobile: form.mobile.value.trim(),
+        username: form.username.value.trim(),
+        password: form.password.value.trim(),
+        course: form.course.value.trim(),
+        city: form.city.value.trim()
+      };
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-          method: "POST",
-          body: formData,
+        const response = await fetch('https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'signup', data: formData })
         });
 
-        const result = await response.text();
-        document.getElementById("responseMsg").innerText = result;
+        const result = await response.json();
+        if (result.success) {
+          alert('✅ Signup successful!');
+          form.reset();
+        } else {
+          alert('❌ ' + result.message);
+        }
       } catch (error) {
-        document.getElementById("responseMsg").innerText = "⚠️ Something went wrong!";
         console.error(error);
+        alert('⚠️ Something went wrong!');
       }
-    }
+    });
   </script>
 </body>
 </html>
