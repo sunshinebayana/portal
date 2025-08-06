@@ -61,6 +61,10 @@
     #signupForm {
       display: none;
     }
+
+    .success {
+      color: green;
+    }
   </style>
 </head>
 <body>
@@ -103,7 +107,7 @@
 
       <div id="signupMessage" class="message"></div>
 
-      <button type="submit">Register</button>
+      <button type="submit" id="signupBtn">Register</button>
       <button type="button" class="alt-btn" onclick="showLogin()">Back to Login</button>
     </form>
   </div>
@@ -135,65 +139,75 @@
     }
 
     function validatePasswordStrength(password) {
-      // Optional: Strength check logic
+      // You can add strength validation here
     }
 
     function loginSubmit(e) {
       e.preventDefault();
-      // 🔁 Send loginUsername & loginPassword to Google Script API
       alert("Login API call goes here...");
     }
 
- 
-  function signupSubmit(e) {
-    e.preventDefault();
+    function signupSubmit(e) {
+      e.preventDefault();
 
-    const fullName = document.getElementById("fullName").value;
-    const city = document.getElementById("city").value;
-    const course = document.getElementById("course").value;
-    const username = document.getElementById("signupUsername").value;
-    const password = document.getElementById("signupPassword").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+      const btn = document.getElementById("signupBtn");
+      const msgBox = document.getElementById("signupMessage");
+      msgBox.innerText = ""; msgBox.classList.remove("success");
+      btn.disabled = true;
+      btn.innerText = "Registering...";
 
-    if (password !== confirmPassword) {
-      document.getElementById("signupMessage").innerText = "❌ Passwords do not match!";
-      return;
-    }
+      const fullName = document.getElementById("fullName").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const course = document.getElementById("course").value;
+      const username = document.getElementById("signupUsername").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-    const formData = {
-      action: "signup",
-      fullName,
-      city,
-      course,
-      mobile: username, // Mobile same as username
-      username,
-      password
-    };
-
-    fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-Type": "application/json" }
-    })
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("signupMessage").innerText = data.message;
-
-      if (data.success) {
-        alert("✅ Signup successful!");
-        showLogin();
+      if (password !== confirmPassword) {
+        msgBox.innerText = "❌ Passwords do not match!";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
       }
-    })
-    .catch(err => {
-      console.error("Signup error:", err);
-      document.getElementById("signupMessage").innerText = "⚠️ Something went wrong!";
-    });
-  }
 
+      const formData = {
+        action: "signup",
+        fullName,
+        city,
+        course,
+        mobile: username,
+        username,
+        password
+      };
 
+      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      })
+      .then(async res => {
+        if (!res.ok) throw new Error("API not reachable or error: " + res.status);
+        const data = await res.json();
+
+        if (data.success) {
+          msgBox.innerText = "✅ Signup successful!";
+          msgBox.classList.add("success");
+          alert("✅ Signup successful!");
+          showLogin();
+        } else {
+          msgBox.innerText = "❌ " + (data.message || "Unknown error from server.");
+        }
+      })
+      .catch(err => {
+        console.error("Signup error:", err);
+        msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Register";
+      });
+    }
   </script>
 
 </body>
 </html>
-
-
