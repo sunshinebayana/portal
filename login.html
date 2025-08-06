@@ -4,37 +4,31 @@
   <title>Login Test</title>
 </head>
 <body>
-  <h2>Send Name to Google Sheet</h2>
-  <input type="text" id="nameInput" placeholder="Enter your name" />
+  <h2>Login Form</h2>
+  <input type="text" id="nameInput" placeholder="Enter Name">
   <button onclick="submitForm()">Submit</button>
 
-  <p id="response"></p>
+  <p id="responseMsg"></p>
 
   <script>
-    function submitForm() {
-      const name = document.getElementById('nameInput').value;
-      const responsePara = document.getElementById('response');
+    async function submitForm() {
+      const name = document.getElementById("nameInput").value;
 
-      if (!name) {
-        responsePara.textContent = "⚠️ Please enter your name.";
-        return;
+      const formData = new FormData();
+      formData.append("name", name);
+
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.text();
+        document.getElementById("responseMsg").innerText = result;
+      } catch (error) {
+        document.getElementById("responseMsg").innerText = "⚠️ Something went wrong!";
+        console.error(error);
       }
-
-      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-        method: "POST",
-        body: JSON.stringify({ name }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(response => response.text())
-      .then(data => {
-        responsePara.textContent = data;
-      })
-      .catch(error => {
-        responsePara.textContent = "❌ Something went wrong!";
-        console.error("Error:", error);
-      });
     }
   </script>
 </body>
