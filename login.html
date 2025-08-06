@@ -144,12 +144,55 @@
       alert("Login API call goes here...");
     }
 
-    function signupSubmit(e) {
-      e.preventDefault();
-      // 🔁 Send signup form data to Google Script API
-      alert("Signup API call goes here...");
+ 
+  function signupSubmit(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value;
+    const city = document.getElementById("city").value;
+    const course = document.getElementById("course").value;
+    const username = document.getElementById("signupUsername").value;
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+      document.getElementById("signupMessage").innerText = "❌ Passwords do not match!";
+      return;
     }
+
+    const formData = {
+      action: "signup",
+      fullName,
+      city,
+      course,
+      mobile: username, // Mobile same as username
+      username,
+      password
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("signupMessage").innerText = data.message;
+
+      if (data.success) {
+        alert("✅ Signup successful!");
+        showLogin();
+      }
+    })
+    .catch(err => {
+      console.error("Signup error:", err);
+      document.getElementById("signupMessage").innerText = "⚠️ Something went wrong!";
+    });
+  }
+
+
   </script>
 
 </body>
 </html>
+
