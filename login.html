@@ -138,76 +138,74 @@
     }
 
     function validatePasswordStrength(password) {
-      // Optional: Add password strength logic
+      // Optional: Add password strength check here
     }
 
     function loginSubmit(e) {
       e.preventDefault();
-      alert("🔒 Login API call logic not implemented yet.");
+      alert("🔒 Login API logic not implemented yet.");
     }
 
-   function signupSubmit(e) {
-  e.preventDefault();
+    function signupSubmit(e) {
+      e.preventDefault();
 
-  const btn = document.getElementById("signupBtn");
-  const msgBox = document.getElementById("signupMessage");
-  msgBox.innerText = ""; msgBox.classList.remove("success");
-  btn.disabled = true;
-  btn.innerText = "Registering...";
+      const btn = document.getElementById("signupBtn");
+      const msgBox = document.getElementById("signupMessage");
+      msgBox.innerText = "";
+      msgBox.classList.remove("success");
 
-  const fullName = document.getElementById("fullName").value.trim();
-  const city = document.getElementById("city").value.trim();
-  const course = document.getElementById("course").value;
-  const mobile = document.getElementById("signupUsername").value.trim();
-  const password = document.getElementById("signupPassword").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
+      btn.disabled = true;
+      btn.innerText = "Registering...";
 
-  if (password !== confirmPassword) {
-    msgBox.innerText = "❌ Passwords do not match!";
-    btn.disabled = false;
-    btn.innerText = "Register";
-    return;
-  }
+      const fullName = document.getElementById("fullName").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const course = document.getElementById("course").value;
+      const mobile = document.getElementById("signupUsername").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-  // ✅ Use FormData instead of JSON
-  const formData = new FormData();
-  formData.append("fullName", fullName);
-  formData.append("city", city);
-  formData.append("course", course);
-  formData.append("mobile", mobile);
-  formData.append("username", mobile);
-  formData.append("password", password);
+      if (password !== confirmPassword) {
+        msgBox.innerText = "❌ Passwords do not match!";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-  fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-    method: "POST",
-    body: formData
-  })
-  .then(async res => {
-    const text = await res.text();
-    if (text.includes("✅")) {
-      msgBox.innerText = text;
-      msgBox.classList.add("success");
-      alert(text);
-      showLogin();
-    } else {
-      msgBox.innerText = text;
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("city", city);
+      formData.append("course", course);
+      formData.append("mobile", mobile);
+      formData.append("username", mobile);
+      formData.append("password", password);
+
+      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(async res => {
+        const text = await res.text();
+        if (text.includes("✅")) {
+          msgBox.innerText = text;
+          msgBox.classList.add("success");
+          alert(text);
+          showLogin();
+        } else {
+          msgBox.innerText = text;
+        }
+      })
+      .catch(err => {
+        console.error("Signup error:", err);
+        msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Register";
+      });
     }
-  })
-  .catch(err => {
-    console.error("Signup error:", err);
-    msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerText = "Register";
-  });
-}
 
-    // Show login form initially
     window.onload = showLogin;
   </script>
 
 </body>
 </html>
-
-
