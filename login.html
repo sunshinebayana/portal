@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Login / Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    form {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input, select {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button[type="submit"] {
+      background: #007BFF;
+      color: white;
+    }
+
+    .alt-btn {
+      background: #6c757d;
+      color: white;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 16px;
+      color: #dc3545;
+    }
+
+    #signupForm {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loginMessage" class="message" style="display: none;"></div>
+
+  <!-- Login Form -->
+  <div id="loginForm">
+    <h2>Login</h2>
+    <form onsubmit="loginSubmit(event)">
+      <input type="text" id="loginUsername" placeholder="Username / Mobile" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+
+      <label><input type="checkbox" onclick="toggleLoginPassword()"> Show Password</label>
+
+      <button type="submit">Login</button>
+      <button type="button" class="alt-btn" onclick="showSignup()">Signup</button>
+    </form>
+  </div>
+
+  <!-- Signup Form -->
+  <div id="signupForm">
+    <h2>Signup</h2>
+    <form onsubmit="signupSubmit(event)">
+      <input type="text" id="fullName" placeholder="Full Name" required>
+      <input type="text" id="city" placeholder="City" required>
+      <select id="course" required>
+        <option value="" disabled selected hidden>📘 Select Course</option>
+        <option>Typing</option>
+        <option>Steno</option>
+        <option>RS-CIT</option>
+        <option>Tally</option>
+        <option>All</option>
+      </select>
+      <input type="text" id="signupUsername" placeholder="Mobile" required>
+      <input type="password" id="signupPassword" placeholder="Password" required oninput="validatePasswordStrength(this.value)">
+      <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+      <label><input type="checkbox" onclick="toggleConfirmPassword()"> Show Confirm Password</label>
+
+      <div id="signupMessage" class="message"></div>
+
+      <button type="submit">Register</button>
+      <button type="button" class="alt-btn" onclick="showLogin()">Back to Login</button>
+    </form>
+  </div>
+
+  <script>
+    function showSignup() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("signupForm").style.display = "block";
+    }
+
+    function showLogin() {
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    }
+
+    function toggleLoginPassword() {
+      const pass = document.getElementById("loginPassword");
+      pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    function togglePassword() {
+      const pass = document.getElementById("signupPassword");
+      pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    function toggleConfirmPassword() {
+      const pass = document.getElementById("confirmPassword");
+      pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    function validatePasswordStrength(password) {
+      // Optional: Strength check logic
+    }
+
+    function loginSubmit(e) {
+      e.preventDefault();
+      // 🔁 Send loginUsername & loginPassword to Google Script API
+      alert("Login API call goes here...");
+    }
+
+    function signupSubmit(e) {
+      e.preventDefault();
+      // 🔁 Send signup form data to Google Script API
+      alert("Signup API call goes here...");
+    }
+  </script>
+
+</body>
+</html>
