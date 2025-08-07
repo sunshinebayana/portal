@@ -15,11 +15,19 @@
       background-color: #1976d2;
       color: white;
       padding: 20px 30px;
-      text-align: center;
-      font-size: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
       font-weight: bold;
       letter-spacing: 1px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .welcome-msg {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
     }
 
     main {
@@ -65,9 +73,13 @@
     }
 
     @media (max-width: 500px) {
-      .feature-btn {
-        padding: 20px 10px;
-        font-size: 15px;
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .welcome-msg {
+        margin-top: 10px;
+        font-size: 14px;
       }
     }
   </style>
@@ -75,7 +87,8 @@
 <body>
 
   <header>
-    ☀️ Sunshine Institute Dashboard
+    <div>☀️ Sunshine Institute Dashboard</div>
+    <div class="welcome-msg" id="welcomeMsg">Welcome, User!</div>
   </header>
 
   <main>
@@ -90,6 +103,12 @@
       <button class="feature-btn">चतुर्थ श्रेणी कर्मचारी भर्ती</button>
     </div>
   </main>
+
+  <script>
+    // You can replace this name dynamically via Apps Script template
+    const fullname = "Rahul Sharma"; // Replace this with actual name passed by server
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${fullname}!`;
+  </script>
 
 </body>
 </html>
