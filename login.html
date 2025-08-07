@@ -194,7 +194,7 @@
     }
 
     //---------------------------------------------
-   function loginSubmit(e) {
+ function loginSubmit(e) {
   e.preventDefault();
 
   const username = document.getElementById("loginUsername").value.trim();
@@ -217,17 +217,19 @@
   fetch(loginUrl)
     .then(res => res.text())
     .then(text => {
+      console.log("Login Response:", text); // ✅ Debug output
+
       if (text.includes("✅")) {
         msgBox.innerText = text;
         msgBox.classList.add("success");
 
-        // ✅ Save login state
+        // Save login state
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("username", username);
 
-        // ✅ Redirect to dashboard after short delay
+        // Redirect to dashboard
         setTimeout(() => {
-          window.location.href = "dashboard.html";
+          location.replace("dashboard.html"); // ✅ Alternative redirect method
         }, 1000);
       } else {
         msgBox.innerText = text;
@@ -239,6 +241,7 @@
       msgBox.innerText = "⚠️ Server error. Try again later.";
     });
 }
+
 //---------------------------------------------------------------------------------------
       function signupSubmit(e) {
       e.preventDefault();
@@ -338,4 +341,5 @@
   </script>
 </body>
 </html>
+
 
