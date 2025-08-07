@@ -193,6 +193,44 @@
       // Optional: Add strength logic here
     }
 
+    //---------------------------------------------
+    function loginSubmit(e) {
+  e.preventDefault();
+
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const msgBox = document.getElementById("loginMessage");
+
+  msgBox.style.display = "block";
+  msgBox.classList.remove("success");
+  msgBox.innerText = "";
+
+  if (!username || !password) {
+    msgBox.innerText = "❌ Username or password missing!";
+    return;
+  }
+
+  msgBox.innerText = "🔄 Checking credentials...";
+
+  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+  fetch(loginUrl)
+    .then(res => res.text())
+    .then(text => {
+      if (text.includes("✅")) {
+        msgBox.innerText = text;
+        msgBox.classList.add("success");
+        // Optional: Add redirect or dashboard logic here
+      } else {
+        msgBox.innerText = text;
+      }
+    })
+    .catch(err => {
+      console.error("Login error:", err);
+      msgBox.innerText = "⚠️ Server error. Try again later.";
+    });
+}
+//---------------------------------------------------------------------------------------
     function loginSubmit(e) {
       e.preventDefault();
       alert("🔒 Login API logic not implemented yet.");
@@ -296,4 +334,5 @@
   </script>
 </body>
 </html>
+
 
