@@ -76,15 +76,31 @@
       color: #dc3545;
     }
 
-    #signupForm {
-      display: none;
-    }
-
     .success {
       color: green;
     }
 
-    </style>
+    #signupForm {
+      display: none;
+    }
+
+    .terms {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+    }
+
+    .terms input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 8px;
+    }
+
+    .terms a {
+      color: blue;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 
@@ -130,16 +146,11 @@
         <span onclick="toggleConfirmPassword()">👁️</span>
       </div>
 
- <!-- Terms & Conditions Checkbox (Perfect One Line) -->
-<div style="margin-top: 15px; display: flex; align-items: center; font-size: 15px;">
-  <input type="checkbox" id="agreeTerms" style="transform: scale(1.2); margin-right: 8px;">
-  <span>
-    I have read and agree to&nbsp;
-    <a href="#" style="color: blue; text-decoration: underline;">Terms</a>
-  </span>
-</div>
-
-
+      <!-- Terms & Conditions -->
+      <div class="terms">
+        <input type="checkbox" id="agreeTerms">
+        <span>I have read and agree to&nbsp;<a href="#">Terms</a></span>
+      </div>
 
       <div id="signupMessage" class="message"></div>
 
@@ -175,7 +186,7 @@
     }
 
     function validatePasswordStrength(password) {
-      // Optional: Password strength check
+      // Optional: Add strength logic here
     }
 
     function loginSubmit(e) {
@@ -216,7 +227,6 @@
         return;
       }
 
-      // Username must be exactly 10 digits
       const usernameRegex = /^\d{10}$/;
       if (!usernameRegex.test(mobile)) {
         msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
@@ -225,7 +235,6 @@
         return;
       }
 
-      // No spaces allowed
       if (/\s/.test(mobile)) {
         msgBox.innerText = "❌ Mobile number should not contain spaces.";
         btn.disabled = false;
@@ -233,7 +242,6 @@
         return;
       }
 
-      // Not all same digits
       const allSameDigit = /^(\d)\1{9}$/;
       if (allSameDigit.test(mobile)) {
         msgBox.innerText = "❌ Mobile number cannot have all digits same.";
@@ -284,7 +292,3 @@
   </script>
 </body>
 </html>
-
-
-
-
