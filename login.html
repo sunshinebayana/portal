@@ -146,11 +146,15 @@
         <span onclick="toggleConfirmPassword()">👁️</span>
       </div>
 
-      <!-- Terms & Conditions -->
-      <div class="terms">
-        <input type="checkbox" id="agreeTerms">
-        <span>I have read and agree to&nbsp;<a href="#">Terms</a></span>
-      </div>
+     <!-- Terms & Conditions - Single Line Display -->
+<div style="margin-top: 15px; display: flex; align-items: center; font-size: 15px; flex-wrap: nowrap;">
+  <input type="checkbox" id="agreeTerms" style="transform: scale(1.2); margin-right: 8px;">
+  <label for="agreeTerms" style="white-space: nowrap;">
+    I have read and agree to&nbsp;
+    <a href="#" style="color: blue; text-decoration: underline;">Terms</a>
+  </label>
+</div>
+
 
       <div id="signupMessage" class="message"></div>
 
@@ -292,3 +296,4 @@
   </script>
 </body>
 </html>
+
