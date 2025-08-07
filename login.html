@@ -31,6 +31,24 @@
       border: 1px solid #ccc;
       font-size: 16px;
       width: 100%;
+      box-sizing: border-box;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 40px;
+    }
+
+    .password-wrapper span {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
     }
 
     button {
@@ -65,6 +83,12 @@
     .success {
       color: green;
     }
+
+    label.terms {
+      font-size: 14px;
+      display: block;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
@@ -76,9 +100,10 @@
     <h2>Login</h2>
     <form onsubmit="loginSubmit(event)">
       <input type="text" id="loginUsername" placeholder="Username / Mobile" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <label><input type="checkbox" onclick="toggleLoginPassword()"> Show Password</label>
-
+      <div class="password-wrapper">
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <span onclick="toggleLoginPassword()">👁️</span>
+      </div>
       <button type="submit">Login</button>
       <button type="button" class="alt-btn" onclick="showSignup()">Signup</button>
     </form>
@@ -99,10 +124,20 @@
         <option>All</option>
       </select>
       <input type="text" id="signupUsername" placeholder="Mobile" required>
-      <input type="password" id="signupPassword" placeholder="Password" required oninput="validatePasswordStrength(this.value)">
-      <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
-      <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-      <label><input type="checkbox" onclick="toggleConfirmPassword()"> Show Confirm Password</label>
+
+      <div class="password-wrapper">
+        <input type="password" id="signupPassword" placeholder="Password" required oninput="validatePasswordStrength(this.value)">
+        <span onclick="togglePassword()">👁️</span>
+      </div>
+
+      <div class="password-wrapper">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <span onclick="toggleConfirmPassword()">👁️</span>
+      </div>
+
+      <label class="terms">
+        <input type="checkbox" id="agreeTerms"> I have read and agree to the Terms
+      </label>
 
       <div id="signupMessage" class="message"></div>
 
@@ -138,7 +173,7 @@
     }
 
     function validatePasswordStrength(password) {
-      // Optional: Add password strength check here
+      // Optional: Password strength check
     }
 
     function loginSubmit(e) {
@@ -146,101 +181,104 @@
       alert("🔒 Login API logic not implemented yet.");
     }
 
-   function signupSubmit(e) {
-  e.preventDefault();
+    function signupSubmit(e) {
+      e.preventDefault();
 
-  const btn = document.getElementById("signupBtn");
-  const msgBox = document.getElementById("signupMessage");
-  msgBox.innerText = "";
-  msgBox.classList.remove("success");
+      const btn = document.getElementById("signupBtn");
+      const msgBox = document.getElementById("signupMessage");
+      msgBox.innerText = "";
+      msgBox.classList.remove("success");
 
-  btn.disabled = true;
-  btn.innerText = "Registering...";
+      btn.disabled = true;
+      btn.innerText = "Registering...";
 
-  const fullName = document.getElementById("fullName").value.trim();
-  const city = document.getElementById("city").value.trim();
-  const course = document.getElementById("course").value;
-  const mobile = document.getElementById("signupUsername").value.trim();
-  const password = document.getElementById("signupPassword").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
+      const fullName = document.getElementById("fullName").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const course = document.getElementById("course").value;
+      const mobile = document.getElementById("signupUsername").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const agree = document.getElementById("agreeTerms").checked;
 
-  if (password !== confirmPassword) {
-    msgBox.innerText = "❌ Passwords do not match!";
-    btn.disabled = false;
-    btn.innerText = "Register";
-    return;
-  }
+      if (!agree) {
+        msgBox.innerText = "❌ You must agree to the Terms before registering.";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-// ✅ Username (mobile) must be exactly 10 digits
-const usernameRegex = /^\d{10}$/;
-if (!usernameRegex.test(mobile)) {
-  msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
-  btn.disabled = false;
-  btn.innerText = "Register";
-  return;
-}
+      if (password !== confirmPassword) {
+        msgBox.innerText = "❌ Passwords do not match!";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-// ❌ No spaces allowed
-if (/\s/.test(mobile)) {
-  msgBox.innerText = "❌ Mobile number should not contain spaces.";
-  btn.disabled = false;
-  btn.innerText = "Register";
-  return;
-}
+      // Username must be exactly 10 digits
+      const usernameRegex = /^\d{10}$/;
+      if (!usernameRegex.test(mobile)) {
+        msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-// ❌ Not all digits same (e.g., 1111111111, 0000000000)
-const allSameDigit = /^(\d)\1{9}$/;  // matches 10 same digits
-if (allSameDigit.test(mobile)) {
-  msgBox.innerText = "❌ Mobile number cannot have all digits same.";
-  btn.disabled = false;
-  btn.innerText = "Register";
-  return;
-}
+      // No spaces allowed
+      if (/\s/.test(mobile)) {
+        msgBox.innerText = "❌ Mobile number should not contain spaces.";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-  const formData = new FormData();
-  formData.append("fullName", fullName);
-  formData.append("city", city);
-  formData.append("course", course);
-  formData.append("mobile", mobile);
-  formData.append("username", mobile);
-  formData.append("password", password);
+      // Not all same digits
+      const allSameDigit = /^(\d)\1{9}$/;
+      if (allSameDigit.test(mobile)) {
+        msgBox.innerText = "❌ Mobile number cannot have all digits same.";
+        btn.disabled = false;
+        btn.innerText = "Register";
+        return;
+      }
 
-  fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-    method: "POST",
-    body: formData
-  })
-  .then(async res => {
-    const text = await res.text();
-    if (text.includes("✅")) {
-      msgBox.innerText = text;
-      msgBox.classList.add("success");
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("city", city);
+      formData.append("course", course);
+      formData.append("mobile", mobile);
+      formData.append("username", mobile);
+      formData.append("password", password);
 
-      // ✅ After 2 seconds, show login screen and reset signup form
-      setTimeout(() => {
-        showLogin();
-        document.querySelector("#signupForm form").reset();
-        msgBox.innerText = "";
-        msgBox.classList.remove("success");
-      }, 2000);
-    } else {
-      msgBox.innerText = text;
+      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(async res => {
+        const text = await res.text();
+        if (text.includes("✅")) {
+          msgBox.innerText = text;
+          msgBox.classList.add("success");
+
+          setTimeout(() => {
+            showLogin();
+            document.querySelector("#signupForm form").reset();
+            msgBox.innerText = "";
+            msgBox.classList.remove("success");
+          }, 2000);
+        } else {
+          msgBox.innerText = text;
+        }
+      })
+      .catch(err => {
+        console.error("Signup error:", err);
+        msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerText = "Register";
+      });
     }
-  })
-  .catch(err => {
-    console.error("Signup error:", err);
-    msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerText = "Register";
-  });
-}
-
 
     window.onload = showLogin;
   </script>
-
 </body>
 </html>
-
-
