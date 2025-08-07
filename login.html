@@ -217,21 +217,9 @@
   fetch(loginUrl)
     .then(res => res.text())
     .then(text => {
-     if (text.includes("✅")) {
-  msgBox.innerText = text;
-  msgBox.classList.add("success");
-
-  // 🔶 Extract Full Name from response (if returned) or from Google Sheet
-  const fullName = text.split("✅ Login successful!")[1]?.trim() || "User";
-
-  // Show welcome message
-  document.getElementById("welcomeName").innerText = fullName;
-  document.getElementById("welcomeBox").style.display = "block";
-
-  // Optionally hide login form
-  document.getElementById("loginForm").style.display = "none";
-}
-
+      if (text.includes("✅")) {
+        msgBox.innerText = text;
+        msgBox.classList.add("success");
         // Optional: Add redirect or dashboard logic here
       } else {
         msgBox.innerText = text;
