@@ -217,7 +217,7 @@
   fetch(loginUrl)
     .then(res => res.text())
     .then(text => {
-    if (text.includes("✅")) {
+     if (text.includes("✅")) {
   msgBox.innerText = text;
   msgBox.classList.add("success");
 
@@ -341,8 +341,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
