@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sunshine Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+    }
+
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 20px 30px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 40px;
+      font-size: 26px;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+
+    .feature-btn {
+      background: white;
+      border: 2px solid #1976d2;
+      color: #1976d2;
+      padding: 25px 15px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .feature-btn:hover {
+      background-color: #1976d2;
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .feature-btn::before {
+      content: "💡 ";
+    }
+
+    @media (max-width: 500px) {
+      .feature-btn {
+        padding: 20px 10px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    ☀️ Sunshine Institute Dashboard
+  </header>
+
+  <main>
+    <h2>Choose Your Preparation Module</h2>
+    <div class="btn-grid">
+      <button class="feature-btn">Start RS-CIT Exam तैयारी Now!</button>
+      <button class="feature-btn">Computer Efficiency</button>
+      <button class="feature-btn">Typing Tutor</button>
+      <button class="feature-btn">Raj HighCourt Stenographer</button>
+      <button class="feature-btn">RSMSSB LDC</button>
+      <button class="feature-btn">REET (Main) Test</button>
+      <button class="feature-btn">चतुर्थ श्रेणी कर्मचारी भर्ती</button>
+    </div>
+  </main>
+
+</body>
+</html>
