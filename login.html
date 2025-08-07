@@ -84,12 +84,7 @@
       color: green;
     }
 
-    label.terms {
-      font-size: 14px;
-      display: block;
-      margin: 10px 0;
-    }
-  </style>
+    </style>
 </head>
 <body>
 
@@ -135,9 +130,15 @@
         <span onclick="toggleConfirmPassword()">👁️</span>
       </div>
 
-      <label class="terms">
-        <input type="checkbox" id="agreeTerms"> I have read and agree to the Terms
-      </label>
+     <!-- Terms & Conditions Checkbox (Stylish) -->
+<div style="margin-top: 15px;">
+  <label style="font-size: 16px;">
+    <input type="checkbox" id="agreeTerms" style="transform: scale(1.2); margin-right: 8px;">
+    I have read and agree to the 
+    <a href="#" style="color: blue; text-decoration: underline;">Terms</a>
+  </label>
+</div>
+
 
       <div id="signupMessage" class="message"></div>
 
@@ -282,3 +283,4 @@
   </script>
 </body>
 </html>
+
