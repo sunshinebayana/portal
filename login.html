@@ -171,14 +171,31 @@
     return;
   }
 
-  // ✅ Username must be exactly 10 digits
-  const usernameRegex = /^\d{10}$/;
-  if (!usernameRegex.test(mobile)) {
-    msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
-    btn.disabled = false;
-    btn.innerText = "Register";
-    return;
-  }
+// ✅ Username (mobile) must be exactly 10 digits
+const usernameRegex = /^\d{10}$/;
+if (!usernameRegex.test(mobile)) {
+  msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
+  btn.disabled = false;
+  btn.innerText = "Register";
+  return;
+}
+
+// ❌ No spaces allowed
+if (/\s/.test(mobile)) {
+  msgBox.innerText = "❌ Mobile number should not contain spaces.";
+  btn.disabled = false;
+  btn.innerText = "Register";
+  return;
+}
+
+// ❌ Not all digits same (e.g., 1111111111, 0000000000)
+const allSameDigit = /^(\d)\1{9}$/;  // matches 10 same digits
+if (allSameDigit.test(mobile)) {
+  msgBox.innerText = "❌ Mobile number cannot have all digits same.";
+  btn.disabled = false;
+  btn.innerText = "Register";
+  return;
+}
 
   const formData = new FormData();
   formData.append("fullName", fullName);
@@ -225,4 +242,5 @@
 
 </body>
 </html>
+
 
