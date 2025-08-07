@@ -146,66 +146,83 @@
       alert("🔒 Login API logic not implemented yet.");
     }
 
-    function signupSubmit(e) {
-      e.preventDefault();
+   function signupSubmit(e) {
+  e.preventDefault();
 
-      const btn = document.getElementById("signupBtn");
-      const msgBox = document.getElementById("signupMessage");
-      msgBox.innerText = "";
-      msgBox.classList.remove("success");
+  const btn = document.getElementById("signupBtn");
+  const msgBox = document.getElementById("signupMessage");
+  msgBox.innerText = "";
+  msgBox.classList.remove("success");
 
-      btn.disabled = true;
-      btn.innerText = "Registering...";
+  btn.disabled = true;
+  btn.innerText = "Registering...";
 
-      const fullName = document.getElementById("fullName").value.trim();
-      const city = document.getElementById("city").value.trim();
-      const course = document.getElementById("course").value;
-      const mobile = document.getElementById("signupUsername").value.trim();
-      const password = document.getElementById("signupPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+  const fullName = document.getElementById("fullName").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const course = document.getElementById("course").value;
+  const mobile = document.getElementById("signupUsername").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
 
-      if (password !== confirmPassword) {
-        msgBox.innerText = "❌ Passwords do not match!";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
+  if (password !== confirmPassword) {
+    msgBox.innerText = "❌ Passwords do not match!";
+    btn.disabled = false;
+    btn.innerText = "Register";
+    return;
+  }
 
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("city", city);
-      formData.append("course", course);
-      formData.append("mobile", mobile);
-      formData.append("username", mobile);
-      formData.append("password", password);
+  // ✅ Username must be exactly 10 digits
+  const usernameRegex = /^\d{10}$/;
+  if (!usernameRegex.test(mobile)) {
+    msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
+    btn.disabled = false;
+    btn.innerText = "Register";
+    return;
+  }
 
-      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(async res => {
-        const text = await res.text();
-        if (text.includes("✅")) {
-          msgBox.innerText = text;
-          msgBox.classList.add("success");
-          alert(text);
-          showLogin();
-        } else {
-          msgBox.innerText = text;
-        }
-      })
-      .catch(err => {
-        console.error("Signup error:", err);
-        msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
-      })
-      .finally(() => {
-        btn.disabled = false;
-        btn.innerText = "Register";
-      });
+  const formData = new FormData();
+  formData.append("fullName", fullName);
+  formData.append("city", city);
+  formData.append("course", course);
+  formData.append("mobile", mobile);
+  formData.append("username", mobile);
+  formData.append("password", password);
+
+  fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
+    method: "POST",
+    body: formData
+  })
+  .then(async res => {
+    const text = await res.text();
+    if (text.includes("✅")) {
+      msgBox.innerText = text;
+      msgBox.classList.add("success");
+
+      // ✅ After 2 seconds, show login screen and reset signup form
+      setTimeout(() => {
+        showLogin();
+        document.querySelector("#signupForm form").reset();
+        msgBox.innerText = "";
+        msgBox.classList.remove("success");
+      }, 2000);
+    } else {
+      msgBox.innerText = text;
     }
+  })
+  .catch(err => {
+    console.error("Signup error:", err);
+    msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerText = "Register";
+  });
+}
+
 
     window.onload = showLogin;
   </script>
 
 </body>
 </html>
+
