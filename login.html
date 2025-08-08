@@ -163,208 +163,198 @@
     </form>
   </div>
 
-  <script>
-    function showSignup() {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("signupForm").style.display = "block";
-    }
+ <script>
+  // ✅ Single URL Configuration (Sirf yaha change karo future me)
+  const BASE_URL = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-    function showLogin() {
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("loginForm").style.display = "block";
-    }
-
-    function toggleLoginPassword() {
-      const pass = document.getElementById("loginPassword");
-      pass.type = pass.type === "password" ? "text" : "password";
-    }
-
-    function togglePassword() {
-      const pass = document.getElementById("signupPassword");
-      pass.type = pass.type === "password" ? "text" : "password";
-    }
-
-    function toggleConfirmPassword() {
-      const pass = document.getElementById("confirmPassword");
-      pass.type = pass.type === "password" ? "text" : "password";
-    }
-
-    function validatePasswordStrength(password) {
-      // Optional: Add strength logic here
-    }
-
-    //---------------------------------------------
-function loginSubmit(e, forceLogin = false) {
-  e.preventDefault();
-
-  const username = document.getElementById("loginUsername").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-  const msgBox = document.getElementById("loginMessage");
-
-  // Reset message box
-  msgBox.style.display = "block";
-  msgBox.classList.remove("success");
-  msgBox.innerHTML = ""; // HTML allow karenge force login button ke liye
-
-  // Empty field check
-  if (!username || !password) {
-    msgBox.innerText = "❌ Username or password missing!";
-    return;
+  function showSignup() {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("signupForm").style.display = "block";
   }
 
-  msgBox.innerText = "🔄 Checking credentials...";
+  function showLogin() {
+    document.getElementById("signupForm").style.display = "none";
+    document.getElementById("loginForm").style.display = "block";
+  }
 
-  // ✅ Google Apps Script URL with optional forceLogin flag
-  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=${forceLogin}`;
+  function toggleLoginPassword() {
+    const pass = document.getElementById("loginPassword");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
 
-  fetch(loginUrl)
-    .then(res => res.json())
-    .then(data => {
-      console.log("🔍 Login Response:", data); // Debug log
+  function togglePassword() {
+    const pass = document.getElementById("signupPassword");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
 
-      if (data.success) {
-        msgBox.innerText = data.message;
-        msgBox.classList.add("success");
+  function toggleConfirmPassword() {
+    const pass = document.getElementById("confirmPassword");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
 
-        // ✅ Save complete user data (for dashboard)
-        if (data.userData) {
-          localStorage.setItem("userData", JSON.stringify(data.userData));
-        }
+  function validatePasswordStrength(password) {
+    // Optional: Add strength logic here
+  }
 
-        // ✅ Save login flag
-        localStorage.setItem("isLoggedIn", "true");
+  //---------------------------------------------
+  function loginSubmit(e, forceLogin = false) {
+    e.preventDefault();
 
-        // Redirect to dashboard
-        setTimeout(() => {
-          location.replace("dashboard.html");
-        }, 800);
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const msgBox = document.getElementById("loginMessage");
 
-      } else {
-        // Agar server se "already logged in" type ka message aaya
-        if (data.alreadyLoggedIn) {
-          msgBox.innerHTML = `
-            ⚠️ ${data.message}<br><br>
-            <button id="forceLoginBtn" style="background:red;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
-              Force Login
-            </button>
-          `;
-          document.getElementById("forceLoginBtn").addEventListener("click", () => {
-            loginSubmit(e, true); // Force login call
-          });
-        } else {
-          msgBox.innerText = data.message || "❌ Invalid username or password.";
-          msgBox.classList.remove("success");
-        }
-      }
-    })
-    .catch(err => {
-      console.error("❌ Login error:", err);
-      msgBox.innerText = "⚠️ Server error. Try again later.";
-    });
-}
+    msgBox.style.display = "block";
+    msgBox.classList.remove("success");
+    msgBox.innerHTML = "";
 
-//---------------------------------------------------------------------------------------
-      function signupSubmit(e) {
-      e.preventDefault();
+    if (!username || !password) {
+      msgBox.innerText = "❌ Username or password missing!";
+      return;
+    }
 
-      const btn = document.getElementById("signupBtn");
-      const msgBox = document.getElementById("signupMessage");
-      msgBox.innerText = "";
-      msgBox.classList.remove("success");
+    msgBox.innerText = "🔄 Checking credentials...";
 
-      btn.disabled = true;
-      btn.innerText = "Registering...";
+    // ✅ Centralised URL usage
+    const loginUrl = `${BASE_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=${forceLogin}`;
 
-      const fullName = document.getElementById("fullName").value.trim();
-      const city = document.getElementById("city").value.trim();
-      const course = document.getElementById("course").value;
-      const mobile = document.getElementById("signupUsername").value.trim();
-      const password = document.getElementById("signupPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-      const agree = document.getElementById("agreeTerms").checked;
+    fetch(loginUrl)
+      .then(res => res.json())
+      .then(data => {
+        console.log("🔍 Login Response:", data);
 
-      if (!agree) {
-        msgBox.innerText = "❌ You must agree to the Terms before registering.";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        msgBox.innerText = "❌ Passwords do not match!";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
-
-      const usernameRegex = /^\d{10}$/;
-      if (!usernameRegex.test(mobile)) {
-        msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
-
-      if (/\s/.test(mobile)) {
-        msgBox.innerText = "❌ Mobile number should not contain spaces.";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
-
-      const allSameDigit = /^(\d)\1{9}$/;
-      if (allSameDigit.test(mobile)) {
-        msgBox.innerText = "❌ Mobile number cannot have all digits same.";
-        btn.disabled = false;
-        btn.innerText = "Register";
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("city", city);
-      formData.append("course", course);
-      formData.append("mobile", mobile);
-      formData.append("username", mobile);
-      formData.append("password", password);
-
-      fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-        method: "POST",
-        body: formData
-      })
-      .then(async res => {
-        const text = await res.text();
-        if (text.includes("✅")) {
-          msgBox.innerText = text;
+        if (data.success) {
+          msgBox.innerText = data.message;
           msgBox.classList.add("success");
 
+          if (data.userData) {
+            localStorage.setItem("userData", JSON.stringify(data.userData));
+          }
+
+          localStorage.setItem("isLoggedIn", "true");
+
           setTimeout(() => {
-            showLogin();
-            document.querySelector("#signupForm form").reset();
-            msgBox.innerText = "";
-            msgBox.classList.remove("success");
-          }, 2000);
+            location.replace("dashboard.html");
+          }, 800);
+
         } else {
-          msgBox.innerText = text;
+          if (data.alreadyLoggedIn) {
+            msgBox.innerHTML = `
+              ⚠️ ${data.message}<br><br>
+              <button id="forceLoginBtn" style="background:red;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
+                Force Login
+              </button>
+            `;
+            document.getElementById("forceLoginBtn").addEventListener("click", () => {
+              loginSubmit(e, true);
+            });
+          } else {
+            msgBox.innerText = data.message || "❌ Invalid username or password.";
+            msgBox.classList.remove("success");
+          }
         }
       })
       .catch(err => {
-        console.error("Signup error:", err);
-        msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
-      })
-      .finally(() => {
-        btn.disabled = false;
-        btn.innerText = "Register";
+        console.error("❌ Login error:", err);
+        msgBox.innerText = "⚠️ Server error. Try again later.";
       });
+  }
+
+  //---------------------------------------------------------------------------------------
+  function signupSubmit(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById("signupBtn");
+    const msgBox = document.getElementById("signupMessage");
+    msgBox.innerText = "";
+    msgBox.classList.remove("success");
+
+    btn.disabled = true;
+    btn.innerText = "Registering...";
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const course = document.getElementById("course").value;
+    const mobile = document.getElementById("signupUsername").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const agree = document.getElementById("agreeTerms").checked;
+
+    if (!agree) {
+      msgBox.innerText = "❌ You must agree to the Terms before registering.";
+      btn.disabled = false;
+      btn.innerText = "Register";
+      return;
     }
 
-    window.onload = showLogin;
-  </script>
-</body>
-</html>
+    if (password !== confirmPassword) {
+      msgBox.innerText = "❌ Passwords do not match!";
+      btn.disabled = false;
+      btn.innerText = "Register";
+      return;
+    }
 
+    const usernameRegex = /^\d{10}$/;
+    if (!usernameRegex.test(mobile)) {
+      msgBox.innerText = "❌ Please enter a valid 10-digit mobile number.";
+      btn.disabled = false;
+      btn.innerText = "Register";
+      return;
+    }
 
+    if (/\s/.test(mobile)) {
+      msgBox.innerText = "❌ Mobile number should not contain spaces.";
+      btn.disabled = false;
+      btn.innerText = "Register";
+      return;
+    }
 
+    const allSameDigit = /^(\d)\1{9}$/;
+    if (allSameDigit.test(mobile)) {
+      msgBox.innerText = "❌ Mobile number cannot have all digits same.";
+      btn.disabled = false;
+      btn.innerText = "Register";
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append("fullName", fullName);
+    formData.append("city", city);
+    formData.append("course", course);
+    formData.append("mobile", mobile);
+    formData.append("username", mobile);
+    formData.append("password", password);
 
+    // ✅ Centralised URL usage
+    fetch(BASE_URL, {
+      method: "POST",
+      body: formData
+    })
+    .then(async res => {
+      const text = await res.text();
+      if (text.includes("✅")) {
+        msgBox.innerText = text;
+        msgBox.classList.add("success");
 
+        setTimeout(() => {
+          showLogin();
+          document.querySelector("#signupForm form").reset();
+          msgBox.innerText = "";
+          msgBox.classList.remove("success");
+        }, 2000);
+      } else {
+        msgBox.innerText = text;
+      }
+    })
+    .catch(err => {
+      console.error("Signup error:", err);
+      msgBox.innerText = "⚠️ Something went wrong! Check console for error.";
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Register";
+    });
+  }
+
+  window.onload = showLogin;
+</script>
