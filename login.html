@@ -201,10 +201,12 @@ function loginSubmit(e) {
   const password = document.getElementById("loginPassword").value.trim();
   const msgBox = document.getElementById("loginMessage");
 
+  // Reset message box
   msgBox.style.display = "block";
   msgBox.classList.remove("success");
   msgBox.innerText = "";
 
+  // Empty field check
   if (!username || !password) {
     msgBox.innerText = "❌ Username or password missing!";
     return;
@@ -212,34 +214,37 @@ function loginSubmit(e) {
 
   msgBox.innerText = "🔄 Checking credentials...";
 
+  // ✅ Google Apps Script URL
   const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
   fetch(loginUrl)
-    .then(res => res.json()) // ✅ JSON response parse
+    .then(res => res.json())
     .then(data => {
-      console.log("Login Response:", data); // ✅ Debug
+      console.log("🔍 Login Response:", data); // Debug log
 
       if (data.success) {
         msgBox.innerText = data.message;
         msgBox.classList.add("success");
 
-        // ✅ Save login token/session flag
+        // ✅ Save complete user data (for dashboard)
+        if (data.userData) {
+          localStorage.setItem("userData", JSON.stringify(data.userData));
+        }
+
+        // ✅ Save login flag
         localStorage.setItem("isLoggedIn", "true");
 
-        // ✅ Save complete user data for dashboard use
-        localStorage.setItem("userData", JSON.stringify(data.userData || {}));
-
-        // ✅ Redirect to dashboard
+        // Redirect to dashboard
         setTimeout(() => {
           location.replace("dashboard.html");
         }, 800);
       } else {
-        msgBox.innerText = data.message;
+        msgBox.innerText = data.message || "❌ Invalid username or password.";
         msgBox.classList.remove("success");
       }
     })
     .catch(err => {
-      console.error("Login error:", err);
+      console.error("❌ Login error:", err);
       msgBox.innerText = "⚠️ Server error. Try again later.";
     });
 }
@@ -343,6 +348,7 @@ function loginSubmit(e) {
   </script>
 </body>
 </html>
+
 
 
 
