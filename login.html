@@ -163,9 +163,17 @@
     </form>
   </div>
 
- <script>
-  // ✅ Single URL Configuration (Sirf yaha change karo future me)
+<script>
   const BASE_URL = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+
+  // ✅ Auto-login check
+  window.onload = function () {
+    if (localStorage.getItem("isLoggedIn") === "true" && localStorage.getItem("userData")) {
+      location.replace("dashboard.html");
+    } else {
+      showLogin();
+    }
+  };
 
   function showSignup() {
     document.getElementById("loginForm").style.display = "none";
@@ -215,7 +223,6 @@
 
     msgBox.innerText = "🔄 Checking credentials...";
 
-    // ✅ Centralised URL usage
     const loginUrl = `${BASE_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=${forceLogin}`;
 
     fetch(loginUrl)
@@ -260,7 +267,7 @@
       });
   }
 
-  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------
   function signupSubmit(e) {
     e.preventDefault();
 
@@ -325,7 +332,6 @@
     formData.append("username", mobile);
     formData.append("password", password);
 
-    // ✅ Centralised URL usage
     fetch(BASE_URL, {
       method: "POST",
       body: formData
@@ -355,6 +361,4 @@
       btn.innerText = "Register";
     });
   }
-
-  window.onload = showLogin;
 </script>
