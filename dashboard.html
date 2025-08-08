@@ -30,6 +30,22 @@
       color: #fff;
     }
 
+    .logout-btn {
+      background: #ef5350;
+      color: white;
+      padding: 8px 15px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-left: 15px;
+    }
+
+    .logout-btn:hover {
+      background: #d32f2f;
+    }
+
     main {
       padding: 40px 20px;
       max-width: 1000px;
@@ -88,7 +104,10 @@
 
   <header>
     <div>☀️ Sunshine Institute Dashboard</div>
-    <div class="welcome-msg" id="welcomeMsg">Welcome, User!</div>
+    <div>
+      <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
   </header>
 
   <main>
@@ -105,9 +124,24 @@
   </main>
 
   <script>
-    // You can replace this name dynamically via Apps Script template
-    const fullname = "Rahul Sharma"; // Replace this with actual name passed by server
-    document.getElementById("welcomeMsg").textContent = `Welcome, ${fullname}!`;
+    // ✅ Step 1: Check Login Status
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html"); // redirect to login if not logged in
+    }
+
+    // ✅ Step 2: Show User Name from localStorage
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.fullname) {
+      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    }
+
+    // ✅ Step 3: Logout function
+    function logoutUser() {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userData");
+      location.replace("login.html");
+    }
   </script>
 
 </body>
