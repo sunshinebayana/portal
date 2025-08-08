@@ -10,7 +10,6 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
     }
-
     header {
       background-color: #1976d2;
       color: white;
@@ -23,13 +22,11 @@
       letter-spacing: 1px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
     .welcome-msg {
       font-size: 16px;
       font-weight: 500;
       color: #fff;
     }
-
     .logout-btn {
       background: #ef5350;
       color: white;
@@ -41,30 +38,25 @@
       transition: background 0.3s;
       margin-left: 15px;
     }
-
     .logout-btn:hover {
       background: #d32f2f;
     }
-
     main {
       padding: 40px 20px;
       max-width: 1000px;
       margin: 0 auto;
     }
-
     h2 {
       text-align: center;
       color: #333;
       margin-bottom: 40px;
       font-size: 26px;
     }
-
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 25px;
     }
-
     .feature-btn {
       background: white;
       border: 2px solid #1976d2;
@@ -77,17 +69,14 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
       transition: all 0.3s ease;
     }
-
     .feature-btn:hover {
       background-color: #1976d2;
       color: white;
       transform: translateY(-3px);
     }
-
     .feature-btn::before {
       content: "💡 ";
     }
-
     @media (max-width: 500px) {
       header {
         flex-direction: column;
@@ -124,22 +113,23 @@
   </main>
 
   <script>
-    // ✅ Step 1: Check Login Status
+    // ✅ Step 1: Prevent Direct Access
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
-      location.replace("login.html"); // redirect to login if not logged in
+      location.replace("login.html");
     }
 
-    // ✅ Step 2: Show User Name from localStorage
+    // ✅ Step 2: Get User Data
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    } else {
+      document.getElementById("welcomeMsg").textContent = "Welcome, User!";
     }
 
-    // ✅ Step 3: Logout function
+    // ✅ Step 3: Logout
     function logoutUser() {
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("userData");
+      localStorage.clear();
       location.replace("login.html");
     }
   </script>
