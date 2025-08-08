@@ -127,12 +127,34 @@
       document.getElementById("welcomeMsg").textContent = "Welcome, User!";
     }
 
-    // ✅ Step 3: Logout
-    function logoutUser() {
-      localStorage.clear();
-      location.replace("login.html");
-    }
+   // ✅ Step 3: Logout
+function logoutUser() {
+  // Local storage me saved user data fetch kare
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  if (userData && userData.username) {
+    // ✅ Apps Script logout API call kare
+    const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+
+    fetch(logoutUrl)
+      .then(res => res.json())
+      .then(data => {
+        console.log("🚪 Logout Response:", data);
+      })
+      .catch(err => {
+        console.error("❌ Logout error:", err);
+      });
+  }
+
+  // ✅ Local storage clear kare
+  localStorage.clear();
+
+  // ✅ Login page par redirect kare
+  location.replace("login.html");
+}
+
   </script>
 
 </body>
 </html>
+
