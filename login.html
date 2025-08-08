@@ -214,8 +214,8 @@ function loginSubmit(e) {
 
   msgBox.innerText = "🔄 Checking credentials...";
 
-  // ✅ Google Apps Script URL
-  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+  // ✅ Google Apps Script URL with forceLogin flag
+  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=true`;
 
   fetch(loginUrl)
     .then(res => res.json())
@@ -348,6 +348,7 @@ function loginSubmit(e) {
   </script>
 </body>
 </html>
+
 
 
 
