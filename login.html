@@ -194,7 +194,7 @@
     }
 
     //---------------------------------------------
-function loginSubmit(e) {
+function loginSubmit(e, forceLogin = false) {
   e.preventDefault();
 
   const username = document.getElementById("loginUsername").value.trim();
@@ -204,7 +204,7 @@ function loginSubmit(e) {
   // Reset message box
   msgBox.style.display = "block";
   msgBox.classList.remove("success");
-  msgBox.innerText = "";
+  msgBox.innerHTML = ""; // HTML allow karenge force login button ke liye
 
   // Empty field check
   if (!username || !password) {
@@ -214,8 +214,8 @@ function loginSubmit(e) {
 
   msgBox.innerText = "🔄 Checking credentials...";
 
-  // ✅ Google Apps Script URL with forceLogin flag
-  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=true`;
+  // ✅ Google Apps Script URL with optional forceLogin flag
+  const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&forceLogin=${forceLogin}`;
 
   fetch(loginUrl)
     .then(res => res.json())
@@ -238,9 +238,23 @@ function loginSubmit(e) {
         setTimeout(() => {
           location.replace("dashboard.html");
         }, 800);
+
       } else {
-        msgBox.innerText = data.message || "❌ Invalid username or password.";
-        msgBox.classList.remove("success");
+        // Agar server se "already logged in" type ka message aaya
+        if (data.alreadyLoggedIn) {
+          msgBox.innerHTML = `
+            ⚠️ ${data.message}<br><br>
+            <button id="forceLoginBtn" style="background:red;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
+              Force Login
+            </button>
+          `;
+          document.getElementById("forceLoginBtn").addEventListener("click", () => {
+            loginSubmit(e, true); // Force login call
+          });
+        } else {
+          msgBox.innerText = data.message || "❌ Invalid username or password.";
+          msgBox.classList.remove("success");
+        }
       }
     })
     .catch(err => {
@@ -348,6 +362,7 @@ function loginSubmit(e) {
   </script>
 </body>
 </html>
+
 
 
 
