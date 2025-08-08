@@ -194,7 +194,7 @@
     }
 
     //---------------------------------------------
- function loginSubmit(e) {
+function loginSubmit(e) {
   e.preventDefault();
 
   const username = document.getElementById("loginUsername").value.trim();
@@ -215,24 +215,26 @@
   const loginUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
   fetch(loginUrl)
-    .then(res => res.text())
-    .then(text => {
-      console.log("Login Response:", text); // ✅ Debug output
+    .then(res => res.json()) // ✅ JSON response parse
+    .then(data => {
+      console.log("Login Response:", data); // ✅ Debug
 
-      if (text.includes("✅")) {
-        msgBox.innerText = text;
+      if (data.success) {
+        msgBox.innerText = data.message;
         msgBox.classList.add("success");
 
-        // Save login state
+        // ✅ Save login token/session flag
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("username", username);
 
-        // Redirect to dashboard
+        // ✅ Save complete user data for dashboard use
+        localStorage.setItem("userData", JSON.stringify(data.userData || {}));
+
+        // ✅ Redirect to dashboard
         setTimeout(() => {
-          location.replace("dashboard.html"); // ✅ Alternative redirect method
-        }, 1000);
+          location.replace("dashboard.html");
+        }, 800);
       } else {
-        msgBox.innerText = text;
+        msgBox.innerText = data.message;
         msgBox.classList.remove("success");
       }
     })
@@ -341,5 +343,6 @@
   </script>
 </body>
 </html>
+
 
 
