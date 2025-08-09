@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧪 RS-CIT Internal Tests</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+    }
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .welcome-msg {
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: #ef5350;
+      color: white;
+      padding: 8px 14px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #d32f2f;
+    }
+    .back-btn {
+      background: #43a047;
+    }
+    .back-btn:hover {
+      background: #2e7d32;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 35px;
+      font-size: 24px;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .feature-btn {
+      background: white;
+      border: 2px solid #1976d2;
+      color: #1976d2;
+      padding: 20px 15px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+    .feature-btn:hover {
+      background-color: #1976d2;
+      color: white;
+      transform: translateY(-3px);
+    }
+    .feature-btn span {
+      float: right;
+      font-weight: bold;
+    }
+    @media (max-width: 500px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        margin-top: 8px;
+      }
+      .welcome-msg {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>🧪 RS-CIT Internal Tests</div>
+    <div class="header-right">
+      <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
+      <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
+      <button class="btn" onclick="logoutUser()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <h2>Select an Internal Test</h2>
+    <div class="btn-grid">
+      <button class="feature-btn" onclick="startTest('T21')">1. Introduction to Computer <span>🔹T21</span></button>
+      <button class="feature-btn" onclick="startTest('T22')">2. Computer System <span>🔹T22</span></button>
+      <button class="feature-btn" onclick="startTest('T23')">3. Exploring Your Computer <span>🔹T23</span></button>
+      <button class="feature-btn" onclick="startTest('T24')">4. Introduction of Internet <span>🔹T24</span></button>
+      <button class="feature-btn" onclick="startTest('T25')">5. Financial Literacy & Digital Payment Applications <span>🔹T25</span></button>
+      <button class="feature-btn" onclick="startTest('T26')">6. Internet Applications <span>🔹T26</span></button>
+      <button class="feature-btn" onclick="startTest('T27')">7. Working with Mobile Devices/Smartphone <span>🔹T27</span></button>
+      <button class="feature-btn" onclick="startTest('T28')">8. Microsoft Word <span>🔹T28</span></button>
+      <button class="feature-btn" onclick="startTest('T29')">9. Microsoft Excel <span>🔹T29</span></button>
+      <button class="feature-btn" onclick="startTest('T30')">10. MS PowerPoint <span>🔹T30</span></button>
+      <button class="feature-btn" onclick="startTest('T31')">11. Cyber Security & Awareness <span>🔹T31</span></button>
+      <button class="feature-btn" onclick="startTest('T32')">12. Other Office Tools <span>🔹T32</span></button>
+      <button class="feature-btn" onclick="startTest('T33')">13. Useful Application of IT <span>🔹T33</span></button>
+      <button class="feature-btn" onclick="startTest('T34')">14. Exploring Common Citizen Centric Services <span>🔹T34</span></button>
+      <button class="feature-btn" onclick="startTest('T35')">15. Major eGovernance Services and Schemes for Citizens of Raj. <span>🔹T35</span></button>
+    </div>
+  </main>
+
+  <script>
+    // ✅ Prevent Direct Access
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html");
+    }
+
+    // ✅ Set Welcome Message
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.fullname) {
+      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    }
+
+    // ✅ Back to RS-CIT Module
+    function goBack() {
+      location.href = "rs-cit-module.html";
+    }
+
+    // ✅ Placeholder for starting a test
+    function startTest(code) {
+      alert(`Test ${code} will start soon!`);
+    }
+
+    // ✅ Logout User
+    function logoutUser() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData && userData.username) {
+        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+        fetch(logoutUrl).catch(err => console.error("Logout error:", err));
+      }
+      localStorage.clear();
+      location.replace("login.html");
+    }
+  </script>
+
+</body>
+</html>
