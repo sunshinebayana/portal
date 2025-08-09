@@ -126,6 +126,14 @@
           <div class="meta"><div class="title">Digital Learning Zone</div><div class="desc">Interactive lessons, videos and quick practice activities.</div></div>
         </div>
 
+        <div class="module-btn" onclick="openModule('ai-skill-bot')">
+  <div class="emoji">💬</div>
+  <div class="meta">
+    <div class="title">AI Skill Bot! for RS-CIT</div>
+    <div class="desc">Your smart assistant for RS-CIT preparation and doubt solving.</div>
+  </div>
+</div>
+
         <div class="module-btn" onclick="openModule('common-test')">
           <div class="emoji">🟢</div>
           <div class="meta"><div class="title">स्पेशल कॉमन TEST START</div><div class="desc">Combined mock test for full syllabus practice.</div></div>
@@ -202,6 +210,11 @@
           return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">High-yield quick tests to strengthen weak areas.</p>`;
         case 'digital-zone':
           return `<h2>📖 Digital Learning Zone</h2><p class="lead">Lessons, short videos and interactive exercises.</p>`;
+        case 'ai-skill-bot':
+  // यहां अपने बोट सिस्टम का लिंक दें
+  window.location.href = 'ai-skill-bot.html';
+  return `<p>Opening AI Skill Bot...</p>`;
+
         case 'common-test':
           return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test. Recommended before final exam.</p>`;
         case 'schedule':
@@ -216,3 +229,4 @@
 
 </body>
 </html>
+
