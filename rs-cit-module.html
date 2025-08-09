@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RS-CIT Preparation — Sunshine Institute</title>
+  <style>
+    :root{
+      --primary:#1976d2;
+      --accent:#ef5350;
+      --card-bg:#fff;
+      --muted:#6b7280;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(180deg,#f3f9ff 0%, #ffffff 60%);
+      color:#111827;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:40px;
+    }
+    header{
+      background:var(--primary);
+      color:white;
+      padding:18px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 6px 18px rgba(25,118,210,0.12);
+    }
+    header .title{font-weight:700; font-size:18px}
+    header .sub{font-size:13px; opacity:0.95}
+    main{max-width:1000px;margin:28px auto;padding:0 18px}
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:0 8px 20px rgba(15,23,42,0.06);
+      margin-bottom:18px;
+    }
+    h1{font-size:22px;margin:0 0 8px}
+    p.lead{color:var(--muted);margin:0 0 12px}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      margin-top:8px;
+    }
+    .module-btn{
+      display:flex;align-items:flex-start;gap:12px;
+      padding:14px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);
+      cursor:pointer;background:linear-gradient(180deg,#fff,#fbfcff);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .module-btn:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(20,40,80,0.06)}
+    .module-btn .emoji{font-size:20px}
+    .module-btn .meta{flex:1}
+    .module-btn .meta .title{font-weight:700}
+    .module-btn .meta .desc{font-size:13px;color:var(--muted);margin-top:6px}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+    .btn.primary{background:var(--primary);color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06)}
+    .badge{display:inline-block;background:#e6f3ff;color:var(--primary);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+
+    /* special list */
+    .important-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .important-item{padding:10px;border-radius:8px;border:1px dashed rgba(25,118,210,0.12);background:#fbfcff;display:flex;justify-content:space-between;align-items:center}
+
+    footer{max-width:1000px;margin:20px auto 40px;padding:0 18px;color:var(--muted);font-size:13px}
+
+    @media (max-width:520px){
+      header{flex-direction:column;align-items:flex-start;gap:8px}
+      .module-btn{padding:12px}
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <div class="title">☀️ Sunshine Institute — RS-CIT Zone</div>
+      <div class="sub">Focused practice, old papers & quick tests</div>
+    </div>
+    <div style="text-align:right">
+      <div id="welcomeSmall" style="font-weight:700">Welcome, User</div>
+      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn ghost" onclick="goBack()">← Back</button>
+        <button class="btn primary" onclick="openResult()">📢 View Result & Rank</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1>RS-CIT Preparation — Modules</h1>
+      <p class="lead">Select a module to start practice. Mix of Hindi/English labels for your students.</p>
+
+      <div class="grid">
+        <div class="module-btn" onclick="openModule('book-chapters')">
+          <div class="emoji">📘</div>
+          <div class="meta"><div class="title">RS-CIT Book Chapter Tests</div><div class="desc">Topicwise chapter tests based on the official book.</div></div>
+        </div>
+
+        <div class="module-btn" onclick="openModule('internal-test')">
+          <div class="emoji">🧪</div>
+          <div class="meta"><div class="title">RS-CIT Internal Test (Topicwise)</div><div class="desc">Short quizzes to check concept clarity — timed mode available.</div></div>
+        </div>
+
+        <div class="module-btn" onclick="openModule('old-papers')">
+          <div class="emoji">📄</div>
+          <div class="meta"><div class="title">Old Papers — RS-CIT Exam</div><div class="desc">Solve previous years' papers with answer review.</div></div>
+        </div>
+
+        <div class="module-btn" onclick="openModule('important-tests')">
+          <div class="emoji">💡</div>
+          <div class="meta"><div class="title">RS-CIT Important Tests</div><div class="desc">High-yield tests curated from trending exam patterns.</div></div>
+        </div>
+
+        <div class="module-btn" onclick="openModule('digital-zone')">
+          <div class="emoji">📖</div>
+          <div class="meta"><div class="title">Digital Learning Zone</div><div class="desc">Interactive lessons, videos and quick practice activities.</div></div>
+        </div>
+
+        <div class="module-btn" onclick="openModule('common-test')">
+          <div class="emoji">🟢</div>
+          <div class="meta"><div class="title">स्पेशल कॉमन TEST START</div><div class="desc">Combined mock test for full syllabus practice.</div></div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div class="important-list" style="flex:1;min-width:220px">
+          <div class="important-item">
+            <div>📢 Announcements / Alerts</div>
+            <div style="font-size:13px;color:var(--muted)">No new alerts</div>
+          </div>
+          <div class="important-item">
+            <div>🔔 Quick Links</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn ghost" onclick="openModule('schedule')">Schedule</button>
+              <button class="btn ghost" onclick="openModule('contact')">Contact</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="min-width:240px;text-align:right">
+          <div class="badge">Student Mode</div>
+          <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: Use timed tests to simulate real exam conditions.</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Dynamic content area -->
+    <section id="contentArea" class="card" style="display:none">
+      <!-- Filled by JS -->
+    </section>
+
+  </main>
+
+  <footer>Sunshine Institute — RS-CIT Practice Portal · Designed for quick classroom use</footer>
+
+  <script>
+    // Prefill welcome name if present
+    const userData = JSON.parse(localStorage.getItem('userData') || 'null');
+    if(userData && userData.fullname){
+      document.getElementById('welcomeSmall').textContent = `Welcome, ${userData.fullname}`;
+    }
+
+    function goBack(){
+      // return to dashboard
+      location.replace('dashboard.html');
+    }
+
+    function openResult(){
+      // open results page (implement separately)
+      location.href = 'results.html';
+    }
+
+    function openModule(key){
+      const area = document.getElementById('contentArea');
+      area.style.display = 'block';
+      area.innerHTML = renderModule(key);
+      window.scrollTo({top: area.offsetTop - 20, behavior:'smooth'});
+    }
+
+    function renderModule(key){
+      switch(key){
+        case 'book-chapters':
+          return `
+            <h2>📘 RS-CIT Book Chapter Tests</h2>
+            <p class="lead">Choose chapter and start chapter-wise quizzes.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <button class="btn primary" onclick="startChapterTest(1)">Chapter 1 — Basic Computer</button>
+              <button class="btn ghost" onclick="startChapterTest(2)">Chapter 2 — Internet</button>
+              <button class="btn ghost" onclick="startChapterTest(3)">Chapter 3 — MS Word</button>
+            </div>
+          `;
+        case 'internal-test':
+          return `
+            <h2>🧪 Internal Topicwise Tests</h2>
+            <p class="lead">Short topic quizzes with immediate feedback.</p>
+            <div style="margin-top:12px">
+              <button class="btn primary" onclick="startTopicTest('input-output')">Input/Output Devices Test</button>
+              <button class="btn ghost" onclick="startTopicTest('browser')">Browser & Internet Test</button>
+            </div>
+          `;
+        case 'old-papers':
+          return `
+            <h2>📄 Old Papers — Practice</h2>
+            <p class="lead">Attempt previous year papers. Time yourself and review answers.</p>
+            <div style="margin-top:12px">
+              <button class="btn primary" onclick="startOldPaper(2023)">RS-CIT — 2023 Paper</button>
+              <button class="btn ghost" onclick="startOldPaper(2022)">RS-CIT — 2022 Paper</button>
+            </div>
+          `;
+        case 'important-tests':
+          return `
+            <h2>💡 RS-CIT Important Tests</h2>
+            <p class="lead">High-yield quick tests to strengthen weak areas.</p>
+            <div style="margin-top:12px">
+              <button class="btn primary" onclick="startImportantTest('network')">Networking Essentials Quick Test</button>
+            </div>
+          `;
+        case 'digital-zone':
+          return `
+            <h2>📖 Digital Learning Zone</h2>
+            <p class="lead">Lessons, short videos and interactive exercises.</p>
+            <div style="margin-top:12px">
+              <button class="btn primary" onclick="openLearning('videos')">Watch Videos</button>
+              <button class="btn ghost" onclick="openLearning('flashcards')">Flashcards</button>
+            </div>
+          `;
+        case 'common-test':
+          return `
+            <h2>🟢 स्पेशल कॉमन TEST</h2>
+            <p class="lead">Full syllabus mock test. Recommended before final exam.</p>
+            <div style="margin-top:12px">
+              <button class="btn primary" onclick="startCommonTest()">Start Common Test</button>
+            </div>
+          `;
+        case 'schedule':
+          return `
+            <h2>🗓️ Schedule</h2>
+            <p class="lead">Upcoming classes and mock tests schedule.</p>
+            <ul style="margin-top:12px;color:var(--muted)"><li>Next Mock: 15 Aug 2025 — 10:00 AM</li><li>Special Class: 20 Aug 2025 — 4:00 PM</li></ul>
+          `;
+        case 'contact':
+          return `
+            <h2>📞 Contact & Support</h2>
+            <p class="lead">Contact your trainer or admin for help.</p>
+            <p style="margin-top:10px">Director: Atendra Sharma — 9929856121</p>
+          `;
+        default:
+          return `<p>Module not found.</p>`;
+      }
+    }
+
+    // Placeholder functions to be implemented with real logic or navigation
+    function startChapterTest(i){alert('Start Chapter Test: '+i)}
+    function startTopicTest(k){alert('Start Topic Test: '+k)}
+    function startOldPaper(y){alert('Open Old Paper: '+y)}
+    function startImportantTest(k){alert('Start Important Test: '+k)}
+    function openLearning(k){alert('Open Learning: '+k)}
+    function startCommonTest(){alert('Starting common full test...')}
+
+  </script>
+
+</body>
+</html>
