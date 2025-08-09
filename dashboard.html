@@ -1,138 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Sunshine Institute</title>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sunshine Dashboard</title>
+  <style>
     body {
-        font-family: Arial, sans-serif;
-        background: #f0f2f5;
-        margin: 0;
-        padding: 0;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
     }
     header {
-        background: #007bff;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
+      background-color: #1976d2;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
+    .welcome-msg {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
     }
-    button {
-        display: inline-block;
-        background: #28a745;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        font-size: 18px;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-bottom: 20px;
-        transition: 0.3s;
+    .logout-btn {
+      background: #ef5350;
+      color: white;
+      padding: 8px 15px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-left: 15px;
     }
-    button:hover {
-        background: #218838;
+    .logout-btn:hover {
+      background: #d32f2f;
     }
-    .rs-section {
-        display: none;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 15px;
-        margin-top: 20px;
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        cursor: pointer;
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 40px;
+      font-size: 26px;
     }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
     }
-    .icon {
-        font-size: 30px;
-        margin-bottom: 10px;
+    .feature-btn {
+      background: white;
+      border: 2px solid #1976d2;
+      color: #1976d2;
+      padding: 25px 15px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
     }
-    /* Icon Colors */
-    .blue { color: #007bff; }
-    .purple { color: #6f42c1; }
-    .orange { color: #fd7e14; }
-    .yellow { color: #ffc107; }
-    .green { color: #28a745; }
-    .pink { color: #e83e8c; }
-    .red { color: #dc3545; }
-    .teal { color: #20c997; }
-</style>
+    .feature-btn:hover {
+      background-color: #1976d2;
+      color: white;
+      transform: translateY(-3px);
+    }
+    .feature-btn::before {
+      content: "💡 ";
+    }
+    @media (max-width: 500px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .welcome-msg {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    Welcome to Sunshine Institute Dashboard
-</header>
-
-<div class="container">
-    <button onclick="toggleRS()">📚 RS-CIT Exam तैयारी Now!</button>
-
-    <div id="rsSection" class="rs-section">
-        <div class="card" onclick="location.href='chapter-tests.html'">
-            <div class="icon blue">📘</div>
-            RS-CIT Book Chapter Tests
-        </div>
-        <div class="card" onclick="location.href='internal-tests.html'">
-            <div class="icon purple">🧪</div>
-            RS-CIT Internal Test (Topicwise)
-        </div>
-        <div class="card" onclick="location.href='old-papers.html'">
-            <div class="icon orange">📄</div>
-            Old Papers RS-CIT Exam
-        </div>
-        <div class="card" onclick="location.href='important-tests.html'">
-            <div class="icon yellow">💡</div>
-            RS-CIT Important Tests
-        </div>
-        <div class="card" onclick="location.href='digital-learning.html'">
-            <div class="icon green">📖</div>
-            Digital Learning Zone
-        </div>
-        <div class="card" onclick="location.href='special-common-test.html'">
-            <div class="icon pink">🟢</div>
-            स्पेशल कॉमन टेस्ट स्टार्ट
-        </div>
-        <div class="card" onclick="location.href='view-results.html'">
-            <div class="icon red">📢</div>
-            View Result & Rank
-        </div>
-        <div class="card" onclick="location.href='announcements.html'">
-            <div class="icon teal">📢</div>
-            Announcements / Alerts
-        </div>
+  <header>
+    <div>☀️ Sunshine Institute Dashboard</div>
+    <div>
+      <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
-</div>
+  </header>
 
-<script>
-    // Check if user is logged in
-    if (!localStorage.getItem("loggedIn")) {
-        window.location.href = "index.html";
+  <main>
+    <h2>Choose Your Preparation Module</h2>
+    <div class="btn-grid">
+      <button class="feature-btn">Start RS-CIT Exam तैयारी Now!</button>
+      <button class="feature-btn">Computer Efficiency</button>
+      <button class="feature-btn">Typing Tutor</button>
+      <button class="feature-btn">Raj HighCourt Stenographer</button>
+      <button class="feature-btn">RSMSSB LDC</button>
+      <button class="feature-btn">REET (Main) Test</button>
+      <button class="feature-btn">चतुर्थ श्रेणी कर्मचारी भर्ती</button>
+    </div>
+  </main>
+
+  <script>
+    // ✅ Step 1: Prevent Direct Access
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html");
     }
 
-    function toggleRS() {
-        const section = document.getElementById("rsSection");
-        if (section.style.display === "grid") {
-            section.style.display = "none";
-        } else {
-            section.style.display = "grid";
-        }
+    // ✅ Step 2: Get User Data
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.fullname) {
+      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    } else {
+      document.getElementById("welcomeMsg").textContent = "Welcome, User!";
     }
-</script>
+
+   // ✅ Step 3: Logout
+function logoutUser() {
+  // Local storage me saved user data fetch kare
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  if (userData && userData.username) {
+    // ✅ Apps Script logout API call kare
+    const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+
+    fetch(logoutUrl)
+      .then(res => res.json())
+      .then(data => {
+        console.log("🚪 Logout Response:", data);
+      })
+      .catch(err => {
+        console.error("❌ Logout error:", err);
+      });
+  }
+
+  // ✅ Local storage clear kare
+  localStorage.clear();
+
+  // ✅ Login page par redirect kare
+  location.replace("login.html");
+}
+
+  </script>
 
 </body>
 </html>
+
