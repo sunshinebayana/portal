@@ -68,7 +68,6 @@
     .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06)}
     .badge{display:inline-block;background:#e6f3ff;color:var(--primary);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
 
-    /* special list */
     .important-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
     .important-item{padding:10px;border-radius:8px;border:1px dashed rgba(25,118,210,0.12);background:#fbfcff;display:flex;justify-content:space-between;align-items:center}
 
@@ -157,16 +156,19 @@
 
     </section>
 
-    <!-- Dynamic content area -->
-    <section id="contentArea" class="card" style="display:none">
-      <!-- Filled by JS -->
-    </section>
+    <section id="contentArea" class="card" style="display:none"></section>
 
   </main>
 
   <footer>Sunshine Institute — RS-CIT Practice Portal · Designed for quick classroom use</footer>
 
   <script>
+    // ✅ Prevent Direct Access Without Login
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html");
+    }
+
     // Prefill welcome name if present
     const userData = JSON.parse(localStorage.getItem('userData') || 'null');
     if(userData && userData.fullname){
@@ -174,12 +176,10 @@
     }
 
     function goBack(){
-      // return to dashboard
       location.replace('dashboard.html');
     }
 
     function openResult(){
-      // open results page (implement separately)
       location.href = 'results.html';
     }
 
@@ -193,83 +193,25 @@
     function renderModule(key){
       switch(key){
         case 'book-chapters':
-          return `
-            <h2>📘 RS-CIT Book Chapter Tests</h2>
-            <p class="lead">Choose chapter and start chapter-wise quizzes.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-              <button class="btn primary" onclick="startChapterTest(1)">Chapter 1 — Basic Computer</button>
-              <button class="btn ghost" onclick="startChapterTest(2)">Chapter 2 — Internet</button>
-              <button class="btn ghost" onclick="startChapterTest(3)">Chapter 3 — MS Word</button>
-            </div>
-          `;
+          return `<h2>📘 RS-CIT Book Chapter Tests</h2><p class="lead">Choose chapter and start chapter-wise quizzes.</p>`;
         case 'internal-test':
-          return `
-            <h2>🧪 Internal Topicwise Tests</h2>
-            <p class="lead">Short topic quizzes with immediate feedback.</p>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="startTopicTest('input-output')">Input/Output Devices Test</button>
-              <button class="btn ghost" onclick="startTopicTest('browser')">Browser & Internet Test</button>
-            </div>
-          `;
+          return `<h2>🧪 Internal Topicwise Tests</h2><p class="lead">Short topic quizzes with immediate feedback.</p>`;
         case 'old-papers':
-          return `
-            <h2>📄 Old Papers — Practice</h2>
-            <p class="lead">Attempt previous year papers. Time yourself and review answers.</p>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="startOldPaper(2023)">RS-CIT — 2023 Paper</button>
-              <button class="btn ghost" onclick="startOldPaper(2022)">RS-CIT — 2022 Paper</button>
-            </div>
-          `;
+          return `<h2>📄 Old Papers — Practice</h2><p class="lead">Attempt previous year papers. Time yourself and review answers.</p>`;
         case 'important-tests':
-          return `
-            <h2>💡 RS-CIT Important Tests</h2>
-            <p class="lead">High-yield quick tests to strengthen weak areas.</p>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="startImportantTest('network')">Networking Essentials Quick Test</button>
-            </div>
-          `;
+          return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">High-yield quick tests to strengthen weak areas.</p>`;
         case 'digital-zone':
-          return `
-            <h2>📖 Digital Learning Zone</h2>
-            <p class="lead">Lessons, short videos and interactive exercises.</p>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="openLearning('videos')">Watch Videos</button>
-              <button class="btn ghost" onclick="openLearning('flashcards')">Flashcards</button>
-            </div>
-          `;
+          return `<h2>📖 Digital Learning Zone</h2><p class="lead">Lessons, short videos and interactive exercises.</p>`;
         case 'common-test':
-          return `
-            <h2>🟢 स्पेशल कॉमन TEST</h2>
-            <p class="lead">Full syllabus mock test. Recommended before final exam.</p>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="startCommonTest()">Start Common Test</button>
-            </div>
-          `;
+          return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test. Recommended before final exam.</p>`;
         case 'schedule':
-          return `
-            <h2>🗓️ Schedule</h2>
-            <p class="lead">Upcoming classes and mock tests schedule.</p>
-            <ul style="margin-top:12px;color:var(--muted)"><li>Next Mock: 15 Aug 2025 — 10:00 AM</li><li>Special Class: 20 Aug 2025 — 4:00 PM</li></ul>
-          `;
+          return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests schedule.</p>`;
         case 'contact':
-          return `
-            <h2>📞 Contact & Support</h2>
-            <p class="lead">Contact your trainer or admin for help.</p>
-            <p style="margin-top:10px">Director: Atendra Sharma — 9929856121</p>
-          `;
+          return `<h2>📞 Contact & Support</h2><p class="lead">Contact your trainer or admin for help.</p><p>Director: Atendra Sharma — 9929856121</p>`;
         default:
           return `<p>Module not found.</p>`;
       }
     }
-
-    // Placeholder functions to be implemented with real logic or navigation
-    function startChapterTest(i){alert('Start Chapter Test: '+i)}
-    function startTopicTest(k){alert('Start Topic Test: '+k)}
-    function startOldPaper(y){alert('Open Old Paper: '+y)}
-    function startImportantTest(k){alert('Start Important Test: '+k)}
-    function openLearning(k){alert('Open Learning: '+k)}
-    function startCommonTest(){alert('Starting common full test...')}
-
   </script>
 
 </body>
