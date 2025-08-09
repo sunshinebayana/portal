@@ -27,7 +27,12 @@
       font-weight: 500;
       color: #fff;
     }
-    .logout-btn {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
       background: #ef5350;
       color: white;
       padding: 8px 14px;
@@ -36,10 +41,15 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s;
-      margin-left: 10px;
     }
-    .logout-btn:hover {
+    .btn:hover {
       background: #d32f2f;
+    }
+    .back-btn {
+      background: #43a047;
+    }
+    .back-btn:hover {
+      background: #2e7d32;
     }
     main {
       padding: 40px 20px;
@@ -84,8 +94,10 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      .welcome-msg {
+      .header-right {
         margin-top: 8px;
+      }
+      .welcome-msg {
         font-size: 14px;
       }
     }
@@ -95,9 +107,10 @@
 
   <header>
     <div>📘 RS-CIT Book Chapter Tests</div>
-    <div>
+    <div class="header-right">
       <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
-      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+      <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
+      <button class="btn" onclick="logoutUser()">Logout</button>
     </div>
   </header>
 
@@ -125,13 +138,17 @@
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Step 3: Start Test Placeholder
-    function startTest(code) {
-      alert(`Test ${code} will start soon!`);
-      // Later: location.href = `test-page.html?code=${code}`;
+    // ✅ Step 3: Back Button
+    function goBack() {
+      location.href = "rs-cit-module.html";
     }
 
-    // ✅ Step 4: Logout
+    // ✅ Step 4: Start Test Placeholder
+    function startTest(code) {
+      alert(`Test ${code} will start soon!`);
+    }
+
+    // ✅ Step 5: Logout
     function logoutUser() {
       const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.username) {
