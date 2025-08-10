@@ -146,51 +146,7 @@
   </div>
 </div>
 
-<script>
-  function startRscitTest(testCode, message, mode) {
-    document.getElementById('testArea').style.display = 'block';
-    window.testCode = testCode;
-    console.log(message);
 
-    if(mode === 'exam'){
-      prepareExamMode();
-      startTest();
-    } else if(mode === 'practice'){
-      preparePracticeMode();
-      PracticeTest.startTest();
-    } else if (mode === 'LearnD') {
-      prepareLearnDigitalMode();
-      LearnDigital.startTest();
-    }
-  }
-
-  function prepareExamMode() {
-    document.querySelector('.exam-btns').style.display = 'flex';
-    document.querySelector('.practice-btns').style.display = 'none';
-    document.querySelector('.learndigital-btns').style.display = 'none';
-  }
-
-  function preparePracticeMode() {
-    document.querySelector('.exam-btns').style.display = 'none';
-    document.querySelector('.practice-btns').style.display = 'flex';
-    document.querySelector('.learndigital-btns').style.display = 'none';
-  }
-
-  function prepareLearnDigitalMode() {
-    document.querySelector('.exam-btns').style.display = 'none';
-    document.querySelector('.practice-btns').style.display = 'none';
-    document.querySelector('.learndigital-btns').style.display = 'flex';
-  }
-
-  function toggleConfirmBox(id) {
-    document.getElementById(id).style.display = 'block';
-  }
-  function hideConfirmBox(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-  function goToHomeScreen() {
-    document.getElementById('testArea').style.display = 'none';
-  }
-</script>
 </body>
 </html>
+
