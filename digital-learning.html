@@ -84,34 +84,36 @@
 
   // ✅ Username Display
   const userData = JSON.parse(localStorage.getItem("userData"));
-  if (userData?.fullname) {
-    document.getElementById("username").textContent = `Welcome, ${userData.fullname}`;
+  const username = userData?.fullname || "";
+  if (username) {
+    document.getElementById("username").textContent = `Welcome, ${username}`;
   }
 
   // ✅ Topic List
   const topics = [
-    "1. Introduction to Computer 🔹T21",
-    "2. Computer System 🔹T22",
-    "3. Exploring Your Computer 🔹T23",
-    "4. Introduction of Internet 🔹T24",
-    "5. Financial Literacy & Digital Payment Applications 🔹T25",
-    "6. Internet Applications 🔹T26",
-    "7. Working with Mobile Devices/Smartphone 🔹T27",
-    "8. Microsoft Word 🔹T28",
-    "9. Microsoft Excel 🔹T29",
-    "10. MS PowerPoint 🔹T30",
-    "11. Cyber Security & Awareness 🔹T31",
-    "12. Other Office Tools 🔹T32",
-    "13. Useful Application of IT 🔹T33",
-    "14. Exploring Common Citizen Centric Services 🔹T34",
-    "15. Major eGovernance Services and Schemes for Citizens of Raj. 🔹T35"
+    { title: "1. Introduction to Computer", code: "T21" },
+    { title: "2. Computer System", code: "T22" },
+    { title: "3. Exploring Your Computer", code: "T23" },
+    { title: "4. Introduction of Internet", code: "T24" },
+    { title: "5. Financial Literacy & Digital Payment Applications", code: "T25" },
+    { title: "6. Internet Applications", code: "T26" },
+    { title: "7. Working with Mobile Devices/Smartphone", code: "T27" },
+    { title: "8. Microsoft Word", code: "T28" },
+    { title: "9. Microsoft Excel", code: "T29" },
+    { title: "10. MS PowerPoint", code: "T30" },
+    { title: "11. Cyber Security & Awareness", code: "T31" },
+    { title: "12. Other Office Tools", code: "T32" },
+    { title: "13. Useful Application of IT", code: "T33" },
+    { title: "14. Exploring Common Citizen Centric Services", code: "T34" },
+    { title: "15. Major eGovernance Services and Schemes for Citizens of Raj.", code: "T35" }
   ];
 
   const topicList = document.getElementById("topicList");
   topics.forEach(topic => {
     const btn = document.createElement("button");
     btn.className = "module-btn";
-    btn.textContent = topic;
+    btn.textContent = `${topic.title} 🔹${topic.code}`;
+    btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", username);
     topicList.appendChild(btn);
   });
 
@@ -119,7 +121,10 @@
   function goBack() {
     location.href = "rs-cit-module.html";
   }
-</script>
 
-</body>
-</html>
+  // ✅ Example start function (replace with your real one)
+  function startRscitTest(testCode, loadingMessage, mode, username) {
+    alert(`Code: ${testCode}\nMessage: ${loadingMessage}\nMode: ${mode}\nUser: ${username}`);
+    // real logic here...
+  }
+</script>
