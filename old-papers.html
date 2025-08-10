@@ -36,7 +36,30 @@
     h2 {
       text-align: center;
       color: #333;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
+    }
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .mode-toggle button {
+      padding: 8px 15px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .active-mode {
+      background-color: #1976d2;
+      color: white;
+    }
+    .inactive-mode {
+      background-color: #e0e0e0;
+      color: #333;
     }
     .btn-grid {
       display: grid;
@@ -52,6 +75,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
+      text-align: left;
     }
     .paper-btn:hover {
       background: #1976d2;
@@ -71,6 +95,13 @@
 
 <main>
   <h2>Previous RS-CIT Exam Papers</h2>
+
+  <!-- Mode Toggle Buttons -->
+  <div class="mode-toggle">
+    <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
+    <button id="examModeBtn" class="inactive-mode" onclick="switchMode('exam')">🧪 Exam Mode</button>
+  </div>
+
   <div class="btn-grid" id="papersList"></div>
 </main>
 
@@ -83,8 +114,17 @@
 
   // ✅ Username Display
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const username = userData?.username || "";
   if (userData?.fullname) {
     document.getElementById("username").textContent = `Welcome, ${userData.fullname}`;
+  }
+
+  // ✅ Mode Handling
+  let currentMode = "practice";
+  function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById("practiceModeBtn").className = mode === "practice" ? "active-mode" : "inactive-mode";
+    document.getElementById("examModeBtn").className = mode === "exam" ? "active-mode" : "inactive-mode";
   }
 
   // ✅ Paper List
@@ -112,11 +152,19 @@
 
   const papersList = document.getElementById("papersList");
   papers.forEach(paper => {
+    const code = paper.match(/T\d+/)[0];
     const btn = document.createElement("button");
     btn.className = "paper-btn";
     btn.textContent = paper;
+    btn.onclick = () => startRscitTest(code, `Loading ${code}...`, currentMode, username);
     papersList.appendChild(btn);
   });
+
+  // ✅ Start Test Function
+  function startRscitTest(testCode, loadingMessage, mode, username) {
+    alert(`User: ${username}\nMode: ${mode}\nTest: ${testCode}\n${loadingMessage}`);
+    // Place actual redirection logic here if needed
+  }
 
   // ✅ Back Button
   function goBack() {
