@@ -176,10 +176,11 @@
       }
     }
 
-    // ✅ Step 4: Start Test
-    function startTest(code) {
-      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode);
-    }
+   // ✅ Step 4: Start Test
+function startTest(code) {
+  const username = userData?.username || "guest";
+  startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
+}
 
     // ✅ Step 5: Back Button
     function goBack() {
@@ -197,11 +198,12 @@
       location.replace("login.html");
     }
 
-    // ✅ Step 7: Placeholder startRscitTest
-    function startRscitTest(code, message, mode) {
-      alert(`Starting ${mode} for ${code}...\n${message}`);
-    }
+  // ✅ Step 7: Placeholder startRscitTest
+function startRscitTest(code, message, mode, username) {
+  alert(`Starting ${mode} for ${code} by ${username}...\n${message}`);
+}
   </script>
 
 </body>
 </html>
+
