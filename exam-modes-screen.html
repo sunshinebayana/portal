@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Modes Screen</title>
+<style>
+  body { background: #f3f4f6; margin: 0; font-family: 'Segoe UI', sans-serif; }
+  .test-container {
+    max-width: 720px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  }
+
+  /* Top Bar */
+  .top-bar { display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 15px; }
+  .timer { font-size: 16px; font-weight: bold; color: #dc2626; }
+  .close-btn {
+    position: absolute; right: 0; top: 0; background: none; border: none;
+    font-size: 20px; color: #ef4444; cursor: pointer;
+  }
+
+  /* Question */
+  .question-number { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #374151; }
+  .question-text { font-size: 16px; font-weight: 500; margin-bottom: 15px; color: #1e293b; }
+
+  /* Options */
+  .options label {
+    display: block; background: #f9fafb; border: 1px solid #d1d5db;
+    padding: 14px; border-radius: 8px; margin-bottom: 10px;
+    cursor: pointer; font-size: 16px; transition: all 0.2s ease;
+  }
+  .options label:hover { background: #eef2ff; }
+  .options input { margin-right: 10px; transform: scale(1.2); }
+
+  /* Buttons */
+  .exam-btns, .practice-btns, .learndigital-btns {
+    display: none; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;
+  }
+  .btn {
+    padding: 12px 20px; border: none; border-radius: 8px;
+    background: linear-gradient(to right, #3b82f6, #2563eb);
+    color: #fff; font-size: 15px; cursor: pointer; font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  .btn:hover { background: linear-gradient(to right, #2563eb, #1d4ed8); }
+  .submit { background: linear-gradient(to right, #10b981, #059669); }
+  .submit:hover { background: linear-gradient(to right, #059669, #047857); }
+
+  /* Confirm Box */
+  .confirm-wrapper { position: relative; }
+  .confirm-box {
+    display: none; background: #fff; border: 2px solid #fde68a;
+    border-radius: 8px; padding: 10px; position: absolute;
+    top: 45px; left: 50%; transform: translateX(-50%);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; text-align: center;
+  }
+  .confirm-box p { font-size: 14px; margin-bottom: 8px; font-weight: 600; color: #92400e; }
+  .confirm-box button { padding: 6px 10px; margin: 3px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+  .confirm-box .yes { background: #10b981; color: #fff; }
+  .confirm-box .no { background: #ef4444; color: #fff; }
+
+  /* Indicators */
+  .qIndicators button {
+    background: #f3f4f6; border: none; margin: 4px; padding: 6px 9px;
+    border-radius: 50%; font-size: 12px; font-weight: bold;
+    cursor: pointer; transition: background 0.2s ease;
+  }
+  .qIndicators button.active { background: #3b82f6; color: white; }
+  .qIndicators button.answered { background: #10b981; color: white; }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .test-container { padding: 14px; }
+    .btn { width: 100%; font-size: 14px; }
+    .options label { font-size: 18px; padding: 18px; }
+    .options input { transform: scale(1.5); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TEST AREA -->
+<div id="testArea" style="display:none;">
+  <div class="test-container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <button class="close-btn" onclick="goToHomeScreen()">✖</button>
+      <div class="timer">⏰ Time Left: <span id="timer">00:00</span></div>
+    </div>
+
+    <!-- Question -->
+    <div id="questionBox">
+      <div id="questionNumber" class="question-number">Question 1</div>
+      <div id="questionText" class="question-text">Loading question...</div>
+    </div>
+
+    <!-- Options -->
+    <form id="optionsForm" class="options">
+      <label><input type="radio" name="options" value="A"><span id="optionA">Option A</span></label>
+      <label><input type="radio" name="options" value="B"><span id="optionB">Option B</span></label>
+      <label><input type="radio" name="options" value="C"><span id="optionC">Option C</span></label>
+      <label><input type="radio" name="options" value="D"><span id="optionD">Option D</span></label>
+    </form>
+
+    <!-- Exam Mode Buttons -->
+    <div class="exam-btns">
+      <button class="btn" onclick="prevQuestion()">⏪ Previous</button>
+      <button class="btn" onclick="saveAndNext()">💾 Save & Next</button>
+      <div class="confirm-wrapper">
+        <button class="btn submit" onclick="toggleConfirmBox('confirmBox')">✅ Submit Test</button>
+        <div id="confirmBox" class="confirm-box">
+          <p>🟡 Are you sure you want to submit?</p>
+          <button class="yes" onclick="submitTest(); hideConfirmBox('confirmBox')">✅ Yes</button>
+          <button class="no" onclick="hideConfirmBox('confirmBox')">❌ No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Mode Buttons -->
+    <div class="practice-btns">
+      <button class="btn" onclick="PracticeTest.prevQuestion()">⏪ Prev</button>
+      <button class="btn" onclick="PracticeTest.saveAndNext()">💾 Save & Next</button>
+      <div class="confirm-wrapper">
+        <button class="btn submit" onclick="toggleConfirmBox('practiceConfirmBox')">✅ Submit Test</button>
+        <div id="practiceConfirmBox" class="confirm-box">
+          <p>🟡 Are you sure you want to submit?</p>
+          <button class="yes" onclick="PracticeTest.submitTest(); hideConfirmBox('practiceConfirmBox')">✅ Yes</button>
+          <button class="no" onclick="hideConfirmBox('practiceConfirmBox')">❌ No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Mode Buttons -->
+    <div class="learndigital-btns">
+      <button onclick="LearnDigital.prevQuestion()">⬅ Previous</button>
+      <button onclick="LearnDigital.saveAndNext()">Next ➡</button>
+      <button onclick="LearnDigital.showAnswer()">👁 Show Answer</button>
+      <button onclick="LearnDigital.closeViewer()">❌ Close</button>
+    </div>
+
+    <!-- Question Indicators -->
+    <div id="qIndicators" class="qIndicators"></div>
+  </div>
+</div>
+
+<script>
+  function startRscitTest(testCode, message, mode) {
+    document.getElementById('testArea').style.display = 'block';
+    window.testCode = testCode;
+    console.log(message);
+
+    if(mode === 'exam'){
+      prepareExamMode();
+      startTest();
+    } else if(mode === 'practice'){
+      preparePracticeMode();
+      PracticeTest.startTest();
+    } else if (mode === 'LearnD') {
+      prepareLearnDigitalMode();
+      LearnDigital.startTest();
+    }
+  }
+
+  function prepareExamMode() {
+    document.querySelector('.exam-btns').style.display = 'flex';
+    document.querySelector('.practice-btns').style.display = 'none';
+    document.querySelector('.learndigital-btns').style.display = 'none';
+  }
+
+  function preparePracticeMode() {
+    document.querySelector('.exam-btns').style.display = 'none';
+    document.querySelector('.practice-btns').style.display = 'flex';
+    document.querySelector('.learndigital-btns').style.display = 'none';
+  }
+
+  function prepareLearnDigitalMode() {
+    document.querySelector('.exam-btns').style.display = 'none';
+    document.querySelector('.practice-btns').style.display = 'none';
+    document.querySelector('.learndigital-btns').style.display = 'flex';
+  }
+
+  function toggleConfirmBox(id) {
+    document.getElementById(id).style.display = 'block';
+  }
+  function hideConfirmBox(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function goToHomeScreen() {
+    document.getElementById('testArea').style.display = 'none';
+  }
+</script>
+</body>
+</html>
