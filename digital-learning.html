@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Learning Zone</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #f0f4ff, #ffffff);
+    }
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .back-btn {
+      background: #ef5350;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 15px;
+    }
+    .module-btn {
+      background: white;
+      border: 2px solid #1976d2;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+    .module-btn:hover {
+      background: #1976d2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>📖 Digital Learning Zone</div>
+  <div>
+    <span id="username"></span>
+    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  </div>
+</header>
+
+<main>
+  <h2>Learning Topics</h2>
+  <div class="btn-grid" id="topicList"></div>
+</main>
+
+<script>
+  // ✅ Login Check
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  if (isLoggedIn !== "true") {
+    location.replace("login.html");
+  }
+
+  // ✅ Username Display
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  if (userData?.fullname) {
+    document.getElementById("username").textContent = `Welcome, ${userData.fullname}`;
+  }
+
+  // ✅ Topic List
+  const topics = [
+    "1. Introduction to Computer 🔹T21",
+    "2. Computer System 🔹T22",
+    "3. Exploring Your Computer 🔹T23",
+    "4. Introduction of Internet 🔹T24",
+    "5. Financial Literacy & Digital Payment Applications 🔹T25",
+    "6. Internet Applications 🔹T26",
+    "7. Working with Mobile Devices/Smartphone 🔹T27",
+    "8. Microsoft Word 🔹T28",
+    "9. Microsoft Excel 🔹T29",
+    "10. MS PowerPoint 🔹T30",
+    "11. Cyber Security & Awareness 🔹T31",
+    "12. Other Office Tools 🔹T32",
+    "13. Useful Application of IT 🔹T33",
+    "14. Exploring Common Citizen Centric Services 🔹T34",
+    "15. Major eGovernance Services and Schemes for Citizens of Raj. 🔹T35"
+  ];
+
+  const topicList = document.getElementById("topicList");
+  topics.forEach(topic => {
+    const btn = document.createElement("button");
+    btn.className = "module-btn";
+    btn.textContent = topic;
+    topicList.appendChild(btn);
+  });
+
+  // ✅ Back Button
+  function goBack() {
+    location.href = "rs-cit-module.html";
+  }
+</script>
+
+</body>
+</html>
