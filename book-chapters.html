@@ -59,8 +59,25 @@
     h2 {
       text-align: center;
       color: #333;
-      margin-bottom: 35px;
+      margin-bottom: 20px;
       font-size: 24px;
+    }
+    .mode-toggle {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .mode-toggle button {
+      padding: 8px 15px;
+      border: none;
+      margin: 0 5px;
+      border-radius: 6px;
+      background: #ccc;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .mode-toggle .active-mode {
+      background: #4caf50;
+      color: #fff;
     }
     .btn-grid {
       display: grid;
@@ -116,6 +133,14 @@
 
   <main>
     <h2>Select a Chapter Test</h2>
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
+      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
+    </div>
+
+    <!-- Chapter Buttons -->
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">1. Introduction to Computer <span>🔹T11</span></button>
       <button class="feature-btn" onclick="startTest('T12')">2. Internet and Services <span>🔹T12</span></button>
@@ -138,17 +163,30 @@
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Step 3: Back Button
+    // ✅ Step 3: Mode Toggle Logic
+    let selectedMode = 'practice';
+    function switchMode(mode) {
+      selectedMode = mode;
+      document.getElementById("practiceModeBtn").classList.remove("active-mode");
+      document.getElementById("examModeBtn").classList.remove("active-mode");
+      if (mode === 'practice') {
+        document.getElementById("practiceModeBtn").classList.add("active-mode");
+      } else {
+        document.getElementById("examModeBtn").classList.add("active-mode");
+      }
+    }
+
+    // ✅ Step 4: Start Test
+    function startTest(code) {
+      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode);
+    }
+
+    // ✅ Step 5: Back Button
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
-    // ✅ Step 4: Start Test Placeholder
-    function startTest(code) {
-      alert(`Test ${code} will start soon!`);
-    }
-
-    // ✅ Step 5: Logout
+    // ✅ Step 6: Logout
     function logoutUser() {
       const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.username) {
@@ -157,6 +195,11 @@
       }
       localStorage.clear();
       location.replace("login.html");
+    }
+
+    // ✅ Step 7: Placeholder startRscitTest
+    function startRscitTest(code, message, mode) {
+      alert(`Starting ${mode} for ${code}...\n${message}`);
     }
   </script>
 
