@@ -150,56 +150,6 @@
     </div>
   </main>
 
-  <script>
-    // Step 1: Prevent direct access if not logged in
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
-
-    // Step 2: Get user data and update welcome message
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData && userData.fullname) {
-      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
-    }
-
-    // Step 3: Mode toggle logic
-    let selectedMode = 'practice';
-    function switchMode(mode) {
-      selectedMode = mode;
-      document.getElementById("practiceModeBtn").classList.remove("active-mode");
-      document.getElementById("examModeBtn").classList.remove("active-mode");
-      if (mode === 'practice') {
-        document.getElementById("practiceModeBtn").classList.add("active-mode");
-      } else {
-        document.getElementById("examModeBtn").classList.add("active-mode");
-      }
-    }
-
-    // Step 4: Start test button handler
-    function startTest(code) {
-      const username = userData?.username || "guest";
-      // Call the globally defined function from script.js
-      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
-    }
-
-    // Step 5: Back button
-    function goBack() {
-      location.href = "rs-cit-module.html";
-    }
-
-    // Step 6: Logout
-    function logoutUser() {
-      if (userData && userData.username) {
-        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
-        fetch(logoutUrl).catch(err => console.error("Logout error:", err));
-      }
-      localStorage.clear();
-      location.replace("login.html");
-    }
-  </script>
-
-  <!-- Load your external script.js -->
   <script src="script.js"></script>
 
 </body>
