@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RS-CIT Test Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    main { max-width: 600px; margin: auto; }
+    button { padding: 10px 15px; margin: 5px; }
+    #testArea, #resultArea { display: none; border: 1px solid #ccc; padding: 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<main>
+  <h2>Select a Test</h2>
+  <button onclick="startRscitTest('T11', 'Loading T11...', 'exam', 'demoUser')">Start Exam Mode</button>
+  <button onclick="startRscitTest('T12', 'Loading T12...', 'practice', 'demoUser')">Start Practice Mode</button>
+</main>
+
+<section id="testArea">
+  <h3>Test Area</h3>
+  <p id="testInfo"></p>
+  <button onclick="goHome()">Back to Home</button>
+</section>
+
+<section id="resultArea">
+  <h3>Result Area</h3>
+  <p>Test submitted successfully!</p>
+  <button onclick="goHome()">Back to Home</button>
+</section>
+
+<script>
+  // Mock google.script.run for local testing
+  window.google = {
+    script: {
+      run: {
+        withSuccessHandler: function(callback) {
+          return {
+            startTest: function(username, testCode) {
+              console.log('Mock startTest called:', username, testCode);
+              // Simulate backend response after 1s delay
+              setTimeout(() => {
+                callback({
+                  status: 'ok',
+                  testDuration: 1, // 1 min for demo
+                  maxMarks: 20,
+                  questions: [
+                    { question: "What is 2+2?", optionA: "3", optionB: "4", optionC: "5", optionD: "6", correctAnswer: "B" },
+                    { question: "What is capital of India?", optionA: "Delhi", optionB: "Mumbai", optionC: "Kolkata", optionD: "Chennai", correctAnswer: "A" }
+                  ]
+                });
+              }, 1000);
+            },
+            submitTestResult: function(resultData) {
+              console.log('Mock submitTestResult called:', resultData);
+              setTimeout(() => {
+                showResult({
+                  marks: resultData.totalMarks,
+                  maxMarks: 20,
+                  correctCount: resultData.correctCount,
+                  attemptedCount: Object.keys(resultData.answers).length,
+                  timeTaken: resultData.timeTaken
+                });
+              }, 1000);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  // Your existing variables and functions simplified for demo
+
+  let currentTestCode = '';
+  let currentMode = '';
+  let currentUsername = '';
+  let currentQuestions = [];
+  let currentQuestionIndex = 0;
+  let timerInterval = null;
+  let timeLeft = 0;
+  let userAnswers = {};
+  let timeLeftInitial = 0;
+
+  function startRscitTest(testCode, loadingMessage, selectedMode, username) {
+    console.log('startRscitTest called:', testCode, selectedMode, username);
+    currentTestCode = testCode;
+    currentMode = selectedMode;
+    currentUsername = username;
+
+    document.querySelector('main').style.display = 'none';
+    showMessage(loadingMessage, 'blue');
+
+    if (selectedMode === 'exam' || selectedMode === 'practice') {
+      prepareTestMode();
+      startTest();
+    } else {
+      alert('LearnD mode not implemented in demo');
+    }
+  }
+
+  function showMessage(msg, color) {
+    alert(msg);
+  }
+
+  function prepareTestMode() {
+    document.getElementById('testArea').style.display = 'block';
+    document.getElementById('resultArea').style.display = 'none';
+  }
+
+  function startTest() {
+    google.script.run.withSuccessHandler(handleQuestions).startTest(currentUsername, currentTestCode);
+  }
+
+  function handleQuestions(response) {
+    if (response.status === 'payment_pending') {
+      alert("Payment pending. Please complete payment.");
+    } else if (response.status === 'ok') {
+      currentQuestions = response.questions;
+      currentQuestionIndex = 0;
+      timeLeft = response.testDuration * 60;
+      timeLeftInitial = timeLeft;
+      loadQuestion(currentQuestionIndex);
+      startTimer(timeLeft);
+    }
+  }
+
+  function loadQuestion(index) {
+    if (index < 0 || index >= currentQuestions.length) return;
+    const q = currentQuestions[index];
+    const container = document.getElementById('testInfo');
+    container.innerHTML = `
+      <strong>Question ${index + 1}:</strong> ${q.question}<br/>
+      <label><input type="radio" name="option" value="A"> A. ${q.optionA}</label><br/>
+      <label><input type="radio" name="option" value="B"> B. ${q.optionB}</label><br/>
+      <label><input type="radio" name="option" value="C"> C. ${q.optionC}</label><br/>
+      <label><input type="radio" name="option" value="D"> D. ${q.optionD}</label><br/>
+      <button onclick="saveAnswer()">Save Answer</button>
+      <button onclick="nextQuestion()">Next</button>
+      <p>Time Left: <span id="timerDisplay"></span></p>
+    `;
+  }
+
+  function saveAnswer() {
+    const options = document.getElementsByName('option');
+    let selected = null;
+    for (const opt of options) {
+      if (opt.checked) {
+        selected = opt.value;
+        break;
+      }
+    }
+    if (selected) {
+      userAnswers[currentQuestionIndex] = selected;
+      alert('Answer saved for question ' + (currentQuestionIndex + 1));
+    } else {
+      alert('Please select an option before saving.');
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < currentQuestions.length - 1) {
+      currentQuestionIndex++;
+      loadQuestion(currentQuestionIndex);
+    } else {
+      submitTest();
+    }
+  }
+
+  function submitTest() {
+    // Check all answered
+    for (let i = 0; i < currentQuestions.length; i++) {
+      if (!userAnswers.hasOwnProperty(i)) {
+        alert(`Please answer question ${i + 1} before submitting.`);
+        currentQuestionIndex = i;
+        loadQuestion(i);
+        return;
+      }
+    }
+
+    let correctCount = 0;
+    for (let i = 0; i < currentQuestions.length; i++) {
+      if (userAnswers[i] === currentQuestions[i].correctAnswer) {
+        correctCount++;
+      }
+    }
+
+    const totalMarks = correctCount * 2;
+    const timeTaken = timeLeftInitial - timeLeft;
+
+    stopTimer();
+
+    google.script.run.withSuccessHandler(showResult).submitTestResult({
+      username: currentUsername,
+      testCode: currentTestCode,
+      answers: userAnswers,
+      correctCount: correctCount,
+      totalMarks: totalMarks,
+      totalQuestions: currentQuestions.length,
+      timeTaken: timeTaken
+    });
+  }
+
+  function showResult(result) {
+    document.getElementById('testArea').style.display = 'none';
+    document.getElementById('resultArea').style.display = 'block';
+  }
+
+  function goHome() {
+    // Reset all variables and UI
+    currentTestCode = '';
+    currentMode = '';
+    currentUsername = '';
+    currentQuestions = [];
+    currentQuestionIndex = 0;
+    userAnswers = {};
+    timeLeft = 0;
+    timeLeftInitial = 0;
+
+    document.getElementById('testArea').style.display = 'none';
+    document.getElementById('resultArea').style.display = 'none';
+    document.querySelector('main').style.display = 'block';
+  }
+
+  function startTimer(seconds) {
+    timeLeft = seconds;
+    timeLeftInitial = seconds;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerDisplay();
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("Time's up! Auto-submitting test...");
+        submitTest();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const display = document.getElementById('timerDisplay');
+    if (!display) return;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    display.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+  }
+
+</script>
+
+</body>
+</html>
