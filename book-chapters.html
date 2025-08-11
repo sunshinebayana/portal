@@ -151,19 +151,19 @@
   </main>
 
   <script>
-    // ✅ Step 1: Prevent Direct Access
+    // Prevent direct access if not logged in
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
       location.replace("login.html");
     }
 
-    // ✅ Step 2: Get User Data
+    // Get user data
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Step 3: Mode Toggle Logic
+    // Mode toggle logic
     let selectedMode = 'practice';
     function switchMode(mode) {
       selectedMode = mode;
@@ -176,20 +176,19 @@
       }
     }
 
-    // ✅ Step 4: Start Test
+    // Start test function calls function in script.js
     function startTest(code) {
       const username = userData?.username || "guest";
       startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
     }
 
-    // ✅ Step 5: Back Button
+    // Back button function
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
-    // ✅ Step 6: Logout
+    // Logout function
     function logoutUser() {
-      const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.username) {
         const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
         fetch(logoutUrl).catch(err => console.error("Logout error:", err));
@@ -199,14 +198,7 @@
     }
   </script>
 
-  <!-- ✅ External shared JS functions -->
   <script src="script.js"></script>
-
 
 </body>
 </html>
-
-
-
-
-
