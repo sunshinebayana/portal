@@ -1,11 +1,160 @@
-<div id="testArea" style="display:none; padding:20px; max-width:700px; margin:20px auto; background:#f5f5f5; border-radius:8px;">
-  <div id="questionContainer"></div>
-  <div id="optionsContainer"></div>
-  <div id="navigationButtons">
-    <button onclick="previousQuestion()">Previous</button>
-    <button onclick="saveAnswer()">Save</button>
-    <button onclick="nextQuestion()">Next</button>
-    <button onclick="submitTest()">Submit</button>
-  </div>
-  <div id="timerDisplay"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RS-CIT Online Exam System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background-color: #f5f5f5;
+    }
+    main {
+      padding: 20px;
+    }
+    #messageBox {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      color: white;
+      display: none;
+      z-index: 1000;
+    }
+    #testArea, #learnDigitalArea, #resultArea {
+      display: none;
+      padding: 20px;
+      background: white;
+      margin: 20px auto;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    }
+    h2, h3 {
+      margin-top: 0;
+    }
+    #questionContainer p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    #questionContainer label {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+    #questionIndicators {
+      margin: 15px 0;
+      text-align: center;
+    }
+    #questionIndicators .indicator {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      margin: 0 4px;
+      border-radius: 50%;
+      background-color: #ccc;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+    #questionIndicators .indicator.current {
+      border: 2px solid #007bff;
+      background-color: #e7f1ff;
+    }
+    #questionIndicators .indicator.answered {
+      background-color: #28a745;
+      color: white;
+    }
+    #timerBox {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: right;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+    .button-group {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 18px;
+      margin: 0 8px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* Buttons container for different modes */
+    #examButtons, #practiceButtons, #learnDigitalButtons {
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <h2>RS-CIT Online Exam System</h2>
+    <p>Select your test and mode to start:</p>
+
+    <!-- Example buttons to start tests, you can generate dynamically in your real system -->
+    <button onclick="startRscitTest('T11', 'Loading Introduction to Computer...', 'exam', 'user1')">Start Exam - Introduction to Computer</button>
+    <button onclick="startRscitTest('T12', 'Loading Internet and Services...', 'practice', 'user1')">Start Practice - Internet and Services</button>
+    <button onclick="startRscitTest('T13', 'Loading MS Office Learn Digital...', 'LearnD', 'user1')">Start Learn Digital - MS Office</button>
+  </main>
+
+  <!-- Test area for exam and practice -->
+  <section id="testArea">
+    <div id="timerBox">Time Left: 00:00</div>
+    <div id="questionContainer"></div>
+    <div id="questionIndicators"></div>
+
+    <!-- Buttons for exam mode -->
+    <div id="examButtons" class="button-group">
+      <button onclick="goToPrevious()">Previous</button>
+      <button onclick="saveAnswer()">Save</button>
+      <button onclick="goToNext()">Next</button>
+      <button onclick="submitTest()">Submit</button>
+    </div>
+
+    <!-- Buttons for practice mode -->
+    <div id="practiceButtons" class="button-group" style="display:none;">
+      <button onclick="goToPrevious()">Previous</button>
+      <button onclick="saveAnswer()">Save</button>
+      <button onclick="goToNext()">Next</button>
+      <button onclick="submitTest()">Submit</button>
+    </div>
+  </section>
+
+  <!-- Learn Digital area -->
+  <section id="learnDigitalArea">
+    <h3>Welcome to Learn Digital Mode</h3>
+    <p>Learn Digital content will appear here.</p>
+    <div id="learnDigitalButtons" class="button-group" style="display:none;">
+      <button onclick="goHome()">Back to Home</button>
+      <!-- Add other Learn Digital specific buttons here -->
+    </div>
+  </section>
+
+  <!-- Result display area -->
+  <section id="resultArea">
+    <div id="resultContainer"></div>
+  </section>
+
+  <!-- Message box will be created dynamically -->
+
+  <!-- Your script.js will be linked or inline here -->
+  <script src="script.js"></script>
+</body>
+</html>
