@@ -1,4 +1,3 @@
-<script>
 let currentTestCode = '';
 let currentMode = '';
 let currentUsername = '';
@@ -89,53 +88,66 @@ function showMessage(msg, color) {
 
 // Mode preparation functions
 function prepareExamMode() {
-  document.getElementById('testArea').style.display = 'block';
-  document.getElementById('learnDigitalArea').style.display = 'none';
+  document.getElementById('testArea')?.style.display = 'block';
+  document.getElementById('learnDigitalArea')?.style.display = 'none';
 
   // Show exam buttons container, hide others
-  document.getElementById('examButtons').style.display = 'block';
-  document.getElementById('practiceButtons').style.display = 'none';
-  document.getElementById('learnDigitalButtons').style.display = 'none';
+  document.getElementById('examButtons')?.style.display = 'block';
+  document.getElementById('practiceButtons')?.style.display = 'none';
+  document.getElementById('learnDigitalButtons')?.style.display = 'none';
 }
 
 function preparePracticeMode() {
-  document.getElementById('testArea').style.display = 'block';
-  document.getElementById('learnDigitalArea').style.display = 'none';
+  document.getElementById('testArea')?.style.display = 'block';
+  document.getElementById('learnDigitalArea')?.style.display = 'none';
 
   // Show practice buttons container, hide others
-  document.getElementById('practiceButtons').style.display = 'block';
-  document.getElementById('examButtons').style.display = 'none';
-  document.getElementById('learnDigitalButtons').style.display = 'none';
+  document.getElementById('practiceButtons')?.style.display = 'block';
+  document.getElementById('examButtons')?.style.display = 'none';
+  document.getElementById('learnDigitalButtons')?.style.display = 'none';
 }
 
 function prepareLearnDigitalMode() {
-  document.getElementById('testArea').style.display = 'none';
-  document.getElementById('learnDigitalArea').style.display = 'block';
+  document.getElementById('testArea')?.style.display = 'none';
+  document.getElementById('learnDigitalArea')?.style.display = 'block';
 
   // Show learn digital buttons container, hide others
-  document.getElementById('learnDigitalButtons').style.display = 'block';
-  document.getElementById('examButtons').style.display = 'none';
-  document.getElementById('practiceButtons').style.display = 'none';
+  document.getElementById('learnDigitalButtons')?.style.display = 'block';
+  document.getElementById('examButtons')?.style.display = 'none';
+  document.getElementById('practiceButtons')?.style.display = 'none';
 }
 
-// Backend call to start test
+// Backend call to start test (GAS environment)
 function startTest() {
   google.script.run.withSuccessHandler(handleQuestions).startTest(currentUsername, currentTestCode);
 }
 
 // Handle questions response from backend
 function handleQuestions(response) {
+  if (!response) {
+    showMessage("No response from server.", "red");
+    document.querySelector('main').style.display = 'block';
+    return;
+  }
+
   if (response.status === 'payment_pending') {
     showMessage("Payment pending. Please complete payment to start test.", 'red');
   } else if (response.status === 'ok') {
-    currentQuestions = response.questions;
+    currentQuestions = response.questions || [];
     currentQuestionIndex = 0;
-    timeLeft = response.testDuration * 60; // assuming testDuration in minutes, convert to seconds
+    timeLeft = (response.testDuration || 0) * 60; // assuming testDuration in minutes, convert to seconds
+
+    if (currentQuestions.length === 0) {
+      showMessage("No questions found for this test.", "red");
+      document.querySelector('main').style.display = 'block';
+      return;
+    }
 
     loadQuestion(currentQuestionIndex);
     startTimer(timeLeft);
   } else {
     showMessage("Error starting test. Please try again.", 'red');
+    document.querySelector('main').style.display = 'block';
   }
 }
 
@@ -145,6 +157,11 @@ function loadQuestion(index) {
 
   const questionObj = currentQuestions[index];
   const container = document.getElementById('questionContainer');
+  if (!container) {
+    console.warn("No questionContainer found in DOM.");
+    return;
+  }
+
   container.innerHTML = `
     <div>
       <h3>Question ${index + 1} of ${currentQuestions.length}</h3>
@@ -188,7 +205,7 @@ function updateQuestionIndicators() {
   });
 }
 
-// Check if question is answered (using localStorage or in-memory object)
+// Check if question is answered
 let userAnswers = {}; // key: question index, value: 'A'/'B'/'C'/'D'
 
 function isQuestionAnswered(index) {
@@ -200,7 +217,7 @@ function saveAnswer() {
   const form = document.getElementById('optionsForm');
   if (!form) return;
 
-  const selectedOption = form.option.value;
+  const selectedOption = form.option?.value;
   if (selectedOption) {
     userAnswers[currentQuestionIndex] = selectedOption;
   }
@@ -259,7 +276,11 @@ function submitTest() {
     timeTaken: (timeLeftInitial - timeLeft) // seconds
   };
 
-  google.script.run.withSuccessHandler(showResult).submitTestResult(resultData);
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run.withSuccessHandler(showResult).submitTestResult(resultData);
+  } else {
+    showMessage("Submit test functionality only works in GAS environment.", "red");
+  }
   stopTimer();
 }
 
@@ -307,6 +328,8 @@ function showResult(resultSummary) {
 
   // Display result summary details
   const resultContainer = document.getElementById('resultContainer');
+  if (!resultContainer) return;
+
   resultContainer.innerHTML = `
     <h3>Test Result</h3>
     <p>Marks: ${resultSummary.marks} / ${resultSummary.maxMarks}</p>
@@ -335,5 +358,3 @@ function goHome() {
 function viewRanking() {
   window.open(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?mode=ranking&testCode=${currentTestCode}&username=${currentUsername}`, '_blank');
 }
-</script>
-
