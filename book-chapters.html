@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>📘 RS-CIT Book Chapter Tests</title>
   <style>
     body {
@@ -151,19 +151,19 @@
   </main>
 
   <script>
-    // Prevent direct access if not logged in
+    // Step 1: Prevent direct access if not logged in
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
       location.replace("login.html");
     }
 
-    // Get user data
+    // Step 2: Get user data and update welcome message
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // Mode toggle logic
+    // Step 3: Mode toggle logic
     let selectedMode = 'practice';
     function switchMode(mode) {
       selectedMode = mode;
@@ -176,18 +176,19 @@
       }
     }
 
-    // Start test function calls function in script.js
+    // Step 4: Start test button handler
     function startTest(code) {
       const username = userData?.username || "guest";
+      // Call the globally defined function from script.js
       startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
     }
 
-    // Back button function
+    // Step 5: Back button
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
-    // Logout function
+    // Step 6: Logout
     function logoutUser() {
       if (userData && userData.username) {
         const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
@@ -198,6 +199,7 @@
     }
   </script>
 
+  <!-- Load your external script.js -->
   <script src="script.js"></script>
 
 </body>
