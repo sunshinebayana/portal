@@ -18,18 +18,51 @@ function startRscitTest(testCode, loadingMessage, selectedMode, username) {
   // Show loading message in blue
   showMessage(loadingMessage, 'blue');
 
-  // Call mode specific preparations & start
   if (selectedMode === 'exam') {
     prepareExamMode();
-    startTest();
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      // GAS environment: use google.script.run
+      startTest();
+    } else {
+      // Non-GAS environment: use REST API fetch
+      fetchStartTestAPI(currentUsername, currentTestCode);
+    }
+
   } else if (selectedMode === 'practice') {
     preparePracticeMode();
-    PracticeTest.startTest();
+
+    if (typeof PracticeTest !== 'undefined' && typeof PracticeTest.startTest === 'function') {
+      PracticeTest.startTest();
+    } else {
+      showMessage("Practice mode not implemented yet.", "orange");
+    }
+
   } else if (selectedMode === 'LearnD') {
     prepareLearnDigitalMode();
-    LearnDigital.startTest();
+
+    if (typeof LearnDigital !== 'undefined' && typeof LearnDigital.startTest === 'function') {
+      LearnDigital.startTest();
+    } else {
+      showMessage("LearnD mode not implemented yet.", "orange");
+    }
   }
 }
+
+// REST API call for starting test (when google.script.run not available)
+function fetchStartTestAPI(username, testCode) {
+  const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
+
+  fetch(`${GAS_WEB_APP_URL}?action=startTest&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(testCode)}`)
+    .then(response => response.json())
+    .then(handleQuestions)
+    .catch(() => {
+      showMessage("Error connecting to server. Please try again.", "red");
+      // Show main again so user can retry
+      document.querySelector('main').style.display = 'block';
+    });
+}
+
 
 function showMessage(msg, color) {
   let msgBox = document.getElementById('messageBox');
@@ -303,3 +336,4 @@ function viewRanking() {
   window.open(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?mode=ranking&testCode=${currentTestCode}&username=${currentUsername}`, '_blank');
 }
 </script>
+
