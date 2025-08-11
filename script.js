@@ -1,4 +1,3 @@
-// Expose all functions globally by attaching to window
 window.currentTestCode = '';
 window.currentMode = '';
 window.currentUsername = '';
@@ -13,23 +12,13 @@ window.startRscitTest = function(testCode, loadingMessage, selectedMode, usernam
   window.currentMode = selectedMode;
   window.currentUsername = username;
 
-  // Hide main content (book chapter selection area)
   document.querySelector('main').style.display = 'none';
 
-  // Show loading message in blue
   showMessage(loadingMessage, 'blue');
 
   if (selectedMode === 'exam') {
     prepareExamMode();
-
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-      // GAS environment: use google.script.run
-      startTest();
-    } else {
-      // Non-GAS environment: use REST API fetch
-      fetchStartTestAPI(window.currentUsername, window.currentTestCode);
-    }
-
+    window.startTest(); // this will auto detect google.script.run
   } else if (selectedMode === 'practice') {
     preparePracticeMode();
 
@@ -38,7 +27,6 @@ window.startRscitTest = function(testCode, loadingMessage, selectedMode, usernam
     } else {
       showMessage("Practice mode not implemented yet.", "orange");
     }
-
   } else if (selectedMode === 'LearnD') {
     prepareLearnDigitalMode();
 
@@ -86,7 +74,6 @@ window.showMessage = function(msg, color) {
 };
 
 window.prepareExamMode = function() {
-  // You need to implement test area and buttons UI in your HTML for these to work
   if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'block';
   if (document.getElementById('learnDigitalArea')) document.getElementById('learnDigitalArea').style.display = 'none';
 
@@ -113,8 +100,13 @@ window.prepareLearnDigitalMode = function() {
   if (document.getElementById('practiceButtons')) document.getElementById('practiceButtons').style.display = 'none';
 };
 
+// ** FIXED HERE **
 window.startTest = function() {
-  google.script.run.withSuccessHandler(handleQuestions).startTest(window.currentUsername, window.currentTestCode);
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run.withSuccessHandler(handleQuestions).startTest(window.currentUsername, window.currentTestCode);
+  } else {
+    fetchStartTestAPI(window.currentUsername, window.currentTestCode);
+  }
 };
 
 window.handleQuestions = function(response) {
@@ -243,7 +235,11 @@ window.submitTest = function() {
     timeTaken: (window.timeLeftInitial - window.timeLeft) 
   };
 
-  google.script.run.withSuccessHandler(showResult).submitTestResult(resultData);
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run.withSuccessHandler(showResult).submitTestResult(resultData);
+  } else {
+    showMessage("Submit via REST API not implemented yet.", "orange");
+  }
   stopTimer();
 };
 
