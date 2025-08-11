@@ -1,56 +1,67 @@
-window.currentTestCode = '';
-window.currentMode = '';
-window.currentUsername = '';
-window.currentQuestions = [];
-window.currentQuestionIndex = 0;
-window.timerInterval = null;
-window.timeLeft = 0;
-window.userAnswers = {};
+// Global variables
+let currentTestCode = '';
+let currentMode = 'practice'; // default mode
+let currentUsername = '';
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let timerInterval = null;
+let timeLeft = 0;
+let userAnswers = {}; // { questionIndex: 'A' | 'B' | 'C' | 'D' }
 
-window.startRscitTest = function(testCode, loadingMessage, selectedMode, username) {
-  window.currentTestCode = testCode;
-  window.currentMode = selectedMode;
-  window.currentUsername = username;
+// Check login and get user data from localStorage
+(function initUser() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  if (isLoggedIn !== "true") {
+    location.replace("login.html");
+  }
 
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  if (userData.fullname) {
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+  }
+  currentUsername = userData.username || "guest";
+})();
+
+// Mode toggle function
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode === "practice");
+  document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
+}
+
+// Start test handler (called by buttons)
+function startTest(testCode) {
+  currentTestCode = testCode;
+
+  // Hide main area (you can implement a loader message here)
   document.querySelector('main').style.display = 'none';
 
-  showMessage(loadingMessage, 'blue');
-
-  if (selectedMode === 'exam') {
-    prepareExamMode();
-    window.startTest(); // this will auto detect google.script.run
-  } else if (selectedMode === 'practice') {
-    preparePracticeMode();
-
-    if (typeof PracticeTest !== 'undefined' && typeof PracticeTest.startTest === 'function') {
-      PracticeTest.startTest();
-    } else {
-      showMessage("Practice mode not implemented yet.", "orange");
-    }
-  } else if (selectedMode === 'LearnD') {
-    prepareLearnDigitalMode();
-
-    if (typeof LearnDigital !== 'undefined' && typeof LearnDigital.startTest === 'function') {
-      LearnDigital.startTest();
-    } else {
-      showMessage("LearnD mode not implemented yet.", "orange");
-    }
+  // Check if google.script.run exists (GAS environment)
+  if (typeof google !== "undefined" && google.script && google.script.run) {
+    google.script.run.withSuccessHandler(handleQuestions).startTest(currentUsername, currentTestCode);
+  } else {
+    // Outside GAS - fallback to fetch API
+    fetchStartTestAPI(currentUsername, currentTestCode);
   }
-};
+}
 
-window.fetchStartTestAPI = function(username, testCode) {
+// Fetch API fallback for starting test (outside GAS)
+function fetchStartTestAPI(username, testCode) {
   const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
 
+  showMessage(`Loading ${testCode}_RSCIT...`, 'blue');
+
   fetch(`${GAS_WEB_APP_URL}?action=startTest&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(testCode)}`)
-    .then(response => response.json())
+    .then(resp => resp.json())
     .then(handleQuestions)
     .catch(() => {
       showMessage("Error connecting to server. Please try again.", "red");
       document.querySelector('main').style.display = 'block';
     });
-};
+}
 
-window.showMessage = function(msg, color) {
+// Show temporary message on screen
+function showMessage(msg, color) {
   let msgBox = document.getElementById('messageBox');
   if (!msgBox) {
     msgBox = document.createElement('div');
@@ -71,244 +82,76 @@ window.showMessage = function(msg, color) {
   setTimeout(() => {
     msgBox.style.display = 'none';
   }, 4000);
-};
+}
 
-window.prepareExamMode = function() {
-  if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'block';
-  if (document.getElementById('learnDigitalArea')) document.getElementById('learnDigitalArea').style.display = 'none';
-
-  if (document.getElementById('examButtons')) document.getElementById('examButtons').style.display = 'block';
-  if (document.getElementById('practiceButtons')) document.getElementById('practiceButtons').style.display = 'none';
-  if (document.getElementById('learnDigitalButtons')) document.getElementById('learnDigitalButtons').style.display = 'none';
-};
-
-window.preparePracticeMode = function() {
-  if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'block';
-  if (document.getElementById('learnDigitalArea')) document.getElementById('learnDigitalArea').style.display = 'none';
-
-  if (document.getElementById('practiceButtons')) document.getElementById('practiceButtons').style.display = 'block';
-  if (document.getElementById('examButtons')) document.getElementById('examButtons').style.display = 'none';
-  if (document.getElementById('learnDigitalButtons')) document.getElementById('learnDigitalButtons').style.display = 'none';
-};
-
-window.prepareLearnDigitalMode = function() {
-  if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'none';
-  if (document.getElementById('learnDigitalArea')) document.getElementById('learnDigitalArea').style.display = 'block';
-
-  if (document.getElementById('learnDigitalButtons')) document.getElementById('learnDigitalButtons').style.display = 'block';
-  if (document.getElementById('examButtons')) document.getElementById('examButtons').style.display = 'none';
-  if (document.getElementById('practiceButtons')) document.getElementById('practiceButtons').style.display = 'none';
-};
-
-// ** FIXED HERE **
-window.startTest = function() {
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run.withSuccessHandler(handleQuestions).startTest(window.currentUsername, window.currentTestCode);
-  } else {
-    fetchStartTestAPI(window.currentUsername, window.currentTestCode);
+// Handler for question list response
+function handleQuestions(response) {
+  if (!response) {
+    showMessage("Invalid response from server.", 'red');
+    document.querySelector('main').style.display = 'block';
+    return;
   }
-};
 
-window.handleQuestions = function(response) {
   if (response.status === 'payment_pending') {
     showMessage("Payment pending. Please complete payment to start test.", 'red');
-  } else if (response.status === 'ok') {
-    window.currentQuestions = response.questions;
-    window.currentQuestionIndex = 0;
-    window.timeLeft = response.testDuration * 60;
+    document.querySelector('main').style.display = 'block';
+    return;
+  }
 
-    loadQuestion(window.currentQuestionIndex);
-    startTimer(window.timeLeft);
+  if (response.status === 'ok') {
+    currentQuestions = response.questions || [];
+    currentQuestionIndex = 0;
+    userAnswers = {};
+    timeLeft = (response.testDuration || 10) * 60; // default 10 min if missing
+    showTestArea();
+    loadQuestion(currentQuestionIndex);
+    startTimer(timeLeft);
   } else {
     showMessage("Error starting test. Please try again.", 'red');
+    document.querySelector('main').style.display = 'block';
   }
-};
+}
 
-window.loadQuestion = function(index) {
-  if (index < 0 || index >= window.currentQuestions.length) return;
+// Show test UI (you should create this area in your HTML or dynamically)
+function showTestArea() {
+  // For demo: just alert and reload main content (you should implement test UI!)
+  alert('Test started! Implement test UI here.');
+  document.querySelector('main').style.display = 'block';
+}
 
-  const questionObj = window.currentQuestions[index];
-  const container = document.getElementById('questionContainer');
-  if (!container) return;
+// Load question to UI (demo placeholder)
+function loadQuestion(index) {
+  // TODO: Implement question display logic
+  console.log('Loading question:', index, currentQuestions[index]);
+}
 
-  container.innerHTML = `
-    <div>
-      <h3>Question ${index + 1} of ${window.currentQuestions.length}</h3>
-      <p>${questionObj.question}</p>
-      <form id="optionsForm">
-        <label><input type="radio" name="option" value="A"> A. ${questionObj.optionA}</label><br>
-        <label><input type="radio" name="option" value="B"> B. ${questionObj.optionB}</label><br>
-        <label><input type="radio" name="option" value="C"> C. ${questionObj.optionC}</label><br>
-        <label><input type="radio" name="option" value="D"> D. ${questionObj.optionD}</label>
-      </form>
-    </div>
-  `;
+// Timer functions
+function startTimer(seconds) {
+  timeLeft = seconds;
+  if (timerInterval) clearInterval(timerInterval);
 
-  updateQuestionIndicators();
-};
-
-window.updateQuestionIndicators = function() {
-  const indicatorsContainer = document.getElementById('questionIndicators');
-  if (!indicatorsContainer) return;
-
-  let indicatorsHtml = '';
-  window.currentQuestions.forEach((q, idx) => {
-    let answered = isQuestionAnswered(idx);
-    let classes = 'indicator';
-    if (idx === window.currentQuestionIndex) classes += ' current';
-    if (answered) classes += ' answered';
-
-    indicatorsHtml += `<span class="${classes}" data-index="${idx}">${idx + 1}</span> `;
-  });
-  indicatorsContainer.innerHTML = indicatorsHtml;
-
-  indicatorsContainer.querySelectorAll('span.indicator').forEach(span => {
-    span.onclick = () => {
-      saveAnswer();
-      window.currentQuestionIndex = parseInt(span.dataset.index);
-      loadQuestion(window.currentQuestionIndex);
-    };
-  });
-};
-
-window.isQuestionAnswered = function(index) {
-  return window.userAnswers.hasOwnProperty(index);
-};
-
-window.saveAnswer = function() {
-  const form = document.getElementById('optionsForm');
-  if (!form) return;
-
-  const selectedOption = form.option.value;
-  if (selectedOption) {
-    window.userAnswers[window.currentQuestionIndex] = selectedOption;
-  }
-};
-
-window.goToPrevious = function() {
-  if (window.currentQuestionIndex > 0) {
-    saveAnswer();
-    window.currentQuestionIndex--;
-    loadQuestion(window.currentQuestionIndex);
-  } else {
-    showMessage("You are on the first question.", 'orange');
-  }
-};
-
-window.goToNext = function() {
-  saveAnswer();
-  if (window.currentQuestionIndex < window.currentQuestions.length - 1) {
-    window.currentQuestionIndex++;
-    loadQuestion(window.currentQuestionIndex);
-  } else {
-    showMessage("You are on the last question.", 'orange');
-  }
-};
-
-window.submitTest = function() {
-  saveAnswer();
-
-  for (let i = 0; i < window.currentQuestions.length; i++) {
-    if (!isQuestionAnswered(i)) {
-      showMessage(`Please answer question ${i + 1} before submitting.`, 'red');
-      window.currentQuestionIndex = i;
-      loadQuestion(window.currentQuestionIndex);
-      return;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      showMessage("Time's up! Submitting test...", 'red');
+      // submitTest();  // implement submitTest when you build full test UI
     }
-  }
-
-  let correctCount = 0;
-  for (let i = 0; i < window.currentQuestions.length; i++) {
-    if (window.userAnswers[i] === window.currentQuestions[i].correctAnswer) {
-      correctCount++;
-    }
-  }
-  let totalMarks = correctCount * 2;
-
-  let resultData = {
-    username: window.currentUsername,
-    testCode: window.currentTestCode,
-    answers: window.userAnswers,
-    correctCount: correctCount,
-    totalMarks: totalMarks,
-    totalQuestions: window.currentQuestions.length,
-    timeTaken: (window.timeLeftInitial - window.timeLeft) 
-  };
-
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run.withSuccessHandler(showResult).submitTestResult(resultData);
-  } else {
-    showMessage("Submit via REST API not implemented yet.", "orange");
-  }
-  stopTimer();
-};
-
-window.timeLeftInitial = 0;
-
-window.startTimer = function(durationInSeconds) {
-  window.timeLeftInitial = durationInSeconds;
-  window.timeLeft = durationInSeconds;
-
-  updateTimerDisplay();
-
-  window.timerInterval = setInterval(() => {
-    window.timeLeft--;
-    if (window.timeLeft <= 0) {
-      clearInterval(window.timerInterval);
-      showMessage("Time's up! Auto-submitting test...", 'red');
-      submitTest();
-    }
-    updateTimerDisplay();
   }, 1000);
-};
+}
 
-window.stopTimer = function() {
-  if (window.timerInterval) {
-    clearInterval(window.timerInterval);
-    window.timerInterval = null;
+// Back button handler
+function goBack() {
+  location.href = "rs-cit-module.html";
+}
+
+// Logout handler
+function logoutUser() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  if (userData && userData.username) {
+    const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+    fetch(logoutUrl).catch(err => console.error("Logout error:", err));
   }
-};
-
-window.updateTimerDisplay = function() {
-  let timerBox = document.getElementById('timerBox');
-  if (!timerBox) return;
-
-  let minutes = Math.floor(window.timeLeft / 60);
-  let seconds = window.timeLeft % 60;
-  timerBox.textContent = `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-};
-
-window.showResult = function(resultSummary) {
-  if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'none';
-  if (document.getElementById('resultArea')) document.getElementById('resultArea').style.display = 'block';
-
-  const resultContainer = document.getElementById('resultContainer');
-  if (!resultContainer) return;
-
-  resultContainer.innerHTML = `
-    <h3>Test Result</h3>
-    <p>Marks: ${resultSummary.marks} / ${resultSummary.maxMarks}</p>
-    <p>Correct Answers: ${resultSummary.correctCount}</p>
-    <p>Attempted Questions: ${resultSummary.attemptedCount}</p>
-    <p>Time Taken: ${resultSummary.timeTaken} seconds</p>
-    <button onclick="goHome()">Back to Home</button>
-    <button onclick="viewRanking()">View Overall Ranking</button>
-  `;
-};
-
-window.goHome = function() {
-  window.currentTestCode = '';
-  window.currentMode = '';
-  window.currentUsername = '';
-  window.currentQuestions = [];
-  window.currentQuestionIndex = 0;
-  window.userAnswers = {};
-
-  if (document.getElementById('resultArea')) document.getElementById('resultArea').style.display = 'none';
-  if (document.getElementById('testArea')) document.getElementById('testArea').style.display = 'none';
-  if (document.querySelector('main')) document.querySelector('main').style.display = 'block';
-};
-
-window.viewRanking = function() {
-  window.open(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?mode=ranking&testCode=${window.currentTestCode}&username=${window.currentUsername}`, '_blank');
-};
+  localStorage.clear();
+  location.replace("login.html");
+}
