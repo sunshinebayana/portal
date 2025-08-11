@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📘 RS-CIT Book Chapter Tests</title>
   <style>
     body {
@@ -59,25 +59,8 @@
     h2 {
       text-align: center;
       color: #333;
-      margin-bottom: 20px;
+      margin-bottom: 35px;
       font-size: 24px;
-    }
-    .mode-toggle {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    .mode-toggle button {
-      padding: 8px 15px;
-      border: none;
-      margin: 0 5px;
-      border-radius: 6px;
-      background: #ccc;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .mode-toggle .active-mode {
-      background: #4caf50;
-      color: #fff;
     }
     .btn-grid {
       display: grid;
@@ -133,14 +116,6 @@
 
   <main>
     <h2>Select a Chapter Test</h2>
-
-    <!-- Mode Toggle -->
-    <div class="mode-toggle">
-      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
-      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
-    </div>
-
-    <!-- Chapter Buttons -->
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">1. Introduction to Computer <span>🔹T11</span></button>
       <button class="feature-btn" onclick="startTest('T12')">2. Internet and Services <span>🔹T12</span></button>
@@ -150,7 +125,40 @@
     </div>
   </main>
 
-  <script src="script.js"></script>
+  <script>
+    // ✅ Step 1: Prevent Direct Access
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html");
+    }
+
+    // ✅ Step 2: Get User Data
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.fullname) {
+      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    }
+
+    // ✅ Step 3: Back Button
+    function goBack() {
+      location.href = "rs-cit-module.html";
+    }
+
+    // ✅ Step 4: Start Test Placeholder
+    function startTest(code) {
+      alert(`Test ${code} will start soon!`);
+    }
+
+    // ✅ Step 5: Logout
+    function logoutUser() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData && userData.username) {
+        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+        fetch(logoutUrl).catch(err => console.error("Logout error:", err));
+      }
+      localStorage.clear();
+      location.replace("login.html");
+    }
+  </script>
 
 </body>
 </html>
