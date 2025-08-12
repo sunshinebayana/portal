@@ -19,6 +19,16 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .fullname {
+      font-weight: 500;
+      font-size: 16px;
     }
     .container {
       max-width: 700px;
@@ -68,7 +78,10 @@
 
 <header>
   <div id="testTitle">RS-CIT Test</div>
-  <div id="modeLabel"></div>
+  <div class="header-right">
+    <span id="fullnameLabel" class="fullname"></span>
+    <span id="modeLabel"></span>
+  </div>
 </header>
 
 <div class="container">
@@ -77,15 +90,20 @@
 </div>
 
 <script>
-  // Retrieve test data from localStorage
+  // ✅ Retrieve test data from localStorage
   const code = localStorage.getItem("test_code");
   const message = localStorage.getItem("test_message");
   const mode = localStorage.getItem("test_mode");
   const username = localStorage.getItem("test_username");
+  const fullname = localStorage.getItem("test_fullname"); // ✅ NEW
 
+  // ✅ Update header info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode.toUpperCase() + " MODE";
-  document.getElementById("chapterName").textContent = `${message} - By ${username}`;
+  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+
+  // ✅ Update chapter name
+  document.getElementById("chapterName").textContent = `${message} - By ${fullname || username}`;
 
   // Dummy Questions
   const questions = [
@@ -96,7 +114,6 @@
 
   let currentQ = 0;
   let score = 0;
-  let selectedAnswer = null;
 
   function loadQuestionExamMode() {
     let qData = questions[currentQ];
@@ -155,7 +172,7 @@
     }
   }
 
-  // Load first question based on mode
+  // ✅ Load first question based on mode
   if (mode === "exam") {
     loadQuestionExamMode();
   } else {
