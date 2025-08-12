@@ -71,9 +71,8 @@
     .message {
       margin-top: 10px;
       font-weight: bold;
-    }
-    h3, p {
       text-align: center;
+      color: red;
     }
   </style>
 </head>
@@ -93,12 +92,23 @@
 </div>
 
 <script>
-  // Retrieve test data from localStorage
+  // Retrieve data from localStorage (set on login)
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = localStorage.getItem("test_mode") || "";
   const username = localStorage.getItem("test_username") || "";
   const fullname = localStorage.getItem("test_fullname") || "";
+  
+  // Assuming full userData is stored as JSON string on login
+  let userData = {};
+  try {
+    userData = JSON.parse(localStorage.getItem("userData")) || {};
+  } catch {
+    userData = {};
+  }
+  
+  // Payment status from userData (after login)
+  const paymentStatus = (userData.PaymentStatus || userData.paymentStatus || "").toLowerCase();
 
   // Update header info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
@@ -106,7 +116,6 @@
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
-  // Dummy Questions
   const questions = [
     { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
     { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
@@ -173,50 +182,16 @@
     }
   }
 
-  // Payment check function with debug
-  function checkPaymentStatusAndStartTest(username) {
-    if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not identified. Please login properly.</h3>`;
-      return;
+  // Check payment status and run test or show message
+  if (paymentStatus === "confirm") {
+    if (mode === "exam") {
+      loadQuestionExamMode();
+    } else {
+      loadQuestionPracticeMode();
     }
-
-    const apiUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}`;
-
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log("Payment API Response:", data); // Debug line
-
-        // Normalize keys and check payment status
-        const paymentStatus = (
-          data.PaymentStatus || data.paymentstatus || data.payment_status || data.status || ""
-        ).toString().toLowerCase();
-
-        if (paymentStatus === "confirm") {
-          // Start the test depending on mode
-          if (mode === "exam") {
-            loadQuestionExamMode();
-          } else {
-            loadQuestionPracticeMode();
-          }
-        } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
-        }
-      })
-      .catch(error => {
-        console.error("Payment status check failed:", error);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
-      });
+  } else {
+    document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
   }
-
-  // Start by checking payment status
-  checkPaymentStatusAndStartTest(username);
-
 </script>
 
 </body>
