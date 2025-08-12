@@ -59,8 +59,28 @@
     h2 {
       text-align: center;
       color: #333;
-      margin-bottom: 35px;
+      margin-bottom: 15px;
       font-size: 24px;
+    }
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .mode-toggle button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #e0e0e0;
+      transition: all 0.3s ease;
+    }
+    .mode-toggle button.active-mode {
+      background: #1976d2;
+      color: white;
+      font-weight: bold;
     }
     .btn-grid {
       display: grid;
@@ -116,6 +136,13 @@
 
   <main>
     <h2>Select a Chapter Test</h2>
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
+      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
+    </div>
+
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">1. Introduction to Computer <span>🔹T11</span></button>
       <button class="feature-btn" onclick="startTest('T12')">2. Internet and Services <span>🔹T12</span></button>
@@ -126,29 +153,45 @@
   </main>
 
   <script>
-    // ✅ Step 1: Prevent Direct Access
+    let selectedMode = "practice";
+
+    // ✅ Prevent Direct Access
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
       location.replace("login.html");
     }
 
-    // ✅ Step 2: Get User Data
+    // ✅ Set Welcome Message
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Step 3: Back Button
+    // ✅ Switch Mode
+    function switchMode(mode) {
+      selectedMode = mode;
+      document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode === "practice");
+      document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
+    }
+
+    // ✅ Back to RS-CIT Module
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
-    // ✅ Step 4: Start Test Placeholder
+    // ✅ Start Test
     function startTest(code) {
-      alert(`Test ${code} will start soon!`);
+      const username = userData?.username || "guest";
+      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
     }
 
-    // ✅ Step 5: Logout
+    // ✅ Actual Test Starter
+    function startRscitTest(code, message, mode, username) {
+      alert(`Starting ${mode} for ${code} by ${username}...\n${message}`);
+      // Add actual test loading logic here
+    }
+
+    // ✅ Logout User
     function logoutUser() {
       const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.username) {
