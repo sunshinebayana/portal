@@ -91,6 +91,29 @@
   <div id="quizArea"></div>
 </div>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RS-CIT Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .question { font-weight: bold; margin-bottom: 10px; }
+    .options label { display: block; margin-bottom: 5px; }
+    button { padding: 5px 10px; margin-top: 10px; }
+    #quizArea { margin-top: 20px; }
+    .message { color: red; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h1 id="testTitle"></h1>
+<p id="modeLabel"></p>
+<p id="fullnameLabel"></p>
+<p id="chapterName"></p>
+
+<div id="quizArea">Loading...</div>
+
 <script>
   // LocalStorage data
   const code = localStorage.getItem("test_code") || "";
