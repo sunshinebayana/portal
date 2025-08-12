@@ -185,10 +185,16 @@
       startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
     }
 
-    // ✅ Actual Test Starter
+    // ✅ Actual Test Starter (Updated for new file)
     function startRscitTest(code, message, mode, username) {
-      alert(`Starting ${mode} for ${code} by ${username}...\n${message}`);
-      // Add actual test loading logic here
+      // Save all arguments to localStorage for exam-modes-screen.html
+      localStorage.setItem("test_code", code);
+      localStorage.setItem("test_message", message);
+      localStorage.setItem("test_mode", mode);
+      localStorage.setItem("test_username", username);
+
+      // Redirect to new test screen
+      location.href = "exam-modes-screen.html";
     }
 
     // ✅ Logout User
