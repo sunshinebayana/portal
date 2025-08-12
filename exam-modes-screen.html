@@ -96,7 +96,7 @@
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
-  const username = localStorage.getItem("test_username") || "";
+  const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
   // UI Update
@@ -178,7 +178,7 @@
     }
   }
 
-  // API URL
+  // API URL (Backend getPaymentStatus function)
   const paymentStatusApiUrl = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
 
   // Payment Check
@@ -191,8 +191,7 @@
     fetch(`${paymentStatusApiUrl}?username=${encodeURIComponent(username)}`)
       .then(res => res.json())
       .then(data => {
-        let paymentStatus = (data.paymentStatus || "").toString().toLowerCase().trim();
-        if (paymentStatus === "confirm") {
+        if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
           if (mode === "exam") {
             loadQuestionExamMode();
           } else if (mode === "practice") {
