@@ -95,7 +95,7 @@
   // Get data from localStorage
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
-  const mode = localStorage.getItem("test_mode") || "";
+  const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = localStorage.getItem("test_username") || "";
   const fullname = localStorage.getItem("test_fullname") || "";
 
@@ -216,7 +216,7 @@
       });
   }
 
-  // Start flow
+  // Start test flow
   checkPaymentAndStartTest(username);
 </script>
 
