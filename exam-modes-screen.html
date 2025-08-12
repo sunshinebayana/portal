@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RS-CIT Test Screen</title>
   <style>
     body {
@@ -90,20 +90,18 @@
 </div>
 
 <script>
-  // ✅ Retrieve test data from localStorage
+  // Retrieve test data from localStorage
   const code = localStorage.getItem("test_code");
   const message = localStorage.getItem("test_message");
   const mode = localStorage.getItem("test_mode");
   const username = localStorage.getItem("test_username");
-  const fullname = localStorage.getItem("test_fullname"); // ✅ NEW
+  const fullname = localStorage.getItem("test_fullname");
 
-  // ✅ Update header info
+  // Update header info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
-  document.getElementById("modeLabel").textContent = mode.toUpperCase() + " MODE";
+  document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
-
-  // ✅ Update chapter name
-  document.getElementById("chapterName").textContent = `${message} - By ${fullname || username}`;
+  document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
   // Dummy Questions
   const questions = [
@@ -172,12 +170,39 @@
     }
   }
 
-  // ✅ Load first question based on mode
-  if (mode === "exam") {
-    loadQuestionExamMode();
-  } else {
-    loadQuestionPracticeMode();
+  // Payment check function
+  function checkPaymentStatusAndStartTest(username) {
+    if (!username) {
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not identified. Please login properly.</h3>`;
+      return;
+    }
+
+    const apiUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        // Assuming response structure: { PaymentStatus: "confirm" } or something else
+        if (data.PaymentStatus && data.PaymentStatus.toLowerCase() === "confirm") {
+          // Start test based on mode
+          if (mode === "exam") {
+            loadQuestionExamMode();
+          } else {
+            loadQuestionPracticeMode();
+          }
+        } else {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+        }
+      })
+      .catch(error => {
+        console.error("Payment status check failed:", error);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
+      });
   }
+
+  // Initial call to check payment and then load test
+  checkPaymentStatusAndStartTest(username);
+
 </script>
 
 </body>
