@@ -92,20 +92,20 @@
 </div>
 
 <script>
-  // Load data from localStorage
+  // LocalStorage data
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = localStorage.getItem("test_username") || "";
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  // Update UI with user and test info
+  // UI Update
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
-  // Sample questions array
+  // Questions
   const questions = [
     { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
     { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
@@ -115,7 +115,7 @@
   let currentQ = 0;
   let score = 0;
 
-  // Load question for exam mode
+  // Exam Mode
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
@@ -129,7 +129,6 @@
     document.getElementById("quizArea").innerHTML = html;
   }
 
-  // Move to next question in exam mode
   function nextQuestionExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) {
@@ -141,18 +140,13 @@
     loadQuestionExamMode();
   }
 
-  // Submit exam and show score
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) {
-      alert("Please select an answer!");
-      return;
-    }
-    if (parseInt(answer.value) === questions[currentQ].answer) score++;
+    if (answer && parseInt(answer.value) === questions[currentQ].answer) score++;
     document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
   }
 
-  // Load question for practice mode
+  // Practice Mode
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
     let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
@@ -165,7 +159,6 @@
     document.getElementById("quizArea").innerHTML = html;
   }
 
-  // Check answer in practice mode
   function checkPracticeAnswer() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) {
@@ -185,48 +178,39 @@
     }
   }
 
-  // API URL to check payment status
+  // API URL
   const paymentStatusApiUrl = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
 
-  const quizArea = document.getElementById("quizArea");
-
-  // Check payment status and start test
+  // Payment Check
   function checkPaymentAndStartTest(username) {
     if (!username) {
-      quizArea.innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
       return;
     }
 
     fetch(`${paymentStatusApiUrl}?username=${encodeURIComponent(username)}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
-        console.log("Payment check API response:", data);
-
-        // Extract paymentStatus safely
         let paymentStatus = (data.paymentStatus || "").toString().toLowerCase().trim();
-
         if (paymentStatus === "confirm") {
           if (mode === "exam") {
             loadQuestionExamMode();
           } else if (mode === "practice") {
             loadQuestionPracticeMode();
           } else {
-            quizArea.innerHTML = `<h3 style="color:red;">Invalid test mode specified.</h3>`;
+            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Invalid test mode specified.</h3>`;
           }
         } else {
-          quizArea.innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
       })
       .catch(error => {
         console.error("Error checking payment status:", error);
-        quizArea.innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
       });
   }
 
-  // Start test on page load
+  // Start Test
   checkPaymentAndStartTest(username);
 </script>
 
