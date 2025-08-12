@@ -92,18 +92,20 @@
 </div>
 
 <script>
-  // Get data from localStorage
+  // Load data from localStorage
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = localStorage.getItem("test_username") || "";
   const fullname = localStorage.getItem("test_fullname") || "";
 
+  // Update UI with user and test info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
+  // Sample questions array
   const questions = [
     { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
     { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
@@ -113,6 +115,7 @@
   let currentQ = 0;
   let score = 0;
 
+  // Load question for exam mode
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
@@ -120,14 +123,13 @@
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
     html += `</div>`;
-    if (currentQ < questions.length - 1) {
-      html += `<button onclick="nextQuestionExam()">Next</button>`;
-    } else {
-      html += `<button onclick="submitExam()">Submit</button>`;
-    }
+    html += currentQ < questions.length - 1
+      ? `<button onclick="nextQuestionExam()">Next</button>`
+      : `<button onclick="submitExam()">Submit</button>`;
     document.getElementById("quizArea").innerHTML = html;
   }
 
+  // Move to next question in exam mode
   function nextQuestionExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) {
@@ -139,6 +141,7 @@
     loadQuestionExamMode();
   }
 
+  // Submit exam and show score
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) {
@@ -149,6 +152,7 @@
     document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
   }
 
+  // Load question for practice mode
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
     let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
@@ -161,6 +165,7 @@
     document.getElementById("quizArea").innerHTML = html;
   }
 
+  // Check answer in practice mode
   function checkPracticeAnswer() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) {
@@ -174,14 +179,16 @@
       } else {
         document.getElementById("quizArea").innerHTML = `<h3>Practice Completed!</h3><p>You answered all questions correctly!</p>`;
       }
+      document.getElementById("practiceMsg").textContent = "";
     } else {
       document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
     }
   }
 
-  // Your Google Apps Script URL (replace if changed)
+  // API URL to check payment status (replace with your URL if needed)
   const paymentStatusApiUrl = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
 
+  // Check payment status then start test accordingly
   function checkPaymentAndStartTest(username) {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
@@ -216,7 +223,7 @@
       });
   }
 
-  // Start test flow
+  // Start test flow on page load
   checkPaymentAndStartTest(username);
 </script>
 
