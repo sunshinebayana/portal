@@ -188,10 +188,13 @@
   // API URL to check payment status (replace with your URL if needed)
   const paymentStatusApiUrl = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
 
+  // Cache quizArea div for repeated use
+  const quizArea = document.getElementById("quizArea");
+
   // Check payment status then start test accordingly
   function checkPaymentAndStartTest(username) {
     if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
+      quizArea.innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
       return;
     }
 
@@ -203,23 +206,34 @@
       .then(data => {
         console.log("Payment check API response:", data);
 
-        const paymentStatus = (
-          data.PaymentStatus || data.paymentstatus || data.payment_status || data.status || ""
-        ).toString().toLowerCase();
+        // Defensive: normalize payment status key and value
+        let paymentStatus = "";
+
+        if (data) {
+          paymentStatus =
+            (data.PaymentStatus ?? data.paymentstatus ?? data.payment_status ?? data.status ?? "")
+              .toString()
+              .toLowerCase()
+              .trim();
+        }
 
         if (paymentStatus === "confirm") {
+          // Defensive: check mode safely
           if (mode === "exam") {
             loadQuestionExamMode();
-          } else {
+          } else if (mode === "practice") {
             loadQuestionPracticeMode();
+          } else {
+            // fallback if mode unknown
+            quizArea.innerHTML = `<h3 style="color:red;">Invalid test mode specified.</h3>`;
           }
         } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          quizArea.innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
       })
       .catch(error => {
         console.error("Error checking payment status:", error);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
+        quizArea.innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
       });
   }
 
