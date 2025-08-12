@@ -92,25 +92,13 @@
 </div>
 
 <script>
-  // Retrieve data from localStorage (set on login)
+  // Get data from localStorage
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = localStorage.getItem("test_mode") || "";
   const username = localStorage.getItem("test_username") || "";
   const fullname = localStorage.getItem("test_fullname") || "";
-  
-  // Assuming full userData is stored as JSON string on login
-  let userData = {};
-  try {
-    userData = JSON.parse(localStorage.getItem("userData")) || {};
-  } catch {
-    userData = {};
-  }
-  
-  // Payment status from userData (after login)
-  const paymentStatus = (userData.PaymentStatus || userData.paymentStatus || "").toLowerCase();
 
-  // Update header info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
@@ -126,8 +114,8 @@
   let score = 0;
 
   function loadQuestionExamMode() {
-    let qData = questions[currentQ];
-    let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
+    const qData = questions[currentQ];
+    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -141,23 +129,29 @@
   }
 
   function nextQuestionExam() {
-    let answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) {
+      alert("Please select an answer!");
+      return;
+    }
     if (parseInt(answer.value) === questions[currentQ].answer) score++;
     currentQ++;
     loadQuestionExamMode();
   }
 
   function submitExam() {
-    let answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) {
+      alert("Please select an answer!");
+      return;
+    }
     if (parseInt(answer.value) === questions[currentQ].answer) score++;
     document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
   }
 
   function loadQuestionPracticeMode() {
-    let qData = questions[currentQ];
-    let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
+    const qData = questions[currentQ];
+    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -168,8 +162,11 @@
   }
 
   function checkPracticeAnswer() {
-    let answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) {
+      alert("Please select an answer!");
+      return;
+    }
     if (parseInt(answer.value) === questions[currentQ].answer) {
       currentQ++;
       if (currentQ < questions.length) {
@@ -182,16 +179,46 @@
     }
   }
 
-  // Check payment status and run test or show message
-  if (paymentStatus === "confirm") {
-    if (mode === "exam") {
-      loadQuestionExamMode();
-    } else {
-      loadQuestionPracticeMode();
+  // Your Google Apps Script URL (replace if changed)
+  const paymentStatusApiUrl = 'https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec';
+
+  function checkPaymentAndStartTest(username) {
+    if (!username) {
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
+      return;
     }
-  } else {
-    document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+
+    fetch(`${paymentStatusApiUrl}?username=${encodeURIComponent(username)}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then(data => {
+        console.log("Payment check API response:", data);
+
+        // The key name might vary; adjust accordingly
+        const paymentStatus = (
+          data.PaymentStatus || data.paymentstatus || data.payment_status || data.status || ""
+        ).toString().toLowerCase();
+
+        if (paymentStatus === "confirm") {
+          if (mode === "exam") {
+            loadQuestionExamMode();
+          } else {
+            loadQuestionPracticeMode();
+          }
+        } else {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+        }
+      })
+      .catch(error => {
+        console.error("Error checking payment status:", error);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
+      });
   }
+
+  // Start flow
+  checkPaymentAndStartTest(username);
 </script>
 
 </body>
