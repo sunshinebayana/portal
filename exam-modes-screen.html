@@ -72,6 +72,9 @@
       margin-top: 10px;
       font-weight: bold;
     }
+    h3, p {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -91,11 +94,11 @@
 
 <script>
   // Retrieve test data from localStorage
-  const code = localStorage.getItem("test_code");
-  const message = localStorage.getItem("test_message");
-  const mode = localStorage.getItem("test_mode");
-  const username = localStorage.getItem("test_username");
-  const fullname = localStorage.getItem("test_fullname");
+  const code = localStorage.getItem("test_code") || "";
+  const message = localStorage.getItem("test_message") || "";
+  const mode = localStorage.getItem("test_mode") || "";
+  const username = localStorage.getItem("test_username") || "";
+  const fullname = localStorage.getItem("test_fullname") || "";
 
   // Update header info
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
@@ -170,7 +173,7 @@
     }
   }
 
-  // Payment check function
+  // Payment check function with debug
   function checkPaymentStatusAndStartTest(username) {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not identified. Please login properly.</h3>`;
@@ -180,11 +183,22 @@
     const apiUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?username=${encodeURIComponent(username)}`;
 
     fetch(apiUrl)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
-        // Assuming response structure: { PaymentStatus: "confirm" } or something else
-        if (data.PaymentStatus && data.PaymentStatus.toLowerCase() === "confirm") {
-          // Start test based on mode
+        console.log("Payment API Response:", data); // Debug line
+
+        // Normalize keys and check payment status
+        const paymentStatus = (
+          data.PaymentStatus || data.paymentstatus || data.payment_status || data.status || ""
+        ).toString().toLowerCase();
+
+        if (paymentStatus === "confirm") {
+          // Start the test depending on mode
           if (mode === "exam") {
             loadQuestionExamMode();
           } else {
@@ -200,7 +214,7 @@
       });
   }
 
-  // Initial call to check payment and then load test
+  // Start by checking payment status
   checkPaymentStatusAndStartTest(username);
 
 </script>
