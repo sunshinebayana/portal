@@ -74,6 +74,12 @@
       text-align: center;
       color: red;
     }
+    .loading {
+      text-align: center;
+      font-size: 16px;
+      padding: 20px;
+      color: #1976d2;
+    }
   </style>
 </head>
 <body>
@@ -88,7 +94,7 @@
 
 <div class="container">
   <h2 id="chapterName">Loading...</h2>
-  <div id="quizArea"></div>
+  <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
 </div>
 
 <script>
@@ -178,38 +184,40 @@
     }
   }
 
-  // ✅ Backend URL (Your doGet function will handle payment status)
+  // ✅ Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   // ✅ Check Payment and Start Test
   function checkPaymentAndStartTest() {
     if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
 
-    fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getPaymentStatus`)
+    fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
       .then(res => res.json())
       .then(data => {
+        console.log("Payment API Response:", data);
+
         if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
           if (mode === "exam") {
             loadQuestionExamMode();
           } else if (mode === "practice") {
             loadQuestionPracticeMode();
           } else {
-            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Invalid test mode specified.</h3>`;
+            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
           }
         } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
       })
       .catch(error => {
         console.error("Error checking payment status:", error);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">Error checking payment status. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error checking payment status. Please try again later.</h3>`;
       });
   }
 
-  // Start
+  // ✅ Start Payment Check on Page Load
   checkPaymentAndStartTest();
 </script>
 
