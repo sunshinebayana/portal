@@ -196,7 +196,6 @@
       .then(data => {
         console.log("Payment check API response:", data);
 
-        // The key name might vary; adjust accordingly
         const paymentStatus = (
           data.PaymentStatus || data.paymentstatus || data.payment_status || data.status || ""
         ).toString().toLowerCase();
