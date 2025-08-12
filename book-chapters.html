@@ -180,22 +180,25 @@
     }
 
     // ✅ Start Test
-    function startTest(code) {
-      const username = userData?.username || "guest";
-      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
-    }
+function startTest(code) {
+  const username = userData?.username || "guest";
+  const fullname = userData?.fullname || "Guest User";
+  startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
+}
 
-    // ✅ Actual Test Starter (Updated for new file)
-    function startRscitTest(code, message, mode, username) {
-      // Save all arguments to localStorage for exam-modes-screen.html
-      localStorage.setItem("test_code", code);
-      localStorage.setItem("test_message", message);
-      localStorage.setItem("test_mode", mode);
-      localStorage.setItem("test_username", username);
+// ✅ Actual Test Starter (Updated for new file)
+function startRscitTest(code, message, mode, username, fullname) {
+  // Save all arguments to localStorage for exam-modes-screen.html
+  localStorage.setItem("test_code", code);
+  localStorage.setItem("test_message", message);
+  localStorage.setItem("test_mode", mode);
+  localStorage.setItem("test_username", username);
+  localStorage.setItem("test_fullname", fullname);
 
-      // Redirect to new test screen
-      location.href = "exam-modes-screen.html";
-    }
+  // Redirect to new test screen
+  location.href = "exam-modes-screen.html";
+}
+
 
     // ✅ Logout User
     function logoutUser() {
@@ -211,3 +214,4 @@
 
 </body>
 </html>
+
