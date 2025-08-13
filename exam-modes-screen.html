@@ -183,7 +183,7 @@
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   // ✅ Start Test by fetching questions from backend
-  function startTest() {
+  function starttest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
@@ -228,7 +228,7 @@
         console.log("Payment API Response:", data);
 
         if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
-          startTest(); // ✅ Fetch questions from backend
+          starttest(); // ✅ Fetch questions from backend
         } else {
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
@@ -245,6 +245,7 @@
 
 </body>
 </html>
+
 
 
 
