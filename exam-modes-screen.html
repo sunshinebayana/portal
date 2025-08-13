@@ -98,6 +98,7 @@
 </div>
 
 <script>
+  const code = "T1_RSCIT";
   // Get LocalStorage values
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
@@ -106,7 +107,7 @@
   const fullname = localStorage.getItem("test_fullname") || "";
 
   // Update UI header
-  document.getElementById("testTitle").textContent = `${T1}_RSCIT`;
+  document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
@@ -244,4 +245,5 @@
 
 </body>
 </html>
+
 
