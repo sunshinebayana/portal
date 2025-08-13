@@ -189,7 +189,7 @@
       return;
     }
 
-    fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent('T1')}`)
+    fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`)
       .then(res => res.json())
       .then(data => {
         if (data.error) {
@@ -245,6 +245,7 @@
 
 </body>
 </html>
+
 
 
 
