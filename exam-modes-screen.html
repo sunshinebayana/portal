@@ -111,20 +111,14 @@
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
-  // Sample Questions
-  const questions = [
-    { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
-    { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
-    { q: "MS Word me text ko bold kaise karte hai?", options: ["Ctrl + C", "Ctrl + B", "Ctrl + V"], answer: 1 }
-  ];
-
+  let questions = []; // Will hold fetched questions
   let currentQ = 0;
   let score = 0;
 
   // EXAM MODE
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
-    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -141,21 +135,21 @@
       alert("Please select an answer!");
       return;
     }
-    if (parseInt(answer.value) === questions[currentQ].answer) score++;
+    if (parseInt(answer.value) === questions[currentQ].answerIndex) score++;
     currentQ++;
     loadQuestionExamMode();
   }
 
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (answer && parseInt(answer.value) === questions[currentQ].answer) score++;
+    if (answer && parseInt(answer.value) === questions[currentQ].answerIndex) score++;
     document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
   }
 
   // PRACTICE MODE
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
-    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -171,7 +165,7 @@
       alert("Please select an answer!");
       return;
     }
-    if (parseInt(answer.value) === questions[currentQ].answer) {
+    if (parseInt(answer.value) === questions[currentQ].answerIndex) {
       currentQ++;
       if (currentQ < questions.length) {
         loadQuestionPracticeMode();
@@ -187,7 +181,40 @@
   // ✅ Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-  // ✅ Check Payment and Start Test
+  // ✅ Start Test by fetching questions from backend
+  function startTest() {
+    if (!username) {
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      return;
+    }
+
+    fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.error}</h3>`;
+          return;
+        }
+
+        questions = data.questions; // Set fetched questions
+        currentQ = 0;
+        score = 0;
+
+        if (mode === "exam") {
+          loadQuestionExamMode();
+        } else if (mode === "practice") {
+          loadQuestionPracticeMode();
+        } else {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching test:", err);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
+      });
+  }
+
+  // ✅ Check Payment first, then fetch test
   function checkPaymentAndStartTest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
@@ -200,13 +227,7 @@
         console.log("Payment API Response:", data);
 
         if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
-          if (mode === "exam") {
-            loadQuestionExamMode();
-          } else if (mode === "practice") {
-            loadQuestionPracticeMode();
-          } else {
-            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
-          }
+          startTest(); // ✅ Fetch questions from backend
         } else {
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
@@ -217,7 +238,7 @@
       });
   }
 
-  // ✅ Start Payment Check on Page Load
+  // ✅ Start on page load
   checkPaymentAndStartTest();
 </script>
 
