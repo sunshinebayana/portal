@@ -65,6 +65,7 @@
   .message { margin-top: 10px; font-weight: bold; text-align: center; }
   .message.correct { color: green; }
   .message.incorrect { color: red; }
+  .loading { text-align: center; font-size: 16px; padding: 20px; color: #1976d2; }
 </style>
 </head>
 <body>
@@ -76,18 +77,18 @@
       <div id="testTitle">RS-CIT Test</div>
       <div class="header-right">
         <span id="fullnameLabel" class="fullname"></span>
-        <span id="timerLabel"></span>
+        <span id="modeLabel"></span>
       </div>
     </header>
 
     <div class="container">
       <div class="question-indicator" id="questionIndicator"></div>
-      <div id="quizArea"></div>
+      <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
       <div class="message" id="practiceMsg"></div>
       <div class="button-group">
         <button onclick="previousQuestion()">Previous</button>
         <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next / Next Quiz</button>
-        <button id="submitBtn" onclick="submitTest()">Submit Test</button>
+        <button id="submitBtn" style="display:none;" onclick="submitTest()">Submit Test</button>
       </div>
     </div>
   </div>
@@ -96,9 +97,13 @@
 <script>
 function closeTest() { window.history.back(); }
 
+const username = (localStorage.getItem("test_username") || "").trim();
 const fullname = localStorage.getItem("test_fullname") || "";
 const mode = (localStorage.getItem("test_mode") || "practice").toLowerCase();
+
+// Update header UI
 document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
 
 // Sample Questions
 const questions = [
@@ -111,72 +116,87 @@ let currentQ = 0;
 let userAnswers = Array(questions.length).fill(null);
 let score = 0;
 
-function renderQuestion() {
-  const qData = questions[currentQ];
-  document.getElementById("questionIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
-  document.getElementById("practiceMsg").textContent = "";
-  document.getElementById("practiceMsg").className = "message";
+// Backend URL
+const backendUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-  let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
-  qData.options.forEach((opt, idx) => {
+// ✅ Check Payment before starting test
+function checkPaymentAndStartTest() {
+  if(!username){
+    document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+    return;
+  }
+
+  fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.success && (data.paymentStatus||"").toLowerCase().trim() === "confirm"){
+        // Payment confirmed, load test
+        if(mode === "exam") loadQuestionExamMode();
+        else loadQuestionPracticeMode();
+        document.getElementById("submitBtn").style.display = "inline-block";
+      } else {
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Payment Pending. Please complete payment to start the test.</h3>`;
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error checking payment. Try again later.</h3>`;
+    });
+}
+
+// --- Exam Mode ---
+function loadQuestionExamMode(){
+  const qData = questions[currentQ];
+  document.getElementById("questionIndicator").textContent = `Question ${currentQ+1} of ${questions.length}`;
+  let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
+  qData.options.forEach((opt, idx)=> html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`);
+  html += `</div>`;
+  html += currentQ < questions.length-1 ? `<button onclick="nextQuestionExam()">Next</button>` : `<button onclick="submitTest()">Submit</button>`;
+  document.getElementById("quizArea").innerHTML = html;
+}
+
+function nextQuestionExam(){
+  const selected = document.querySelector("input[name='option']:checked");
+  if(!selected){ alert("Please select an answer!"); return; }
+  if(parseInt(selected.value) === questions[currentQ].answer) score++;
+  currentQ++;
+  loadQuestionExamMode();
+}
+
+// --- Practice Mode ---
+function loadQuestionPracticeMode(){
+  const qData = questions[currentQ];
+  document.getElementById("questionIndicator").textContent = `Question ${currentQ+1} of ${questions.length}`;
+  let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
+  qData.options.forEach((opt, idx)=>{
     const checked = userAnswers[currentQ] === idx ? "checked" : "";
     html += `<label><input type="radio" name="option" value="${idx}" ${checked}> ${opt}</label>`;
   });
   html += `</div>`;
+  html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
   document.getElementById("quizArea").innerHTML = html;
-
-  // Buttons visibility
-  if(mode === "practice") {
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("submitBtn").style.display = "none";
-  } else { // Exam mode
-    document.getElementById("nextBtn").style.display = "inline-block";
-    document.getElementById("submitBtn").style.display = "inline-block";
-  }
+  document.getElementById("practiceMsg").textContent = "";
 }
 
-// Previous Question
-function previousQuestion() {
-  if(currentQ > 0) { currentQ--; renderQuestion(); }
-}
-
-// Check Answer for Practice Mode
-function checkAnswer() {
-  if(mode !== "practice") return;
-
+function checkPracticeAnswer(){
   const selected = document.querySelector("input[name='option']:checked");
-  if(!selected) { alert("Please select an answer!"); return; }
-
-  const selectedValue = parseInt(selected.value);
-  userAnswers[currentQ] = selectedValue;
-
-  if(selectedValue === questions[currentQ].answer) {
+  if(!selected){ alert("Please select an answer!"); return; }
+  const val = parseInt(selected.value);
+  userAnswers[currentQ] = val;
+  if(val === questions[currentQ].answer){
     document.getElementById("practiceMsg").textContent = "✅ Correct Answer!";
-    document.getElementById("practiceMsg").className = "message correct";
-    document.getElementById("nextBtn").style.display = "inline-block";
+    currentQ++;
+    if(currentQ < questions.length) loadQuestionPracticeMode();
+    else document.getElementById("quizArea").innerHTML = `<h3>Practice Completed!</h3><p>You answered all questions correctly!</p>`;
   } else {
     document.getElementById("practiceMsg").textContent = "❌ Incorrect Answer! Try Again.";
-    document.getElementById("practiceMsg").className = "message incorrect";
-    document.getElementById("nextBtn").style.display = "none";
   }
 }
 
-// Next Question / Next Quiz
-function nextQuestion() {
-  if(currentQ < questions.length - 1) { currentQ++; renderQuestion(); }
-  else {
-    document.getElementById("quizArea").innerHTML = "<h3>Test Completed!</h3><p>You have completed all questions.</p>";
-    document.getElementById("questionIndicator").textContent = "";
-    document.getElementById("practiceMsg").textContent = "";
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("submitBtn").style.display = "none";
-  }
-}
-
-// Submit Test (both modes)
-function submitTest() {
+// --- Submit Test ---
+function submitTest(){
   score = 0;
-  questions.forEach((q, i) => { if(userAnswers[i] === q.answer) score++; });
+  questions.forEach((q,i)=>{ if(userAnswers[i]===q.answer) score++; });
   document.getElementById("quizArea").innerHTML = `<h3>Test Submitted!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
   document.getElementById("questionIndicator").textContent = "";
   document.getElementById("practiceMsg").textContent = "";
@@ -184,14 +204,13 @@ function submitTest() {
   document.getElementById("submitBtn").style.display = "none";
 }
 
-// Option auto-check for Practice Mode
-document.addEventListener("change", function(e){
-  if(mode === "practice" && e.target.name === "option") checkAnswer();
+// Listen for Practice Mode option changes
+document.addEventListener("change", e=>{
+  if(mode==="practice" && e.target.name==="option") checkPracticeAnswer();
 });
 
-// Initial Render
-renderQuestion();
+// ✅ Start
+checkPaymentAndStartTest();
 </script>
-
 </body>
 </html>
