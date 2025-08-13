@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RS-CIT Test Screen</title>
+<title>RS-CIT Practice Mode</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,6 @@
     overflow: hidden;
   }
 
-  /* Modal Overlay */
   .modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -25,7 +24,6 @@
     z-index: 999;
   }
 
-  /* Modal Container */
   .modal {
     background: #fff;
     border-radius: 10px;
@@ -34,15 +32,8 @@
     padding: 20px 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     position: relative;
-    animation: fadeIn 0.3s ease;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* Close Button */
   .close-btn {
     position: absolute;
     top: 15px;
@@ -72,7 +63,6 @@
 
   .header-right { display: flex; align-items: center; gap: 10px; }
   .fullname { font-weight: 500; font-size: 16px; }
-  #timer { font-weight: bold; font-size: 16px; }
 
   .container { margin-top: 15px; }
 
@@ -119,8 +109,9 @@
     margin-top: 10px;
     font-weight: bold;
     text-align: center;
-    color: red;
   }
+  .message.correct { color: green; }
+  .message.incorrect { color: red; }
 </style>
 </head>
 <body>
@@ -129,21 +120,19 @@
   <div class="modal">
     <button class="close-btn" onclick="closeTest()">×</button>
     <header>
-      <div id="testTitle">RS-CIT Test</div>
+      <div id="testTitle">RS-CIT Practice Mode</div>
       <div class="header-right">
         <span id="fullnameLabel" class="fullname"></span>
-        <span id="modeLabel"></span>
-        <span id="timer">00:15:00</span>
       </div>
     </header>
 
     <div class="container">
       <div class="question-indicator" id="questionIndicator"></div>
       <div id="quizArea"></div>
+      <div class="message" id="practiceMsg"></div>
       <div class="button-group">
         <button onclick="previousQuestion()">Previous</button>
-        <button onclick="nextQuestion()">Next & Save</button>
-        <button style="background:#ff6600;" onclick="submitTest()">Submit Test</button>
+        <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next Quiz</button>
       </div>
     </div>
   </div>
@@ -154,19 +143,10 @@ function closeTest() {
   window.history.back();
 }
 
-// Get LocalStorage values
-const code = localStorage.getItem("test_code") || "";
-const message = localStorage.getItem("test_message") || "";
-const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
-const username = (localStorage.getItem("test_username") || "").trim();
 const fullname = localStorage.getItem("test_fullname") || "";
-
-// Update UI header
-document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
-document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
 document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
-// Sample Questions
+// Sample Practice Questions
 const questions = [
   { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
   { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
@@ -174,60 +154,75 @@ const questions = [
 ];
 
 let currentQ = 0;
-let score = 0;
+let userAnswers = Array(questions.length).fill(null);
 
-// Timer (example: 15 minutes)
-let timeLeft = 15 * 60; // seconds
-const timerElement = document.getElementById("timer");
-
-function updateTimer() {
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
-  timerElement.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-  if(timeLeft <= 0) {
-    submitTest();
-  } else {
-    timeLeft--;
-    setTimeout(updateTimer, 1000);
-  }
-}
-
-// Render Question
 function renderQuestion() {
   const qData = questions[currentQ];
   document.getElementById("questionIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
+  document.getElementById("practiceMsg").textContent = "";
+  document.getElementById("practiceMsg").className = "message";
+
   let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
   qData.options.forEach((opt, idx) => {
-    html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+    const checked = userAnswers[currentQ] === idx ? "checked" : "";
+    html += `<label><input type="radio" name="option" value="${idx}" ${checked}> ${opt}</label>`;
   });
   html += `</div>`;
   document.getElementById("quizArea").innerHTML = html;
+
+  // Hide Next Quiz until correct answer
+  document.getElementById("nextBtn").style.display = "none";
 }
 
 // Previous Question
 function previousQuestion() {
-  if(currentQ > 0) { currentQ--; renderQuestion(); }
+  if(currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
 }
 
-// Next Question
+// Check Answer (Practice Mode)
+function checkAnswer() {
+  const selected = document.querySelector("input[name='option']:checked");
+  if(selected === null) {
+    alert("Please select an answer!");
+    return;
+  }
+  const selectedValue = parseInt(selected.value);
+  userAnswers[currentQ] = selectedValue;
+
+  if(selectedValue === questions[currentQ].answer) {
+    document.getElementById("practiceMsg").textContent = "✅ Correct Answer!";
+    document.getElementById("practiceMsg").className = "message correct";
+    document.getElementById("nextBtn").style.display = "inline-block";
+  } else {
+    document.getElementById("practiceMsg").textContent = "❌ Incorrect Answer! Try Again.";
+    document.getElementById("practiceMsg").className = "message incorrect";
+    document.getElementById("nextBtn").style.display = "none";
+  }
+}
+
+// Next Quiz
 function nextQuestion() {
-  const answer = document.querySelector("input[name='option']:checked");
-  if(!answer){ alert("Please select an answer!"); return; }
-  if(parseInt(answer.value) === questions[currentQ].answer) score++;
-  if(currentQ < questions.length -1) { currentQ++; renderQuestion(); }
+  if(currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    document.getElementById("quizArea").innerHTML = "<h3>Practice Completed!</h3><p>You have completed all practice questions.</p>";
+    document.getElementById("questionIndicator").textContent = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("practiceMsg").textContent = "";
+  }
 }
 
-// Submit Test
-function submitTest() {
-  const answer = document.querySelector("input[name='option']:checked");
-  if(answer && parseInt(answer.value) === questions[currentQ].answer) score++;
-  document.getElementById("quizArea").innerHTML = `<h3>Test Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
-  document.getElementById("questionIndicator").textContent = "";
-}
+// Listen for option change to check answer automatically
+document.addEventListener("change", function(e){
+  if(e.target.name === "option") checkAnswer();
+});
 
-// Start Test
+// Initial Render
 renderQuestion();
-updateTimer();
 </script>
 
 </body>
