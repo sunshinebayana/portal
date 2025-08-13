@@ -75,7 +75,14 @@
 
   .container { margin-top: 15px; }
 
-  h2 { color: #1976d2; text-align: center; margin-bottom: 15px; }
+  h2 { color: #1976d2; text-align: center; margin-bottom: 10px; }
+
+  .question-indicator {
+    margin-bottom: 10px;
+    text-align: center;
+    color: #555;
+    font-weight: 500;
+  }
 
   .question { font-size: 16px; font-weight: 600; margin-bottom: 10px; text-align: left; }
 
@@ -115,13 +122,6 @@
     text-align: center;
     color: red;
   }
-
-  .question-indicator {
-    margin-top: 10px;
-    text-align: center;
-    color: #555;
-    font-weight: 500;
-  }
 </style>
 </head>
 <body>
@@ -139,15 +139,18 @@
 
     <div class="container">
       <h2 id="chapterName">RS-CIT Test</h2>
-      <div id="quizArea"></div>
       <div class="question-indicator" id="questionIndicator"></div>
+      <div id="quizArea"></div>
+      <div style="text-align:center; margin-top:10px;">
+        <button style="background:#ff6600;" onclick="submitTest()">Submit Test</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 function closeTest() {
-  // Go back to previous page on X button
+  // Go back to previous page
   window.history.back();
 }
 
@@ -162,7 +165,6 @@ const fullname = localStorage.getItem("test_fullname") || "";
 document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
 document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
 document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
-document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
 // Sample Questions
 const questions = [
@@ -177,6 +179,8 @@ let score = 0;
 // Render Question
 function renderQuestion() {
   const qData = questions[currentQ];
+  document.getElementById("questionIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
+
   let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
   qData.options.forEach((opt, idx) => {
     html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
@@ -188,14 +192,9 @@ function renderQuestion() {
   html += `<button onclick="previousQuestion()">Previous</button>`;
   if(currentQ < questions.length - 1) {
     html += `<button onclick="nextQuestion()">Next & Save</button>`;
-  } else {
-    html += `<button onclick="submitTest()">Submit Test</button>`;
   }
   html += `</div>`;
   document.getElementById("quizArea").innerHTML = html;
-
-  // Question Indicator
-  document.getElementById("questionIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
 }
 
 // Previous Question
@@ -215,7 +214,7 @@ function nextQuestion() {
   renderQuestion();
 }
 
-// Submit Test
+// Submit Test (available anytime)
 function submitTest() {
   const answer = document.querySelector("input[name='option']:checked");
   if(answer && parseInt(answer.value) === questions[currentQ].answer) score++;
