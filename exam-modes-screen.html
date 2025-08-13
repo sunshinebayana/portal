@@ -10,7 +10,7 @@
     background: #f0f2f5;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Disable scroll for modal */
+    overflow: hidden;
   }
 
   /* Modal Overlay */
@@ -72,10 +72,9 @@
 
   .header-right { display: flex; align-items: center; gap: 10px; }
   .fullname { font-weight: 500; font-size: 16px; }
+  #timer { font-weight: bold; font-size: 16px; }
 
   .container { margin-top: 15px; }
-
-  h2 { color: #1976d2; text-align: center; margin-bottom: 10px; }
 
   .question-indicator {
     margin-bottom: 10px;
@@ -134,14 +133,16 @@
       <div class="header-right">
         <span id="fullnameLabel" class="fullname"></span>
         <span id="modeLabel"></span>
+        <span id="timer">00:15:00</span>
       </div>
     </header>
 
     <div class="container">
-      <h2 id="chapterName">RS-CIT Test</h2>
       <div class="question-indicator" id="questionIndicator"></div>
       <div id="quizArea"></div>
-      <div style="text-align:center; margin-top:10px;">
+      <div class="button-group">
+        <button onclick="previousQuestion()">Previous</button>
+        <button onclick="nextQuestion()">Next & Save</button>
         <button style="background:#ff6600;" onclick="submitTest()">Submit Test</button>
       </div>
     </div>
@@ -150,11 +151,10 @@
 
 <script>
 function closeTest() {
-  // Go back to previous page
   window.history.back();
 }
 
-// ✅ Get LocalStorage values
+// Get LocalStorage values
 const code = localStorage.getItem("test_code") || "";
 const message = localStorage.getItem("test_message") || "";
 const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
@@ -176,45 +176,48 @@ const questions = [
 let currentQ = 0;
 let score = 0;
 
+// Timer (example: 15 minutes)
+let timeLeft = 15 * 60; // seconds
+const timerElement = document.getElementById("timer");
+
+function updateTimer() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timerElement.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+  if(timeLeft <= 0) {
+    submitTest();
+  } else {
+    timeLeft--;
+    setTimeout(updateTimer, 1000);
+  }
+}
+
 // Render Question
 function renderQuestion() {
   const qData = questions[currentQ];
   document.getElementById("questionIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
-
   let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
   qData.options.forEach((opt, idx) => {
     html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
   });
-  html += `</div>`;
-
-  // Buttons
-  html += `<div class="button-group">`;
-  html += `<button onclick="previousQuestion()">Previous</button>`;
-  if(currentQ < questions.length - 1) {
-    html += `<button onclick="nextQuestion()">Next & Save</button>`;
-  }
   html += `</div>`;
   document.getElementById("quizArea").innerHTML = html;
 }
 
 // Previous Question
 function previousQuestion() {
-  if(currentQ > 0) {
-    currentQ--;
-    renderQuestion();
-  }
+  if(currentQ > 0) { currentQ--; renderQuestion(); }
 }
 
-// Next Question (save answer)
+// Next Question
 function nextQuestion() {
   const answer = document.querySelector("input[name='option']:checked");
   if(!answer){ alert("Please select an answer!"); return; }
   if(parseInt(answer.value) === questions[currentQ].answer) score++;
-  currentQ++;
-  renderQuestion();
+  if(currentQ < questions.length -1) { currentQ++; renderQuestion(); }
 }
 
-// Submit Test (available anytime)
+// Submit Test
 function submitTest() {
   const answer = document.querySelector("input[name='option']:checked");
   if(answer && parseInt(answer.value) === questions[currentQ].answer) score++;
@@ -224,6 +227,7 @@ function submitTest() {
 
 // Start Test
 renderQuestion();
+updateTimer();
 </script>
 
 </body>
