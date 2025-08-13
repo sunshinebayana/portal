@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RS-CIT Practice Mode</title>
+<title>RS-CIT Test Screen</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,7 +12,6 @@
     padding: 0;
     overflow: hidden;
   }
-
   .modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -23,7 +22,6 @@
     align-items: center;
     z-index: 999;
   }
-
   .modal {
     background: #fff;
     border-radius: 10px;
@@ -33,83 +31,38 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     position: relative;
   }
-
   .close-btn {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #ff4d4d;
-    color: #fff;
-    border: none;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
+    top: 15px; right: 15px;
+    background: #ff4d4d; color: #fff;
+    border: none; font-size: 16px; font-weight: bold;
+    border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
   }
   .close-btn:hover { background: #e60000; }
-
   header {
-    background: #1976d2;
-    color: #fff;
+    background: #1976d2; color: #fff;
     padding: 12px 15px;
     font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     border-radius: 8px 8px 0 0;
   }
-
   .header-right { display: flex; align-items: center; gap: 10px; }
   .fullname { font-weight: 500; font-size: 16px; }
-
   .container { margin-top: 15px; }
-
-  .question-indicator {
-    margin-bottom: 10px;
-    text-align: center;
-    color: #555;
-    font-weight: 500;
-  }
-
+  .question-indicator { margin-bottom: 10px; text-align: center; color: #555; font-weight: 500; }
   .question { font-size: 16px; font-weight: 600; margin-bottom: 10px; text-align: left; }
-
   .options label {
-    display: block;
-    background: #f1f3f5;
-    padding: 10px;
-    margin: 6px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-align: left;
+    display: block; background: #f1f3f5; padding: 10px;
+    margin: 6px 0; border-radius: 5px; cursor: pointer; transition: background 0.2s; text-align: left;
   }
   .options label:hover { background: #e3f2fd; }
-
-  .button-group {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-  }
-
+  .button-group { margin-top: 15px; display: flex; justify-content: space-between; }
   button {
-    padding: 8px 18px;
-    border: none;
-    border-radius: 5px;
-    background: #1976d2;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
+    padding: 8px 18px; border: none; border-radius: 5px;
+    background: #1976d2; color: white; font-size: 14px; cursor: pointer; transition: background 0.2s;
   }
   button:hover { background: #125aa0; }
-
-  .message {
-    margin-top: 10px;
-    font-weight: bold;
-    text-align: center;
-  }
+  .message { margin-top: 10px; font-weight: bold; text-align: center; }
   .message.correct { color: green; }
   .message.incorrect { color: red; }
 </style>
@@ -120,9 +73,10 @@
   <div class="modal">
     <button class="close-btn" onclick="closeTest()">×</button>
     <header>
-      <div id="testTitle">RS-CIT Practice Mode</div>
+      <div id="testTitle">RS-CIT Test</div>
       <div class="header-right">
         <span id="fullnameLabel" class="fullname"></span>
+        <span id="timerLabel"></span>
       </div>
     </header>
 
@@ -132,29 +86,30 @@
       <div class="message" id="practiceMsg"></div>
       <div class="button-group">
         <button onclick="previousQuestion()">Previous</button>
-        <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next Quiz</button>
+        <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next / Next Quiz</button>
+        <button id="submitBtn" onclick="submitTest()">Submit Test</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function closeTest() {
-  window.history.back();
-}
+function closeTest() { window.history.back(); }
 
 const fullname = localStorage.getItem("test_fullname") || "";
+const mode = (localStorage.getItem("test_mode") || "practice").toLowerCase();
 document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
-// Sample Practice Questions
+// Sample Questions
 const questions = [
-  { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
-  { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
-  { q: "MS Word me text ko bold kaise karte hai?", options: ["Ctrl + C", "Ctrl + B", "Ctrl + V"], answer: 1 }
+  { q: "Computer ka full form kya hai?", options: ["Common Machine","Common Operating Machine Purposely Used for Technology Education and Research","Central Machine"], answer: 1 },
+  { q: "Internet ka use kis liye hota hai?", options: ["Khana khane","Data transfer","Gana sunne"], answer: 1 },
+  { q: "MS Word me text ko bold kaise karte hai?", options: ["Ctrl + C","Ctrl + B","Ctrl + V"], answer: 1 }
 ];
 
 let currentQ = 0;
 let userAnswers = Array(questions.length).fill(null);
+let score = 0;
 
 function renderQuestion() {
   const qData = questions[currentQ];
@@ -170,25 +125,28 @@ function renderQuestion() {
   html += `</div>`;
   document.getElementById("quizArea").innerHTML = html;
 
-  // Hide Next Quiz until correct answer
-  document.getElementById("nextBtn").style.display = "none";
+  // Buttons visibility
+  if(mode === "practice") {
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("submitBtn").style.display = "none";
+  } else { // Exam mode
+    document.getElementById("nextBtn").style.display = "inline-block";
+    document.getElementById("submitBtn").style.display = "inline-block";
+  }
 }
 
 // Previous Question
 function previousQuestion() {
-  if(currentQ > 0) {
-    currentQ--;
-    renderQuestion();
-  }
+  if(currentQ > 0) { currentQ--; renderQuestion(); }
 }
 
-// Check Answer (Practice Mode)
+// Check Answer for Practice Mode
 function checkAnswer() {
+  if(mode !== "practice") return;
+
   const selected = document.querySelector("input[name='option']:checked");
-  if(selected === null) {
-    alert("Please select an answer!");
-    return;
-  }
+  if(!selected) { alert("Please select an answer!"); return; }
+
   const selectedValue = parseInt(selected.value);
   userAnswers[currentQ] = selectedValue;
 
@@ -203,22 +161,32 @@ function checkAnswer() {
   }
 }
 
-// Next Quiz
+// Next Question / Next Quiz
 function nextQuestion() {
-  if(currentQ < questions.length - 1) {
-    currentQ++;
-    renderQuestion();
-  } else {
-    document.getElementById("quizArea").innerHTML = "<h3>Practice Completed!</h3><p>You have completed all practice questions.</p>";
+  if(currentQ < questions.length - 1) { currentQ++; renderQuestion(); }
+  else {
+    document.getElementById("quizArea").innerHTML = "<h3>Test Completed!</h3><p>You have completed all questions.</p>";
     document.getElementById("questionIndicator").textContent = "";
-    document.getElementById("nextBtn").style.display = "none";
     document.getElementById("practiceMsg").textContent = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("submitBtn").style.display = "none";
   }
 }
 
-// Listen for option change to check answer automatically
+// Submit Test (both modes)
+function submitTest() {
+  score = 0;
+  questions.forEach((q, i) => { if(userAnswers[i] === q.answer) score++; });
+  document.getElementById("quizArea").innerHTML = `<h3>Test Submitted!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
+  document.getElementById("questionIndicator").textContent = "";
+  document.getElementById("practiceMsg").textContent = "";
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("submitBtn").style.display = "none";
+}
+
+// Option auto-check for Practice Mode
 document.addEventListener("change", function(e){
-  if(e.target.name === "option") checkAnswer();
+  if(mode === "practice" && e.target.name === "option") checkAnswer();
 });
 
 // Initial Render
