@@ -1,216 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RS-CIT Test Screen</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  .modal {
-    background: #fff;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 700px;
-    padding: 20px 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    position: relative;
-  }
-  .close-btn {
-    position: absolute;
-    top: 15px; right: 15px;
-    background: #ff4d4d; color: #fff;
-    border: none; font-size: 16px; font-weight: bold;
-    border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
-  }
-  .close-btn:hover { background: #e60000; }
-  header {
-    background: #1976d2; color: #fff;
-    padding: 12px 15px;
-    font-size: 18px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-radius: 8px 8px 0 0;
-  }
-  .header-right { display: flex; align-items: center; gap: 10px; }
-  .fullname { font-weight: 500; font-size: 16px; }
-  .container { margin-top: 15px; }
-  .question-indicator { margin-bottom: 10px; text-align: center; color: #555; font-weight: 500; }
-  .question { font-size: 16px; font-weight: 600; margin-bottom: 10px; text-align: left; }
-  .options label {
-    display: block; background: #f1f3f5; padding: 10px;
-    margin: 6px 0; border-radius: 5px; cursor: pointer; transition: background 0.2s; text-align: left;
-  }
-  .options label:hover { background: #e3f2fd; }
-  .button-group { margin-top: 15px; display: flex; justify-content: space-between; }
-  button {
-    padding: 8px 18px; border: none; border-radius: 5px;
-    background: #1976d2; color: white; font-size: 14px; cursor: pointer; transition: background 0.2s;
-  }
-  button:hover { background: #125aa0; }
-  .message { margin-top: 10px; font-weight: bold; text-align: center; }
-  .message.correct { color: green; }
-  .message.incorrect { color: red; }
-  .loading { text-align: center; font-size: 16px; padding: 20px; color: #1976d2; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RS-CIT Test Screen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1976d2;
+      color: #fff;
+      padding: 15px 20px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .fullname {
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1976d2;
+      text-align: center;
+    }
+    .question {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .options label {
+      display: block;
+      background: #f1f1f1;
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #1976d2;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #125aa0;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+      color: red;
+    }
+    .loading {
+      text-align: center;
+      font-size: 16px;
+      padding: 20px;
+      color: #1976d2;
+    }
+  </style>
 </head>
 <body>
 
-<div class="modal-overlay" id="testModal">
-  <div class="modal">
-    <button class="close-btn" onclick="closeTest()">×</button>
-    <header>
-      <div id="testTitle">RS-CIT Test</div>
-      <div class="header-right">
-        <span id="fullnameLabel" class="fullname"></span>
-        <span id="modeLabel"></span>
-      </div>
-    </header>
-
-    <div class="container">
-      <div class="question-indicator" id="questionIndicator"></div>
-      <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
-      <div class="message" id="practiceMsg"></div>
-      <div class="button-group">
-        <button onclick="previousQuestion()">Previous</button>
-        <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next / Next Quiz</button>
-        <button id="submitBtn" style="display:none;" onclick="submitTest()">Submit Test</button>
-      </div>
-    </div>
+<header>
+  <div id="testTitle">RS-CIT Test</div>
+  <div class="header-right">
+    <span id="fullnameLabel" class="fullname"></span>
+    <span id="modeLabel"></span>
   </div>
+</header>
+
+<div class="container">
+  <h2 id="chapterName">Loading...</h2>
+  <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
 </div>
 
 <script>
-function closeTest() { window.history.back(); }
+  // Get LocalStorage values
+  const code = localStorage.getItem("test_code") || "";
+  const message = localStorage.getItem("test_message") || "";
+  const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
+  const username = (localStorage.getItem("test_username") || "").trim();
+  const fullname = localStorage.getItem("test_fullname") || "";
 
-const username = (localStorage.getItem("test_username") || "").trim();
-const fullname = localStorage.getItem("test_fullname") || "";
-const mode = (localStorage.getItem("test_mode") || "practice").toLowerCase();
+  // Update UI header
+  document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
+  document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
+  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+  document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
-// Update header UI
-document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
-document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
+  // Sample Questions
+  const questions = [
+    { q: "Computer ka full form kya hai?", options: ["Common Machine", "Common Operating Machine Purposely Used for Technology Education and Research", "Central Machine"], answer: 1 },
+    { q: "Internet ka use kis liye hota hai?", options: ["Khana khane", "Data transfer", "Gana sunne"], answer: 1 },
+    { q: "MS Word me text ko bold kaise karte hai?", options: ["Ctrl + C", "Ctrl + B", "Ctrl + V"], answer: 1 }
+  ];
 
-// Sample Questions
-const questions = [
-  { q: "Computer ka full form kya hai?", options: ["Common Machine","Common Operating Machine Purposely Used for Technology Education and Research","Central Machine"], answer: 1 },
-  { q: "Internet ka use kis liye hota hai?", options: ["Khana khane","Data transfer","Gana sunne"], answer: 1 },
-  { q: "MS Word me text ko bold kaise karte hai?", options: ["Ctrl + C","Ctrl + B","Ctrl + V"], answer: 1 }
-];
+  let currentQ = 0;
+  let score = 0;
 
-let currentQ = 0;
-let userAnswers = Array(questions.length).fill(null);
-let score = 0;
-
-// Backend URL
-const backendUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
-
-// ✅ Check Payment before starting test
-function checkPaymentAndStartTest() {
-  if(!username){
-    document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-    return;
-  }
-
-  fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
-    .then(res => res.json())
-    .then(data => {
-      if(data.success && (data.paymentStatus||"").toLowerCase().trim() === "confirm"){
-        // Payment confirmed, load test
-        if(mode === "exam") loadQuestionExamMode();
-        else loadQuestionPracticeMode();
-        document.getElementById("submitBtn").style.display = "inline-block";
-      } else {
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Payment Pending. Please complete payment to start the test.</h3>`;
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error checking payment. Try again later.</h3>`;
+  // EXAM MODE
+  function loadQuestionExamMode() {
+    const qData = questions[currentQ];
+    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
-}
-
-// --- Exam Mode ---
-function loadQuestionExamMode(){
-  const qData = questions[currentQ];
-  document.getElementById("questionIndicator").textContent = `Question ${currentQ+1} of ${questions.length}`;
-  let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
-  qData.options.forEach((opt, idx)=> html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`);
-  html += `</div>`;
-  html += currentQ < questions.length-1 ? `<button onclick="nextQuestionExam()">Next</button>` : `<button onclick="submitTest()">Submit</button>`;
-  document.getElementById("quizArea").innerHTML = html;
-}
-
-function nextQuestionExam(){
-  const selected = document.querySelector("input[name='option']:checked");
-  if(!selected){ alert("Please select an answer!"); return; }
-  if(parseInt(selected.value) === questions[currentQ].answer) score++;
-  currentQ++;
-  loadQuestionExamMode();
-}
-
-// --- Practice Mode ---
-function loadQuestionPracticeMode(){
-  const qData = questions[currentQ];
-  document.getElementById("questionIndicator").textContent = `Question ${currentQ+1} of ${questions.length}`;
-  let html = `<div class="question">${currentQ+1}. ${qData.q}</div><div class="options">`;
-  qData.options.forEach((opt, idx)=>{
-    const checked = userAnswers[currentQ] === idx ? "checked" : "";
-    html += `<label><input type="radio" name="option" value="${idx}" ${checked}> ${opt}</label>`;
-  });
-  html += `</div>`;
-  html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
-  document.getElementById("quizArea").innerHTML = html;
-  document.getElementById("practiceMsg").textContent = "";
-}
-
-function checkPracticeAnswer(){
-  const selected = document.querySelector("input[name='option']:checked");
-  if(!selected){ alert("Please select an answer!"); return; }
-  const val = parseInt(selected.value);
-  userAnswers[currentQ] = val;
-  if(val === questions[currentQ].answer){
-    document.getElementById("practiceMsg").textContent = "✅ Correct Answer!";
-    currentQ++;
-    if(currentQ < questions.length) loadQuestionPracticeMode();
-    else document.getElementById("quizArea").innerHTML = `<h3>Practice Completed!</h3><p>You answered all questions correctly!</p>`;
-  } else {
-    document.getElementById("practiceMsg").textContent = "❌ Incorrect Answer! Try Again.";
+    html += `</div>`;
+    html += currentQ < questions.length - 1
+      ? `<button onclick="nextQuestionExam()">Next</button>`
+      : `<button onclick="submitExam()">Submit</button>`;
+    document.getElementById("quizArea").innerHTML = html;
   }
-}
 
-// --- Submit Test ---
-function submitTest(){
-  score = 0;
-  questions.forEach((q,i)=>{ if(userAnswers[i]===q.answer) score++; });
-  document.getElementById("quizArea").innerHTML = `<h3>Test Submitted!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
-  document.getElementById("questionIndicator").textContent = "";
-  document.getElementById("practiceMsg").textContent = "";
-  document.getElementById("nextBtn").style.display = "none";
-  document.getElementById("submitBtn").style.display = "none";
-}
+  function nextQuestionExam() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) {
+      alert("Please select an answer!");
+      return;
+    }
+    if (parseInt(answer.value) === questions[currentQ].answer) score++;
+    currentQ++;
+    loadQuestionExamMode();
+  }
 
-// Listen for Practice Mode option changes
-document.addEventListener("change", e=>{
-  if(mode==="practice" && e.target.name==="option") checkPracticeAnswer();
-});
+  function submitExam() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (answer && parseInt(answer.value) === questions[currentQ].answer) score++;
+    document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
+  }
 
-// ✅ Start
-checkPaymentAndStartTest();
+  // PRACTICE MODE
+  function loadQuestionPracticeMode() {
+    const qData = questions[currentQ];
+    let html = `<div class="question">${currentQ + 1}. ${qData.q}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+    });
+    html += `</div>`;
+    html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
+    html += `<div class="message" id="practiceMsg"></div>`;
+    document.getElementById("quizArea").innerHTML = html;
+  }
+
+  function checkPracticeAnswer() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) {
+      alert("Please select an answer!");
+      return;
+    }
+    if (parseInt(answer.value) === questions[currentQ].answer) {
+      currentQ++;
+      if (currentQ < questions.length) {
+        loadQuestionPracticeMode();
+      } else {
+        document.getElementById("quizArea").innerHTML = `<h3>Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+      }
+      document.getElementById("practiceMsg").textContent = "";
+    } else {
+      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
+    }
+  }
+
+  // ✅ Backend URL
+  const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+
+  // ✅ Check Payment and Start Test
+  function checkPaymentAndStartTest() {
+    if (!username) {
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      return;
+    }
+
+    fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Payment API Response:", data);
+
+        if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
+          if (mode === "exam") {
+            loadQuestionExamMode();
+          } else if (mode === "practice") {
+            loadQuestionPracticeMode();
+          } else {
+            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+          }
+        } else {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
+        }
+      })
+      .catch(error => {
+        console.error("Error checking payment status:", error);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error checking payment status. Please try again later.</h3>`;
+      });
+  }
+
+  // ✅ Start Payment Check on Page Load
+  checkPaymentAndStartTest();
 </script>
+
 </body>
 </html>
