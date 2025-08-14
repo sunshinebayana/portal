@@ -55,7 +55,7 @@
       text-align: center;
     }
     #quizIndicator {
-      text-align: center;
+      text-align: left;
       font-size: 14px;
       color: #555;
       margin-bottom: 10px;
@@ -118,18 +118,16 @@
 <div class="container">
   <h2 id="chapterName">Loading...</h2>
   <div id="quizIndicator"></div>
-  <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
+  <div id="quizArea" class="loading">⏳ Checking Payment & Loading Quiz...</div>
 </div>
 
 <script>
-  // LocalStorage values
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  // Update UI header
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
@@ -144,7 +142,6 @@
       `Question ${currentQ + 1} of ${questions.length}`;
   }
 
-  // Exam Mode
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -161,12 +158,8 @@
 
   function nextQuestionExam() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) {
-      alert("Please select an answer!");
-      return;
-    }
-    const selectedIndex = parseInt(answer.value);
-    const selectedLetter = String.fromCharCode(65 + selectedIndex);
+    if (!answer) { alert("Please select an answer!"); return; }
+    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     currentQ++;
     loadQuestionExamMode();
@@ -175,8 +168,7 @@
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
-      const selectedIndex = parseInt(answer.value);
-      const selectedLetter = String.fromCharCode(65 + selectedIndex);
+      const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
       if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     }
     document.getElementById("quizArea").innerHTML =
@@ -184,7 +176,6 @@
     document.getElementById("quizIndicator").textContent = "";
   }
 
-  // Practice Mode
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -200,12 +191,8 @@
 
   function checkPracticeAnswer() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) {
-      alert("Please select an answer!");
-      return;
-    }
-    const selectedIndex = parseInt(answer.value);
-    const selectedLetter = String.fromCharCode(65 + selectedIndex);
+    if (!answer) { alert("Please select an answer!"); return; }
+    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
 
     if (selectedLetter === correctAnswer) {
@@ -217,35 +204,40 @@
           `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
         document.getElementById("quizIndicator").textContent = "";
       }
-      document.getElementById("practiceMsg").textContent = "";
     } else {
       document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
     }
   }
 
-  // Close Button
   function closeTest() {
     if (confirm("Are you sure you want to close the test?")) {
       window.history.back();
     }
   }
 
-  // Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-  function starttest() {
+  function initTest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
-    fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.error}</h3>`;
+
+    const paymentPromise = fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`).then(res => res.json());
+    const testPromise = fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`).then(res => res.json());
+
+    Promise.all([paymentPromise, testPromise])
+      .then(([paymentData, testData]) => {
+        if (!(paymentData.success && (paymentData.paymentStatus || "").toLowerCase().trim() === "confirm")) {
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
           return;
         }
-        questions = data.questions;
+        if (testData.error) {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${testData.error}</h3>`;
+          return;
+        }
+        questions = testData.questions;
         currentQ = 0;
         score = 0;
         if (mode === "exam") {
@@ -257,34 +249,12 @@
         }
       })
       .catch(err => {
-        console.error("Error fetching test:", err);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
+        console.error("Error loading test:", err);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
       });
   }
 
-  function checkPaymentAndStartTest() {
-    if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-      return;
-    }
-    fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
-          starttest();
-        } else {
-          document.getElementById("quizArea").innerHTML =
-            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
-        }
-      })
-      .catch(error => {
-        console.error("Error checking payment status:", error);
-        document.getElementById("quizArea").innerHTML =
-          `<h3 style="color:red;">⚠ Error checking payment status. Please try again later.</h3>`;
-      });
-  }
-
-  checkPaymentAndStartTest();
+  initTest();
 </script>
 
 </body>
