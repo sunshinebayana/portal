@@ -136,6 +136,8 @@
   let questions = [];
   let currentQ = 0;
   let score = 0;
+  let testDuration = 0;
+  let maxMarks = 0;
 
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
@@ -172,7 +174,9 @@
       if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     }
     document.getElementById("quizArea").innerHTML =
-      `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
+      `<h3>Exam Completed!</h3>
+       <p>Your Score: ${score} / ${questions.length}</p>
+       <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
     document.getElementById("quizIndicator").textContent = "";
   }
 
@@ -223,21 +227,30 @@
       return;
     }
 
-    const paymentPromise = fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`).then(res => res.json());
-    const testPromise = fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`).then(res => res.json());
+    fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">⚠ ${data.message || "Error starting test."}</h3>`;
+          return;
+        }
 
-    Promise.all([paymentPromise, testPromise])
-      .then(([paymentData, testData]) => {
-        if (!(paymentData.success && (paymentData.paymentStatus || "").toLowerCase().trim() === "confirm")) {
+        if ((data.paymentStatus || "").toLowerCase() !== "confirm") {
           document.getElementById("quizArea").innerHTML =
             `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
           return;
         }
-        if (testData.error) {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${testData.error}</h3>`;
+
+        questions = data.questions || [];
+        testDuration = data.testDuration || 0;
+        maxMarks = data.maxMarks || 0;
+
+        if (!questions.length) {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
           return;
         }
-        questions = testData.questions;
+
         currentQ = 0;
         score = 0;
         if (mode === "exam") {
@@ -250,7 +263,8 @@
       })
       .catch(err => {
         console.error("Error loading test:", err);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML =
+          `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
       });
   }
 
