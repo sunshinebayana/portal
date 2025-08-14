@@ -19,6 +19,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
     .header-left {
       display: flex;
@@ -30,6 +31,7 @@
       display: flex;
       align-items: center;
       gap: 15px;
+      flex-wrap: wrap;
     }
     .fullname {
       font-weight: 500;
@@ -100,6 +102,12 @@
       padding: 20px;
       color: #1976d2;
     }
+    #timerDisplay {
+      font-weight: bold;
+      background: rgba(255,255,255,0.2);
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -109,6 +117,7 @@
     <div id="testTitle">RS-CIT Test</div>
   </div>
   <div class="header-right">
+    <span id="timerDisplay">⏳ --:--</span>
     <span id="fullnameLabel" class="fullname"></span>
     <span id="modeLabel"></span>
     <button class="close-btn" onclick="closeTest()">✖</button>
@@ -138,6 +147,7 @@
   let score = 0;
   let testDuration = 0;
   let maxMarks = 0;
+  let timerInterval;
 
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
@@ -168,6 +178,7 @@
   }
 
   function submitExam() {
+    clearInterval(timerInterval);
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
       const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
@@ -204,6 +215,7 @@
       if (currentQ < questions.length) {
         loadQuestionPracticeMode();
       } else {
+        clearInterval(timerInterval);
         document.getElementById("quizArea").innerHTML =
           `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
         document.getElementById("quizIndicator").textContent = "";
@@ -217,6 +229,22 @@
     if (confirm("Are you sure you want to close the test?")) {
       window.history.back();
     }
+  }
+
+  function startTimer(durationMinutes) {
+    let timer = durationMinutes * 60;
+    function updateTimer() {
+      const minutes = Math.floor(timer / 60);
+      const seconds = timer % 60;
+      document.getElementById("timerDisplay").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      if (--timer < 0) {
+        clearInterval(timerInterval);
+        alert("⏳ Time is up! Submitting your test...");
+        submitExam();
+      }
+    }
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
   }
 
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
@@ -243,7 +271,7 @@
         }
 
         questions = data.questions || [];
-        testDuration = data.testDuration || 0;
+        testDuration = data.testDuration || 0; // From N4 cell
         maxMarks = data.maxMarks || 0;
 
         if (!questions.length) {
@@ -253,6 +281,8 @@
 
         currentQ = 0;
         score = 0;
+        startTimer(testDuration); // Start timer from backend value
+
         if (mode === "exam") {
           loadQuestionExamMode();
         } else if (mode === "practice") {
