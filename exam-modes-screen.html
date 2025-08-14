@@ -30,6 +30,13 @@
       font-weight: 500;
       font-size: 16px;
     }
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
     .container {
       max-width: 700px;
       margin: 30px auto;
@@ -46,6 +53,12 @@
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
+    }
+    .indicator {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      text-align: right;
     }
     .options label {
       display: block;
@@ -89,6 +102,7 @@
   <div class="header-right">
     <span id="fullnameLabel" class="fullname"></span>
     <span id="modeLabel"></span>
+    <button class="close-btn" onclick="exitTest()">✖</button>
   </div>
 </header>
 
@@ -98,28 +112,39 @@
 </div>
 
 <script>
- 
   // Get LocalStorage values
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
- 
-   // Update UI header
+
+  // Update UI header
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
-  let questions = []; // Will hold fetched questions
+  let questions = [];
   let currentQ = 0;
   let score = 0;
+
+  // Exit test function
+  function exitTest() {
+    if (confirm("Are you sure you want to exit the test?")) {
+      window.location.href = "dashboard.html";
+    }
+  }
+
+  function getIndicatorHTML() {
+    return `<div class="indicator">Question ${currentQ + 1} of ${questions.length}</div>`;
+  }
 
   // EXAM MODE
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    let html = getIndicatorHTML();
+    html += `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -150,7 +175,8 @@
   // PRACTICE MODE
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    let html = getIndicatorHTML();
+    html += `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -179,10 +205,8 @@
     }
   }
 
-  // ✅ Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-  // ✅ Start Test by fetching questions from backend
   function starttest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
@@ -196,8 +220,7 @@
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.error}</h3>`;
           return;
         }
-
-        questions = data.questions; // Set fetched questions
+        questions = data.questions;
         currentQ = 0;
         score = 0;
 
@@ -215,7 +238,6 @@
       });
   }
 
-  // ✅ Check Payment first, then fetch test
   function checkPaymentAndStartTest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
@@ -225,10 +247,8 @@
     fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
       .then(res => res.json())
       .then(data => {
-        console.log("Payment API Response:", data);
-
         if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
-          starttest(); // ✅ Fetch questions from backend
+          starttest();
         } else {
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
@@ -239,16 +259,8 @@
       });
   }
 
-  // ✅ Start on page load
   checkPaymentAndStartTest();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
