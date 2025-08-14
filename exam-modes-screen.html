@@ -20,6 +20,7 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      position: relative;
     }
     .header-right {
       display: flex;
@@ -30,12 +31,24 @@
       font-weight: 500;
       font-size: 16px;
     }
+    /* ✅ Close Button fixed in top-right corner */
     .close-btn {
-      background: transparent;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #ff4d4d;
       border: none;
       color: white;
       font-size: 20px;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
       cursor: pointer;
+      z-index: 1000;
+    }
+    .close-btn:hover {
+      background: #d93636;
     }
     .container {
       max-width: 700px;
@@ -44,6 +57,7 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: left; /* ✅ Left aligned */
     }
     h2 {
       color: #1976d2;
@@ -53,12 +67,16 @@
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
+      text-align: left;
     }
     .indicator {
       font-size: 14px;
       color: #555;
       margin-bottom: 10px;
-      text-align: right;
+      text-align: left; /* ✅ Left aligned */
+    }
+    .options {
+      text-align: left; /* ✅ Left aligned */
     }
     .options label {
       display: block;
@@ -102,9 +120,11 @@
   <div class="header-right">
     <span id="fullnameLabel" class="fullname"></span>
     <span id="modeLabel"></span>
-    <button class="close-btn" onclick="exitTest()">✖</button>
   </div>
 </header>
+
+<!-- ✅ Close Button -->
+<button class="close-btn" onclick="exitTest()">✖</button>
 
 <div class="container">
   <h2 id="chapterName">Loading...</h2>
@@ -129,10 +149,10 @@
   let currentQ = 0;
   let score = 0;
 
-  // Exit test function
+  // ✅ Exit Test Function (Back to Previous Page)
   function exitTest() {
     if (confirm("Are you sure you want to exit the test?")) {
-      window.location.href = "dashboard.html";
+      history.back();
     }
   }
 
