@@ -60,9 +60,31 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .quiz-header-left {
+      text-align: left;
+    }
+    #examNameRow {
+      font-size: 14px;
+      color: #555;
+    }
+    .quiz-header-right {
+      text-align: right;
+    }
+    .timer {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
     h2 {
       color: #1976d2;
-      text-align: center;
+      margin: 0;
     }
     #quizIndicator {
       text-align: left;
@@ -110,12 +132,6 @@
       padding: 20px;
       color: #1976d2;
     }
-    #timerDisplay {
-      font-weight: bold;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 4px;
-    }
   </style>
 </head>
 <body>
@@ -130,15 +146,25 @@
       <span id="testTitle" class="test-title">RS-CIT Test</span>
     </div>
     <div class="header-right">
-      <span id="timerDisplay">⏳ --:--</span>
-      <span id="fullnameLabel" class="fullname"></span>
       <span id="modeLabel"></span>
     </div>
   </div>
 </header>
 
 <div class="container">
-  <h2 id="chapterName">Loading...</h2>
+  <div class="quiz-header">
+    <div class="quiz-header-left">
+      <h2 id="chapterName">Loading...</h2>
+      <div id="examNameRow">Exam Name: <span id="examNameInside">Loading...</span></div>
+    </div>
+    <div class="quiz-header-right">
+      <div class="fullname" id="fullnameLabelInside"></div>
+      <div class="timer">
+        Remaining Exam Time: <span id="timerDisplayInside">⏳ --:--</span>
+      </div>
+    </div>
+  </div>
+
   <div id="quizIndicator"></div>
   <div id="quizArea" class="loading">⏳ Checking Payment & Loading Quiz...</div>
 </div>
@@ -152,7 +178,7 @@
 
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
-  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+  document.getElementById("fullnameLabelInside").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
   document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
 
   let questions = [];
@@ -249,7 +275,7 @@
     function updateTimer() {
       const minutes = Math.floor(timer / 60);
       const seconds = timer % 60;
-      document.getElementById("timerDisplay").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      document.getElementById("timerDisplayInside").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
         alert("⏳ Time is up! Submitting your test...");
@@ -283,11 +309,11 @@
           return;
         }
 
-        // NEW: Show exam name from backend (N7 cell)
         document.getElementById("examNameLabel").textContent = data.examName || "Exam";
+        document.getElementById("examNameInside").textContent = data.examName || "Exam";
 
         questions = data.questions || [];
-        testDuration = data.testDuration || 0; // From N4 cell
+        testDuration = data.testDuration || 0;
         maxMarks = data.maxMarks || 0;
 
         if (!questions.length) {
