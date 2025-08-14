@@ -31,24 +31,15 @@
       font-weight: 500;
       font-size: 16px;
     }
-    /* ✅ Close Button fixed in top-right corner */
     .close-btn {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #ff4d4d;
-      border: none;
-      color: white;
+      position: absolute;
+      right: 15px;
+      top: 15px;
       font-size: 20px;
-      font-weight: bold;
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
       cursor: pointer;
-      z-index: 1000;
-    }
-    .close-btn:hover {
-      background: #d93636;
+      color: white;
+      background: transparent;
+      border: none;
     }
     .container {
       max-width: 700px;
@@ -57,26 +48,22 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: left; /* ✅ Left aligned */
     }
     h2 {
       color: #1976d2;
       text-align: center;
+    }
+    .quiz-indicator {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #444;
     }
     .question {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
       text-align: left;
-    }
-    .indicator {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 10px;
-      text-align: left; /* ✅ Left aligned */
-    }
-    .options {
-      text-align: left; /* ✅ Left aligned */
     }
     .options label {
       display: block;
@@ -85,6 +72,7 @@
       margin: 6px 0;
       border-radius: 4px;
       cursor: pointer;
+      text-align: left;
     }
     button {
       padding: 8px 16px;
@@ -121,25 +109,24 @@
     <span id="fullnameLabel" class="fullname"></span>
     <span id="modeLabel"></span>
   </div>
+  <button class="close-btn" onclick="window.history.back()">✖</button>
 </header>
-
-<!-- ✅ Close Button -->
-<button class="close-btn" onclick="exitTest()">✖</button>
 
 <div class="container">
   <h2 id="chapterName">Loading...</h2>
+  <div id="quizIndicator" class="quiz-indicator"></div>
   <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
 </div>
 
 <script>
-  // Get LocalStorage values
+  // LocalStorage values
   const code = localStorage.getItem("test_code") || "";
   const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  // Update UI header
+  // UI header update
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
@@ -149,22 +136,15 @@
   let currentQ = 0;
   let score = 0;
 
-  // ✅ Exit Test Function (Back to Previous Page)
-  function exitTest() {
-    if (confirm("Are you sure you want to exit the test?")) {
-      history.back();
-    }
+  function updateQuizIndicator() {
+    document.getElementById("quizIndicator").textContent = `Quiz ${currentQ + 1} of ${questions.length}`;
   }
 
-  function getIndicatorHTML() {
-    return `<div class="indicator">Question ${currentQ + 1} of ${questions.length}</div>`;
-  }
-
-  // EXAM MODE
+  // Exam Mode
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
-    let html = getIndicatorHTML();
-    html += `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -181,22 +161,28 @@
       alert("Please select an answer!");
       return;
     }
-    if (parseInt(answer.value) === questions[currentQ].answerIndex) score++;
+    const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
+    if (Number(answer.value) === correctIndex) score++;
     currentQ++;
     loadQuestionExamMode();
   }
 
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (answer && parseInt(answer.value) === questions[currentQ].answerIndex) score++;
-    document.getElementById("quizArea").innerHTML = `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
+    if (answer) {
+      const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
+      if (Number(answer.value) === correctIndex) score++;
+    }
+    document.getElementById("quizArea").innerHTML =
+      `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
+    document.getElementById("quizIndicator").textContent = "";
   }
 
-  // PRACTICE MODE
+  // Practice Mode
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
-    let html = getIndicatorHTML();
-    html += `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -212,12 +198,18 @@
       alert("Please select an answer!");
       return;
     }
-    if (parseInt(answer.value) === questions[currentQ].answerIndex) {
+
+    const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
+    const selectedIndex = Number(answer.value);
+
+    if (selectedIndex === correctIndex) {
       currentQ++;
       if (currentQ < questions.length) {
         loadQuestionPracticeMode();
       } else {
-        document.getElementById("quizArea").innerHTML = `<h3>Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+        document.getElementById("quizArea").innerHTML =
+          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+        document.getElementById("quizIndicator").textContent = "";
       }
       document.getElementById("practiceMsg").textContent = "";
     } else {
@@ -225,11 +217,13 @@
     }
   }
 
+  // Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   function starttest() {
     if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML =
+        `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
 
@@ -237,9 +231,11 @@
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.error}</h3>`;
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">⚠ ${data.error}</h3>`;
           return;
         }
+
         questions = data.questions;
         currentQ = 0;
         score = 0;
@@ -249,18 +245,21 @@
         } else if (mode === "practice") {
           loadQuestionPracticeMode();
         } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
         }
       })
       .catch(err => {
         console.error("Error fetching test:", err);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML =
+          `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
       });
   }
 
   function checkPaymentAndStartTest() {
     if (!username) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML =
+        `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
 
@@ -270,12 +269,14 @@
         if (data.success && (data.paymentStatus || "").toLowerCase().trim() === "confirm") {
           starttest();
         } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
         }
       })
       .catch(error => {
         console.error("Error checking payment status:", error);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error checking payment status. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML =
+          `<h3 style="color:red;">⚠ Error checking payment status. Please try again later.</h3>`;
       });
   }
 
