@@ -37,10 +37,6 @@
       font-weight: bold;
       text-transform: uppercase;
     }
-    .test-title {
-      font-size: 16px;
-      font-weight: 500;
-    }
     .fullname {
       font-weight: 500;
       font-size: 14px;
@@ -59,37 +55,25 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
     }
-    .quiz-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .quiz-header-left {
-      text-align: left;
-    }
-    #examNameRow {
-      font-size: 14px;
-      color: #555;
-    }
-    .quiz-header-right {
-      text-align: right;
-    }
-    .timer {
-      font-size: 14px;
+    #timerDisplay {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       font-weight: bold;
-      margin-top: 5px;
-    }
-    h2 {
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 4px;
       color: #1976d2;
-      margin: 0;
+      font-size: 16px;
     }
     #quizIndicator {
       text-align: left;
       font-size: 14px;
       color: #555;
+      margin-top: 40px;
       margin-bottom: 10px;
     }
     .question {
@@ -138,12 +122,12 @@
 
 <header>
   <div class="header-top">
-    <span id="examNameLabel" class="exam-name">Loading Exam...</span>
+    <span id="examNameLabel" class="exam-name"></span>
     <button class="close-btn" onclick="closeTest()">✖</button>
   </div>
   <div class="header-bottom">
     <div class="header-left">
-      <span id="testTitle" class="test-title">RS-CIT Test</span>
+      <span id="fullnameLabel" class="fullname"></span>
     </div>
     <div class="header-right">
       <span id="modeLabel"></span>
@@ -152,34 +136,19 @@
 </header>
 
 <div class="container">
-  <div class="quiz-header">
-    <div class="quiz-header-left">
-      <h2 id="chapterName">Loading...</h2>
-      <div id="examNameRow">Exam Name: <span id="examNameInside">Loading...</span></div>
-    </div>
-    <div class="quiz-header-right">
-      <div class="fullname" id="fullnameLabelInside"></div>
-      <div class="timer">
-        Remaining Exam Time: <span id="timerDisplayInside">⏳ --:--</span>
-      </div>
-    </div>
-  </div>
-
+  <span id="timerDisplay">⏳ --:--</span>
   <div id="quizIndicator"></div>
-  <div id="quizArea" class="loading">⏳ Checking Payment & Loading Quiz...</div>
+  <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
 
 <script>
   const code = localStorage.getItem("test_code") || "";
-  const message = localStorage.getItem("test_message") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
-  document.getElementById("fullnameLabelInside").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
-  document.getElementById("chapterName").textContent = `${message} - By ${fullname || username || "Guest"}`;
+  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
   let questions = [];
   let currentQ = 0;
@@ -275,7 +244,7 @@
     function updateTimer() {
       const minutes = Math.floor(timer / 60);
       const seconds = timer % 60;
-      document.getElementById("timerDisplayInside").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      document.getElementById("timerDisplay").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
         alert("⏳ Time is up! Submitting your test...");
@@ -309,8 +278,7 @@
           return;
         }
 
-        document.getElementById("examNameLabel").textContent = data.examName || "Exam";
-        document.getElementById("examNameInside").textContent = data.examName || "Exam";
+        document.getElementById("examNameLabel").textContent = data.examName || "";
 
         questions = data.questions || [];
         testDuration = data.testDuration || 0;
