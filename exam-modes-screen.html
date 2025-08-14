@@ -11,14 +11,13 @@
       margin: 0;
       padding: 0;
     }
+
+    /* ===== HEADER SECTION ===== */
     header {
-      background: #1976d2;
-      color: #fff;
+      background: #ffffff;
+      color: #000;
       padding: 10px 20px;
-      font-size: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      border-bottom: 2px solid #e0e0e0;
     }
     .header-top {
       display: flex;
@@ -31,38 +30,52 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      margin-top: 5px;
     }
     .exam-name {
       font-size: 20px;
       font-weight: bold;
-      text-transform: uppercase;
+      color: #000;
     }
     .test-title {
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 600;
+      color: #333;
     }
     .fullname {
       font-weight: 500;
       font-size: 14px;
+      color: #444;
+      margin-left: 10px;
     }
     .close-btn {
       background: transparent;
-      color: white;
+      color: #444;
       font-size: 22px;
       border: none;
       cursor: pointer;
     }
+    #timerDisplay {
+      font-weight: bold;
+      background: #f0f0f0;
+      padding: 5px 10px;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+
+    /* ===== MAIN CONTAINER ===== */
     .container {
-      max-width: 700px;
-      margin: 30px auto;
+      max-width: 900px;
+      margin: 20px auto;
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     h2 {
-      color: #1976d2;
+      color: #000;
       text-align: center;
+      font-size: 20px;
     }
     #quizIndicator {
       text-align: left;
@@ -70,34 +83,85 @@
       color: #555;
       margin-bottom: 10px;
     }
+
+    /* ===== QUESTION STYLE ===== */
     .question {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       text-align: left;
+      color: #000;
+    }
+
+    /* ===== OPTIONS STYLE ===== */
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
     .options label {
       display: block;
-      background: #f1f1f1;
-      padding: 8px;
-      margin: 6px 0;
-      border-radius: 4px;
+      background: #e0f0ff;
+      padding: 12px 15px;
+      border-radius: 8px;
       cursor: pointer;
       text-align: left;
+      font-size: 15px;
+      color: #000;
+      transition: 0.2s ease;
     }
-    button {
-      padding: 8px 16px;
+    .options label:hover {
+      background: #cce7ff;
+    }
+    .options input {
+      margin-right: 8px;
+    }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 20px;
       border: none;
-      border-radius: 4px;
-      background: #1976d2;
+      border-radius: 8px;
       color: white;
       font-size: 14px;
       cursor: pointer;
-      margin-top: 10px;
+      font-weight: bold;
     }
-    button:hover {
-      background: #125aa0;
+    .btn-prev { background: #A8D08D; }
+    .btn-next { background: #28A745; }
+    .btn-skip { background: #FFC107; color: black; }
+    .btn-submit { background: #006400; }
+
+    .btn:hover {
+      opacity: 0.85;
     }
+
+    /* ===== QUESTION NAVIGATION ===== */
+    .question-nav {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .question-nav button {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: #e0e0e0;
+      font-weight: bold;
+      color: #000;
+    }
+    .question-nav button.active { background: #007BFF; color: #fff; }
+    .question-nav button.answered { background: #28A745; color: #fff; }
+
     .message {
       margin-top: 10px;
       font-weight: bold;
@@ -109,12 +173,6 @@
       font-size: 16px;
       padding: 20px;
       color: #1976d2;
-    }
-    #timerDisplay {
-      font-weight: bold;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 4px;
     }
   </style>
 </head>
@@ -174,11 +232,23 @@
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
+    html += `</div><div class="action-buttons">`;
+    if (currentQ > 0) html += `<button class="btn btn-prev" onclick="prevQuestion()">Previous</button>`;
+    if (currentQ < questions.length - 1) {
+      html += `<button class="btn btn-next" onclick="nextQuestionExam()">Save & Next</button>`;
+      html += `<button class="btn btn-skip" onclick="skipQuestion()">Skip</button>`;
+    } else {
+      html += `<button class="btn btn-submit" onclick="submitExam()">Submit</button>`;
+    }
     html += `</div>`;
-    html += currentQ < questions.length - 1
-      ? `<button onclick="nextQuestionExam()">Next</button>`
-      : `<button onclick="submitExam()">Submit</button>`;
     document.getElementById("quizArea").innerHTML = html;
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) {
+      currentQ--;
+      loadQuestionExamMode();
+    }
   }
 
   function nextQuestionExam() {
@@ -186,6 +256,11 @@
     if (!answer) { alert("Please select an answer!"); return; }
     const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    currentQ++;
+    loadQuestionExamMode();
+  }
+
+  function skipQuestion() {
     currentQ++;
     loadQuestionExamMode();
   }
@@ -202,40 +277,6 @@
        <p>Your Score: ${score} / ${questions.length}</p>
        <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
     document.getElementById("quizIndicator").textContent = "";
-  }
-
-  function loadQuestionPracticeMode() {
-    const qData = questions[currentQ];
-    updateQuizIndicator();
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
-    qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
-    });
-    html += `</div>`;
-    html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
-    html += `<div class="message" id="practiceMsg"></div>`;
-    document.getElementById("quizArea").innerHTML = html;
-  }
-
-  function checkPracticeAnswer() {
-    const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
-    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
-    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
-
-    if (selectedLetter === correctAnswer) {
-      currentQ++;
-      if (currentQ < questions.length) {
-        loadQuestionPracticeMode();
-      } else {
-        clearInterval(timerInterval);
-        document.getElementById("quizArea").innerHTML =
-          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
-        document.getElementById("quizIndicator").textContent = "";
-      }
-    } else {
-      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
-    }
   }
 
   function closeTest() {
@@ -283,11 +324,10 @@
           return;
         }
 
-        // NEW: Show exam name from backend (N7 cell)
         document.getElementById("examNameLabel").textContent = data.examName || "Exam";
 
         questions = data.questions || [];
-        testDuration = data.testDuration || 0; // From N4 cell
+        testDuration = data.testDuration || 0;
         maxMarks = data.maxMarks || 0;
 
         if (!questions.length) {
@@ -299,13 +339,7 @@
         score = 0;
         startTimer(testDuration);
 
-        if (mode === "exam") {
-          loadQuestionExamMode();
-        } else if (mode === "practice") {
-          loadQuestionPracticeMode();
-        } else {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
-        }
+        loadQuestionExamMode();
       })
       .catch(err => {
         console.error("Error loading test:", err);
