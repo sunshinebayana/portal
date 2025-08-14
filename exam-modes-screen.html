@@ -19,8 +19,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
       flex-wrap: wrap;
-      position: relative;
     }
     .header-right {
       display: flex;
@@ -32,14 +36,11 @@
       font-size: 16px;
     }
     .close-btn {
-      position: absolute;
-      right: 15px;
-      top: 15px;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
       background: transparent;
+      color: white;
+      font-size: 22px;
       border: none;
+      cursor: pointer;
     }
     .container {
       max-width: 700px;
@@ -53,11 +54,11 @@
       color: #1976d2;
       text-align: center;
     }
-    .quiz-indicator {
+    #quizIndicator {
       text-align: center;
-      margin-bottom: 15px;
-      font-weight: bold;
-      color: #444;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
     }
     .question {
       font-size: 16px;
@@ -104,17 +105,19 @@
 <body>
 
 <header>
-  <div id="testTitle">RS-CIT Test</div>
+  <div class="header-left">
+    <div id="testTitle">RS-CIT Test</div>
+  </div>
   <div class="header-right">
     <span id="fullnameLabel" class="fullname"></span>
     <span id="modeLabel"></span>
+    <button class="close-btn" onclick="closeTest()">✖</button>
   </div>
-  <button class="close-btn" onclick="window.history.back()">✖</button>
 </header>
 
 <div class="container">
   <h2 id="chapterName">Loading...</h2>
-  <div id="quizIndicator" class="quiz-indicator"></div>
+  <div id="quizIndicator"></div>
   <div id="quizArea" class="loading">⏳ Checking Payment Status...</div>
 </div>
 
@@ -126,7 +129,7 @@
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  // UI header update
+  // Update UI header
   document.getElementById("testTitle").textContent = `RS-CIT Test - ${code}`;
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
@@ -137,7 +140,8 @@
   let score = 0;
 
   function updateQuizIndicator() {
-    document.getElementById("quizIndicator").textContent = `Quiz ${currentQ + 1} of ${questions.length}`;
+    document.getElementById("quizIndicator").textContent =
+      `Question ${currentQ + 1} of ${questions.length}`;
   }
 
   // Exam Mode
@@ -161,8 +165,9 @@
       alert("Please select an answer!");
       return;
     }
-    const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
-    if (Number(answer.value) === correctIndex) score++;
+    const selectedIndex = parseInt(answer.value);
+    const selectedLetter = String.fromCharCode(65 + selectedIndex);
+    if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     currentQ++;
     loadQuestionExamMode();
   }
@@ -170,8 +175,9 @@
   function submitExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
-      const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
-      if (Number(answer.value) === correctIndex) score++;
+      const selectedIndex = parseInt(answer.value);
+      const selectedLetter = String.fromCharCode(65 + selectedIndex);
+      if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     }
     document.getElementById("quizArea").innerHTML =
       `<h3>Exam Completed!</h3><p>Your Score: ${score} / ${questions.length}</p>`;
@@ -198,11 +204,11 @@
       alert("Please select an answer!");
       return;
     }
+    const selectedIndex = parseInt(answer.value);
+    const selectedLetter = String.fromCharCode(65 + selectedIndex);
+    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
 
-    const correctIndex = Number(questions[currentQ].answerIndex ?? questions[currentQ].answer);
-    const selectedIndex = Number(answer.value);
-
-    if (selectedIndex === correctIndex) {
+    if (selectedLetter === correctAnswer) {
       currentQ++;
       if (currentQ < questions.length) {
         loadQuestionPracticeMode();
@@ -217,52 +223,50 @@
     }
   }
 
+  // Close Button
+  function closeTest() {
+    if (confirm("Are you sure you want to close the test?")) {
+      window.history.back();
+    }
+  }
+
   // Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   function starttest() {
     if (!username) {
-      document.getElementById("quizArea").innerHTML =
-        `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
-
     fetch(`${backendUrl}?action=starttest&testCode=${encodeURIComponent(code)}`)
       .then(res => res.json())
       .then(data => {
         if (data.error) {
-          document.getElementById("quizArea").innerHTML =
-            `<h3 style="color:red;">⚠ ${data.error}</h3>`;
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.error}</h3>`;
           return;
         }
-
         questions = data.questions;
         currentQ = 0;
         score = 0;
-
         if (mode === "exam") {
           loadQuestionExamMode();
         } else if (mode === "practice") {
           loadQuestionPracticeMode();
         } else {
-          document.getElementById("quizArea").innerHTML =
-            `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
         }
       })
       .catch(err => {
         console.error("Error fetching test:", err);
-        document.getElementById("quizArea").innerHTML =
-          `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error fetching test. Please try again later.</h3>`;
       });
   }
 
   function checkPaymentAndStartTest() {
     if (!username) {
-      document.getElementById("quizArea").innerHTML =
-        `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
-
     fetch(`${backendUrl}?username=${encodeURIComponent(username)}&action=getpaymentstatus`)
       .then(res => res.json())
       .then(data => {
