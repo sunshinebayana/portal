@@ -14,28 +14,36 @@
     header {
       background: #1976d2;
       color: #fff;
-      padding: 15px 20px;
+      padding: 10px 20px;
       font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
     }
-    .header-left {
+    .header-bottom {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 15px;
       flex-wrap: wrap;
     }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
+    .exam-name {
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .test-title {
+      font-size: 16px;
+      font-weight: 500;
     }
     .fullname {
       font-weight: 500;
-      font-size: 16px;
+      font-size: 14px;
     }
     .close-btn {
       background: transparent;
@@ -113,14 +121,19 @@
 <body>
 
 <header>
-  <div class="header-left">
-    <div id="testTitle">RS-CIT Test</div>
-  </div>
-  <div class="header-right">
-    <span id="timerDisplay">⏳ --:--</span>
-    <span id="fullnameLabel" class="fullname"></span>
-    <span id="modeLabel"></span>
+  <div class="header-top">
+    <span id="examNameLabel" class="exam-name">Loading Exam...</span>
     <button class="close-btn" onclick="closeTest()">✖</button>
+  </div>
+  <div class="header-bottom">
+    <div class="header-left">
+      <span id="testTitle" class="test-title">RS-CIT Test</span>
+    </div>
+    <div class="header-right">
+      <span id="timerDisplay">⏳ --:--</span>
+      <span id="fullnameLabel" class="fullname"></span>
+      <span id="modeLabel"></span>
+    </div>
   </div>
 </header>
 
@@ -270,6 +283,9 @@
           return;
         }
 
+        // NEW: Show exam name from backend (N7 cell)
+        document.getElementById("examNameLabel").textContent = data.examName || "Exam";
+
         questions = data.questions || [];
         testDuration = data.testDuration || 0; // From N4 cell
         maxMarks = data.maxMarks || 0;
@@ -281,7 +297,7 @@
 
         currentQ = 0;
         score = 0;
-        startTimer(testDuration); // Start timer from backend value
+        startTimer(testDuration);
 
         if (mode === "exam") {
           loadQuestionExamMode();
