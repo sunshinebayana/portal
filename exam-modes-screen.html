@@ -17,8 +17,29 @@
       padding: 10px 20px;
       font-size: 18px;
       display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .header-top {
+      display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .exam-name {
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .fullname {
+      font-weight: 500;
+      font-size: 14px;
     }
     .close-btn {
       background: transparent;
@@ -29,34 +50,30 @@
     }
     .container {
       max-width: 700px;
-      margin: 20px auto;
+      margin: 30px auto;
       background: #fff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .quiz-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .exam-name-row {
-      margin-top: 5px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #1976d2;
+      position: relative;
     }
     #timerDisplay {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       font-weight: bold;
-      color: #d32f2f;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 4px;
+      color: #1976d2;
+      font-size: 16px;
     }
     #quizIndicator {
       text-align: left;
       font-size: 14px;
       color: #555;
-      margin-top: 10px;
+      margin-top: 40px;
       margin-bottom: 10px;
     }
     .question {
@@ -74,24 +91,17 @@
       cursor: pointer;
       text-align: left;
     }
-    .control-bar {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-    .control-bar button {
-      flex: 1;
-      padding: 8px 12px;
+    button {
+      padding: 8px 16px;
       border: none;
       border-radius: 4px;
       background: #1976d2;
       color: white;
       font-size: 14px;
       cursor: pointer;
+      margin-top: 10px;
     }
-    .control-bar button:hover {
+    button:hover {
       background: #125aa0;
     }
     .message {
@@ -111,21 +121,22 @@
 <body>
 
 <header>
-  <span>Test Screen</span>
-  <button class="close-btn" onclick="closeTest()">✖</button>
+  <div class="header-top">
+    <span id="examNameLabel" class="exam-name"></span>
+    <button class="close-btn" onclick="closeTest()">✖</button>
+  </div>
+  <div class="header-bottom">
+    <div class="header-left">
+      <span id="fullnameLabel" class="fullname"></span>
+    </div>
+    <div class="header-right">
+      <span id="modeLabel"></span>
+    </div>
+  </div>
 </header>
 
 <div class="container">
-  <!-- Top Row -->
-  <div class="quiz-header">
-    <span id="fullnameLabel"></span>
-    <span>Remaining Exam Time: <span id="timerDisplay">--:--</span></span>
-  </div>
-  <!-- Second Row -->
-  <div class="exam-name-row">
-    Exam Name: <span id="examNameLabel"></span>
-  </div>
-  
+  <span id="timerDisplay">⏳ --:--</span>
   <div id="quizIndicator"></div>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
@@ -136,6 +147,7 @@
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
+  document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
   let questions = [];
@@ -150,17 +162,6 @@
       `Question ${currentQ + 1} of ${questions.length}`;
   }
 
-  function renderControlBar() {
-    return `
-      <div class="control-bar">
-        <button onclick="prevQuestion()">Previous</button>
-        <button onclick="saveAndNext()">Save & Next</button>
-        <button onclick="skipQuestion()">Skip</button>
-        <button onclick="submitExam()">Submit Test</button>
-      </div>
-    `;
-  }
-
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -169,44 +170,67 @@
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
     html += `</div>`;
-    html += renderControlBar();
+    html += currentQ < questions.length - 1
+      ? `<button onclick="nextQuestionExam()">Next</button>`
+      : `<button onclick="submitExam()">Submit</button>`;
     document.getElementById("quizArea").innerHTML = html;
   }
 
-  function prevQuestion() {
-    if (currentQ > 0) {
-      currentQ--;
-      loadQuestionExamMode();
-    }
-  }
-
-  function saveAndNext() {
+  function nextQuestionExam() {
     const answer = document.querySelector("input[name='option']:checked");
     if (!answer) { alert("Please select an answer!"); return; }
     const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestionExamMode();
-    } else {
-      submitExam();
-    }
-  }
-
-  function skipQuestion() {
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestionExamMode();
-    }
+    currentQ++;
+    loadQuestionExamMode();
   }
 
   function submitExam() {
     clearInterval(timerInterval);
+    const answer = document.querySelector("input[name='option']:checked");
+    if (answer) {
+      const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+      if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    }
     document.getElementById("quizArea").innerHTML =
       `<h3>Exam Completed!</h3>
        <p>Your Score: ${score} / ${questions.length}</p>
        <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
     document.getElementById("quizIndicator").textContent = "";
+  }
+
+  function loadQuestionPracticeMode() {
+    const qData = questions[currentQ];
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+    });
+    html += `</div>`;
+    html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
+    html += `<div class="message" id="practiceMsg"></div>`;
+    document.getElementById("quizArea").innerHTML = html;
+  }
+
+  function checkPracticeAnswer() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) { alert("Please select an answer!"); return; }
+    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
+
+    if (selectedLetter === correctAnswer) {
+      currentQ++;
+      if (currentQ < questions.length) {
+        loadQuestionPracticeMode();
+      } else {
+        clearInterval(timerInterval);
+        document.getElementById("quizArea").innerHTML =
+          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+        document.getElementById("quizIndicator").textContent = "";
+      }
+    } else {
+      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
+    }
   }
 
   function closeTest() {
@@ -220,7 +244,7 @@
     function updateTimer() {
       const minutes = Math.floor(timer / 60);
       const seconds = timer % 60;
-      document.getElementById("timerDisplay").textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      document.getElementById("timerDisplay").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
         alert("⏳ Time is up! Submitting your test...");
@@ -269,7 +293,13 @@
         score = 0;
         startTimer(testDuration);
 
-        loadQuestionExamMode();
+        if (mode === "exam") {
+          loadQuestionExamMode();
+        } else if (mode === "practice") {
+          loadQuestionPracticeMode();
+        } else {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+        }
       })
       .catch(err => {
         console.error("Error loading test:", err);
