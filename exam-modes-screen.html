@@ -57,11 +57,13 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       position: relative;
     }
+    .test-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
     #timerDisplay {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
       font-weight: bold;
       background: rgba(255,255,255,0.8);
       padding: 5px 10px;
@@ -73,7 +75,7 @@
       text-align: left;
       font-size: 14px;
       color: #555;
-      margin-top: 40px;
+      margin-top: 10px;
       margin-bottom: 10px;
     }
     .question {
@@ -136,7 +138,11 @@
 </header>
 
 <div class="container">
-  <span id="timerDisplay">⏳ --:--</span>
+  <div class="test-header-row">
+    <div><strong>Exam Name:</strong> <span id="examNameInTest"></span></div>
+    <div id="timerDisplay">⏳ Time Left: --:--</div>
+    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+  </div>
   <div id="quizIndicator"></div>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
@@ -244,7 +250,8 @@
     function updateTimer() {
       const minutes = Math.floor(timer / 60);
       const seconds = timer % 60;
-      document.getElementById("timerDisplay").textContent = `⏳ ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      document.getElementById("timerDisplay").textContent =
+        `⏳ Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
         alert("⏳ Time is up! Submitting your test...");
@@ -279,11 +286,12 @@
         }
 
         document.getElementById("examNameLabel").textContent = data.examName || "";
-
-        questions = data.questions || [];
+        document.getElementById("examNameInTest").textContent = data.examName || "";
         testDuration = data.testDuration || 0;
+        document.getElementById("examTimeInTest").textContent = testDuration;
         maxMarks = data.maxMarks || 0;
 
+        questions = data.questions || [];
         if (!questions.length) {
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
           return;
