@@ -171,7 +171,7 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Next</button>` : ''}
+        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
         <button onclick="submitExam()">Submit Test</button>
       </div>
     `;
@@ -334,3 +334,4 @@
 </script>
 </body>
 </html>
+
