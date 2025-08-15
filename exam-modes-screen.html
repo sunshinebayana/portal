@@ -22,7 +22,7 @@
     }
     .header-top {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -31,11 +31,6 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-    }
-    .exam-name {
-      font-size: 20px;
-      font-weight: bold;
-      text-transform: uppercase;
     }
     .fullname {
       font-weight: 500;
@@ -71,12 +66,14 @@
       color: #1976d2;
       font-size: 16px;
     }
-    #quizIndicator {
-      text-align: left;
-      font-size: 14px;
-      color: #555;
+    .quiz-indicator-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 10px;
       margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
     }
     .question {
       font-size: 16px;
@@ -124,7 +121,6 @@
 
 <header>
   <div class="header-top">
-    <span id="examNameLabel" class="exam-name"></span>
     <button class="close-btn" onclick="closeTest()">✖</button>
   </div>
   <div class="header-bottom">
@@ -143,7 +139,12 @@
     <div id="timerDisplay">⏳ Time Left: --:--</div>
     <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
   </div>
-  <div id="quizIndicator"></div>
+
+  <div class="quiz-indicator-row">
+    <div id="quizIndicator"></div>
+    <div id="quizModeDisplay"></div>
+  </div>
+
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
 
@@ -166,6 +167,8 @@
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
       `Question ${currentQ + 1} of ${questions.length}`;
+    document.getElementById("quizModeDisplay").textContent =
+      `Mode: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`;
   }
 
   function loadQuestionExamMode() {
@@ -203,6 +206,7 @@
        <p>Your Score: ${score} / ${questions.length}</p>
        <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
     document.getElementById("quizIndicator").textContent = "";
+    document.getElementById("quizModeDisplay").textContent = "";
   }
 
   function loadQuestionPracticeMode() {
@@ -233,6 +237,7 @@
         document.getElementById("quizArea").innerHTML =
           `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
         document.getElementById("quizIndicator").textContent = "";
+        document.getElementById("quizModeDisplay").textContent = "";
       }
     } else {
       document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
@@ -285,7 +290,6 @@
           return;
         }
 
-        document.getElementById("examNameLabel").textContent = data.examName || "";
         document.getElementById("examNameInTest").textContent = data.examName || "";
         testDuration = data.testDuration || 0;
         document.getElementById("examTimeInTest").textContent = testDuration;
