@@ -36,8 +36,8 @@
     }
 .close-btn {
   position: absolute;
-  top: -14px;       /* moves slightly above the container's top edge */
-  right: -14px;     /* moves slightly outside to the right */
+  top: -14px;
+  right: -14px;
   background: #fff;
   color: #1976d2;
   font-size: 18px;
@@ -51,13 +51,11 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: all 0.2s ease;
 }
-
 .close-btn:hover {
   background: #f5f5f5;
   color: #d32f2f;
   border-color: #d32f2f;
 }
-    
     .top-info-row {
       display: flex;
       justify-content: space-between;
@@ -99,6 +97,11 @@
       cursor: pointer;
       text-align: left;
     }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
     button {
       padding: 8px 16px;
       border: none;
@@ -107,7 +110,6 @@
       color: white;
       font-size: 14px;
       cursor: pointer;
-      margin-top: 10px;
     }
     button:hover {
       background: #125aa0;
@@ -127,32 +129,23 @@
   </style>
 </head>
 <body>
-
 <header>
   <span id="examNameLabel" class="exam-name"></span>
 </header>
-
 <div class="container">
-  <!-- Close button inside test area -->
   <button class="close-btn" onclick="closeTest()">✖</button>
-
-  <!-- Fullname + Timer + Exam Time -->
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
     <div id="timerDisplay">⏳ Time Left: --:--</div>
     <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
   </div>
-
-  <!-- Quiz Indicator + Exam Name + Mode -->
   <div class="quiz-indicator-row">
     <div id="quizIndicator"></div>
     <div id="examNameInTest"></div>
     <div id="modeLabel"></div>
   </div>
-
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
-
 <script>
   const code = localStorage.getItem("test_code") || "";
   const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
@@ -174,6 +167,16 @@
       `Question ${currentQ + 1} of ${questions.length}`;
   }
 
+  function renderNavigationButtons() {
+    return `
+      <div class="button-row">
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Next</button>` : ''}
+        <button onclick="submitExam()">Submit Test</button>
+      </div>
+    `;
+  }
+
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -181,10 +184,7 @@
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
-    html += `</div>`;
-    html += currentQ < questions.length - 1
-      ? `<button onclick="nextQuestionExam()">Next</button>`
-      : `<button onclick="submitExam()">Submit</button>`;
+    html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
   }
 
@@ -195,6 +195,17 @@
     if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     currentQ++;
     loadQuestionExamMode();
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) {
+      currentQ--;
+      if (mode === "exam") {
+        loadQuestionExamMode();
+      } else {
+        loadQuestionPracticeMode();
+      }
+    }
   }
 
   function submitExam() {
@@ -218,9 +229,7 @@
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
-    html += `</div>`;
-    html += `<button onclick="checkPracticeAnswer()">Next & Save</button>`;
-    html += `<div class="message" id="practiceMsg"></div>`;
+    html += `</div>` + renderNavigationButtons() + `<div class="message" id="practiceMsg"></div>`;
     document.getElementById("quizArea").innerHTML = html;
   }
 
@@ -229,10 +238,9 @@
     if (!answer) { alert("Please select an answer!"); return; }
     const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
-
     if (selectedLetter === correctAnswer) {
-      currentQ++;
-      if (currentQ < questions.length) {
+      if (currentQ < questions.length - 1) {
+        currentQ++;
         loadQuestionPracticeMode();
       } else {
         clearInterval(timerInterval);
@@ -324,10 +332,5 @@
 
   initTest();
 </script>
-
 </body>
 </html>
-
-
-
-
