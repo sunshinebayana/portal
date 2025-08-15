@@ -20,29 +20,10 @@
       flex-direction: column;
       gap: 5px;
     }
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .header-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
     .exam-name {
       font-size: 20px;
       font-weight: bold;
       text-transform: uppercase;
-    }
-    .close-btn {
-      background: transparent;
-      color: white;
-      font-size: 22px;
-      border: none;
-      cursor: pointer;
     }
     .container {
       max-width: 700px;
@@ -52,6 +33,16 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      color: #1976d2;
+      font-size: 22px;
+      border: none;
+      cursor: pointer;
     }
     .top-info-row {
       display: flex;
@@ -124,13 +115,13 @@
 <body>
 
 <header>
-  <div class="header-top">
-    <span id="examNameLabel" class="exam-name"></span>
-    <button class="close-btn" onclick="closeTest()">✖</button>
-  </div>
+  <span id="examNameLabel" class="exam-name"></span>
 </header>
 
 <div class="container">
+  <!-- Close button inside test area -->
+  <button class="close-btn" onclick="closeTest()">✖</button>
+
   <!-- Fullname + Timer + Exam Time -->
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
