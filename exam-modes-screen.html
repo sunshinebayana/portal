@@ -60,16 +60,28 @@
     .test-header-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 10px;
     }
-    #timerDisplay {
+    .right-column {
+      text-align: right;
+    }
+    #modeDisplay {
       font-weight: bold;
       background: rgba(255,255,255,0.8);
       padding: 5px 10px;
       border-radius: 4px;
       color: #1976d2;
       font-size: 16px;
+    }
+    #timerDisplay {
+      font-weight: bold;
+      color: #1976d2;
+      font-size: 16px;
+    }
+    #examTimeInTest {
+      color: #333;
+      font-size: 14px;
     }
     #quizIndicator {
       text-align: left;
@@ -140,9 +152,12 @@
 <div class="container">
   <div class="test-header-row">
     <div><strong>Exam Name:</strong> <span id="examNameInTest"></span></div>
-    <div id="timerDisplay">⏳ Time Left: --:--</div>
-    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+    <div class="right-column">
+      <div id="timerDisplay">⏳ Time Left: --:--</div>
+      <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+    </div>
   </div>
+  <div id="modeDisplay">Mode: --</div>
   <div id="quizIndicator"></div>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
@@ -155,6 +170,7 @@
 
   document.getElementById("modeLabel").textContent = mode ? mode.toUpperCase() + " MODE" : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+  document.getElementById("modeDisplay").textContent = `Mode: ${mode ? mode.charAt(0).toUpperCase() + mode.slice(1) : "--"}`;
 
   let questions = [];
   let currentQ = 0;
