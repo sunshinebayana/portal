@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RS-CIT Old Papers</title>
+  <title>📄 RS-CIT Old Papers</title>
   <style>
     body {
       margin: 0;
@@ -18,15 +18,34 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 18px;
+      font-weight: bold;
     }
-    .back-btn {
-      background: #ef5350;
-      color: white;
-      border: none;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
       padding: 6px 12px;
       font-size: 14px;
       border-radius: 5px;
+      border: none;
       cursor: pointer;
+      transition: background 0.3s;
+      color: #fff;
+    }
+    .back-btn {
+      background: #43a047;
+    }
+    .back-btn:hover {
+      background: #2e7d32;
+    }
+    .logout-btn {
+      background: #ef5350;
+    }
+    .logout-btn:hover {
+      background: #d32f2f;
     }
     main {
       padding: 20px;
@@ -87,9 +106,10 @@
 
 <header>
   <div>📄 RS-CIT Old Papers</div>
-  <div>
-    <span id="username"></span>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <div class="header-right">
+    <span id="welcomeMsg"></span>
+    <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="btn logout-btn" onclick="logoutUser()">Logout</button>
   </div>
 </header>
 
@@ -106,28 +126,28 @@
 </main>
 
 <script>
-  // ✅ Login Check
+  let selectedMode = "practice";
+
+  // ✅ Prevent Direct Access
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   if (isLoggedIn !== "true") {
     location.replace("login.html");
   }
 
-  // ✅ Username Display
+  // ✅ Set Welcome Message
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const username = userData?.username || "";
-  if (userData?.fullname) {
-    document.getElementById("username").textContent = `Welcome, ${userData.fullname}`;
+  if (userData && userData.fullname) {
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}`;
   }
 
-  // ✅ Mode Handling
-  let currentMode = "practice";
+  // ✅ Switch Mode
   function switchMode(mode) {
-    currentMode = mode;
+    selectedMode = mode;
     document.getElementById("practiceModeBtn").className = mode === "practice" ? "active-mode" : "inactive-mode";
     document.getElementById("examModeBtn").className = mode === "exam" ? "active-mode" : "inactive-mode";
   }
 
-  // ✅ Paper List
+  // ✅ Papers Data
   const papers = [
     "RS-CIT Exam - 03 August 2025 🔹T59",
     "RS-CIT Exam - 27 April 2025 🔹T51",
@@ -156,19 +176,36 @@
     const btn = document.createElement("button");
     btn.className = "paper-btn";
     btn.textContent = paper;
-    btn.onclick = () => startRscitTest(code, `Loading ${code}...`, currentMode, username);
+    btn.onclick = () => startTest(code);
     papersList.appendChild(btn);
   });
 
-  // ✅ Start Test Function
-  function startRscitTest(testCode, loadingMessage, mode, username) {
-    alert(`User: ${username}\nMode: ${mode}\nTest: ${testCode}\n${loadingMessage}`);
-    // Place actual redirection logic here if needed
+  // ✅ Start Test
+  function startTest(code) {
+    const username = userData?.username || "guest";
+    startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
   }
 
-  // ✅ Back Button
+  // ✅ Actual Test Starter
+  function startRscitTest(code, message, mode, username) {
+    alert(`Starting ${mode} for ${code} by ${username}...\n${message}`);
+    // Add actual redirection logic here
+  }
+
+  // ✅ Back to RS-CIT Module
   function goBack() {
     location.href = "rs-cit-module.html";
+  }
+
+  // ✅ Logout User
+  function logoutUser() {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.username) {
+      const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+      fetch(logoutUrl).catch(err => console.error("Logout error:", err));
+    }
+    localStorage.clear();
+    location.replace("login.html");
   }
 </script>
 
