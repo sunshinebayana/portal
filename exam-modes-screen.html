@@ -29,6 +29,20 @@
     .confirm-content p{margin-bottom:15px;font-size:16px;font-weight:bold}
     .confirm-buttons{display:flex;justify-content:space-around}
     .confirm-buttons button{flex:1;margin:0 5px}
+
+    /* ✅ Scoreboard Styling */
+    .scoreboard{max-width:600px;margin:30px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
+    .scoreboard h2{text-align:center;margin-bottom:20px;color:#1976d2}
+    .score-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+    .score-item:last-child{border-bottom:none}
+    .score-label{font-weight:bold;color:#444}
+    .score-value{color:#1976d2}
+    .score-result.pass{color:#4caf50;font-weight:bold}
+    .score-result.fail{color:#d32f2f;font-weight:bold}
+    .score-close{text-align:center;margin-top:20px}
+    .score-close button{background:#d32f2f}
+    .score-close button:hover{background:#b71c1c}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
@@ -68,6 +82,7 @@ document.getElementById("modeLabel").textContent=mode?`Mode: ${mode[0].toUpperCa
 document.getElementById("fullnameLabel").textContent=fullname?`👤 ${fullname}`:"👤 Guest User";
 
 let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,attempted=[];
+let startTime=Date.now();
 
 function updateQuizIndicator(){document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;renderQuestionNav()}
 function renderQuestionNav(){const nav=document.getElementById("questionNav");nav.innerHTML="";questions.forEach((q,i)=>{const btn=document.createElement("div");btn.textContent=i+1;btn.className="question-btn";if(attempted[i])btn.classList.add("attempted");btn.onclick=()=>{currentQ=i;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()};nav.appendChild(btn)})}
@@ -109,18 +124,41 @@ function cancelSubmit(){document.getElementById("confirmBox").style.display="non
 
 function submitExam(){
   clearInterval(timerInterval);
-  let total=questions.length*2,obt=score*2;
-  document.getElementById("quizArea").innerHTML=
-    `<h3>📊 Test Completed!</h3>
-     <p>Marks Obtained: ${obt}/${total}</p>
-     <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
+  let totalQ=questions.length;
+  let attemptedQ=attempted.filter(x=>x).length;
+  let correctAns=score;
+  let maxMarksCalc=maxMarks||totalQ; // fallback
+  let obtained=correctAns; 
+  let percentage=(obtained/maxMarksCalc)*100;
+  let result="N/A";
+  if(maxMarksCalc>0){ result=percentage>=40?"Pass":"Fail"; }
+  let endTime=Date.now();
+  let timeTakenMs=endTime-startTime;
+  let mins=Math.floor(timeTakenMs/60000);
+  let secs=Math.floor((timeTakenMs%60000)/1000);
+
+  // ✅ Scoreboard UI
+  document.getElementById("quizArea").innerHTML=`
+    <div class="scoreboard">
+      <h2>📊 Scoreboard</h2>
+      <div class="score-item"><span class="score-label">Full Name:</span><span class="score-value">${fullname}</span></div>
+      <div class="score-item"><span class="score-label">Result:</span><span class="score-result ${result.toLowerCase()}">${result}</span></div>
+      <div class="score-item"><span class="score-label">Max Marks:</span><span class="score-value">${maxMarksCalc}</span></div>
+      <div class="score-item"><span class="score-label">Obtained Marks:</span><span class="score-value">${obtained}</span></div>
+      <div class="score-item"><span class="score-label">Total Questions:</span><span class="score-value">${totalQ}</span></div>
+      <div class="score-item"><span class="score-label">Attempted:</span><span class="score-value">${attemptedQ}</span></div>
+      <div class="score-item"><span class="score-label">Correct Answers:</span><span class="score-value">${correctAns}</span></div>
+      <div class="score-item"><span class="score-label">Test Time:</span><span class="score-value">${testDuration} minutes</span></div>
+      <div class="score-item"><span class="score-label">Time Taken:</span><span class="score-value">${mins}m ${secs}s</span></div>
+      <div class="score-close"><button onclick="document.querySelector('.container').style.display='none'">Close</button></div>
+    </div>
+  `;
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
 }
 
-
 // ---------------- Timer ----------------
-function closeTest(){if(confirm("Are you sure you want to close the test?"))window.history.back()}
+function closeTest(){document.querySelector('.container').style.display='none'}
 function startTimer(mins){let t=mins*60;function update(){const m=Math.floor(t/60),s=t%60;document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;if(--t<0){clearInterval(timerInterval);alert("⏳ Time is up! Submitting your test...");submitExam()}}update();timerInterval=setInterval(update,1000)}
 
 // ---------------- Backend Init ----------------
@@ -136,7 +174,7 @@ function initTest(){
     testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
     maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
     if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return}
-    currentQ=0;score=0;startTimer(testDuration);
+    currentQ=0;score=0;startTime=Date.now();startTimer(testDuration);
     mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
   }).catch(e=>{console.error("Error:",e);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`})
 }
@@ -145,4 +183,3 @@ initTest();
 </script>
 </body>
 </html>
-
