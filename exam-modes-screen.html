@@ -155,55 +155,6 @@
       color: #fff;
       border-color: #4caf50;
     }
-
-    /* Practice Mode Scoreboard */
-    .scoreboard {
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      padding: 20px;
-      text-align: left;
-      font-size: 16px;
-      position: relative;
-    }
-    .scoreboard h3 {
-      text-align: center;
-      color: #1976d2;
-      margin-bottom: 20px;
-    }
-    .scoreboard .row {
-      margin-bottom: 10px;
-    }
-    .scoreboard .label {
-      font-weight: bold;
-      width: 180px;
-      display: inline-block;
-    }
-    .scoreboard .value {
-      display: inline-block;
-    }
-    .scoreboard .close-btn-scoreboard {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #fff;
-      color: #1976d2;
-      border: 1px solid #ccc;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      text-align: center;
-      line-height: 26px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .scoreboard .close-btn-scoreboard:hover {
-      background: #f5f5f5;
-      color: #d32f2f;
-      border-color: #d32f2f;
-    }
   </style>
 </head>
 <body>
@@ -236,13 +187,9 @@
 
   let questions = [];
   let currentQ = 0;
-  let score = 0;
-  let testDuration = 0;
-  let maxMarks = 0;
-  let timerInterval;
   let attempted = [];
-  let totalIncorrectAttempts = 0;
   let startTime;
+  let timerInterval;
 
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
@@ -267,20 +214,11 @@
     }
   }
 
-  function renderNavigationButtons() {
-    return `
-      <div class="button-row">
-        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
-        <button onclick="submitPractice()">Submit Test</button>
-      </div>
-    `;
-  }
-
   function markAttempted() {
     attempted[currentQ] = true;
   }
 
+  // ✅ PRACTICE MODE
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -288,7 +226,13 @@
     qData.options.forEach((opt, idx) => {
       html += `<label><input type="radio" name="option" value="${idx}" ${qData.selected===idx?'checked':''}> ${opt}</label>`;
     });
-    html += `</div>` + renderNavigationButtons() + `<div class="message" id="practiceMsg"></div>`;
+    html += `</div>
+      <div class="button-row">
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="checkPracticeAnswer()">Save & Next</button>` : ''}
+        <button onclick="submitPractice()">Submit Test</button>
+      </div>
+      <div class="message" id="practiceMsg"></div>`;
     document.getElementById("quizArea").innerHTML = html;
   }
 
@@ -298,58 +242,62 @@
     const selectedIdx = parseInt(answer.value);
     questions[currentQ].selected = selectedIdx;
     markAttempted();
-    const selectedLetter = String.fromCharCode(65 + selectedIdx);
-    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
-    if (selectedLetter === correctAnswer) {
-      score++;
-      if (currentQ < questions.length - 1) {
-        currentQ++;
-        loadQuestionPracticeMode();
-      } else {
-        showPracticeScoreboard();
-      }
+    if (currentQ < questions.length - 1) {
+      currentQ++;
+      loadQuestionPracticeMode();
     } else {
-      totalIncorrectAttempts++;
-      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
+      submitPractice();
     }
   }
 
   function submitPractice() {
-    clearInterval(timerInterval);
-    showPracticeScoreboard();
+    alert("Answer saved successfully (Practice Mode)");
+    closeTest();
   }
 
-  function showPracticeScoreboard() {
-    const totalQuestions = questions.length;
-    const attemptedCount = attempted.filter(a => a).length;
-    const correctAnswers = questions.filter(q => {
-      const selectedLetter = q.selected != null ? String.fromCharCode(65 + q.selected) : null;
-      return selectedLetter === (q.answer || "").trim().toUpperCase();
-    }).length;
-    const obtainedMarks = correctAnswers;
-    const passPercentage = 40;
-    const resultStatus = (obtainedMarks / totalQuestions * 100) >= passPercentage ? "Pass" : "Fail";
-    const endTime = new Date();
-    const timeTakenMinutes = Math.floor((endTime - startTime)/60000);
-    const timeTakenSeconds = Math.floor(((endTime - startTime)%60000)/1000);
-
-    let html = `<div class="scoreboard">
-      <button class="close-btn-scoreboard" onclick="closeTest()">✖</button>
-      <h3>📝 Practice Test Result</h3>
-      <div class="row"><span class="label">Result:</span><span class="value">${resultStatus}</span></div>
-      <div class="row"><span class="label">Full Name:</span><span class="value">${fullname || 'Guest User'}</span></div>
-      <div class="row"><span class="label">Max Marks:</span><span class="value">${maxMarks}</span></div>
-      <div class="row"><span class="label">Obtained Marks:</span><span class="value">${obtainedMarks}</span></div>
-      <div class="row"><span class="label">Total Questions:</span><span class="value">${totalQuestions}</span></div>
-      <div class="row"><span class="label">Attempted:</span><span class="value">${attemptedCount}</span></div>
-      <div class="row"><span class="label">Correct Answers:</span><span class="value">${correctAnswers}</span></div>
-      <div class="row"><span class="label">Test Time:</span><span class="value">${testDuration} minutes</span></div>
-      <div class="row"><span class="label">Time Taken:</span><span class="value">${timeTakenMinutes}m ${timeTakenSeconds}s</span></div>
-      <div class="row"><span class="label">Total Incorrect Attempts:</span><span class="value">${totalIncorrectAttempts}</span></div>
-    </div>`;
+  // ✅ EXAM MODE
+  function loadQuestionExamMode() {
+    const qData = questions[currentQ];
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}" ${qData.selected===idx?'checked':''}> ${opt}</label>`;
+    });
+    html += `</div>
+      <div class="button-row">
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="nextQuestionExam()">Save & Next</button>` : ''}
+        <button onclick="submitExam()">Submit Test</button>
+      </div>`;
     document.getElementById("quizArea").innerHTML = html;
-    document.getElementById("questionNav").innerHTML = "";
-    document.getElementById("quizIndicator").textContent = "";
+  }
+
+  function nextQuestionExam() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) { alert("Please select an answer!"); return; }
+    const selectedIdx = parseInt(answer.value);
+    questions[currentQ].selected = selectedIdx;
+    markAttempted();
+    alert("Answer saved successfully");
+    if (currentQ < questions.length - 1) {
+      currentQ++;
+      loadQuestionExamMode();
+    }
+  }
+
+  function submitExam() {
+    if (confirm("Are you sure you want submit this test?")) {
+      alert("✅ Test submitted successfully!");
+      closeTest();
+    }
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) {
+      currentQ--;
+      if (mode === "exam") loadQuestionExamMode();
+      else loadQuestionPracticeMode();
+    }
   }
 
   function closeTest() {
@@ -367,13 +315,15 @@
       if (--timer < 0) {
         clearInterval(timerInterval);
         alert("⏳ Time is up! Test will be submitted.");
-        submitPractice();
+        if (mode === "exam") submitExam();
+        else submitPractice();
       }
     }
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
   }
 
+  // Backend Fetch
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   function initTest() {
@@ -391,11 +341,9 @@
           return;
         }
 
-        document.getElementById("examNameLabel").textContent = "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         testDuration = data.testDuration || 0;
         document.getElementById("examTimeInTest").textContent = testDuration;
-        maxMarks = data.maxMarks || 0;
 
         questions = data.questions || [];
         attempted = new Array(questions.length).fill(false);
@@ -405,11 +353,10 @@
         }
 
         currentQ = 0;
-        score = 0;
-        totalIncorrectAttempts = 0;
         startTimer(testDuration);
 
         if (mode === "practice") loadQuestionPracticeMode();
+        else loadQuestionExamMode();
       })
       .catch(err => {
         console.error("Error loading test:", err);
