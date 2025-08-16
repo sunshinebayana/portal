@@ -187,9 +187,11 @@
 
   let questions = [];
   let currentQ = 0;
-  let attempted = [];
-  let startTime;
+  let score = 0;
+  let testDuration = 0;
+  let maxMarks = 0;
   let timerInterval;
+  let attempted = [];
 
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
@@ -214,61 +216,28 @@
     }
   }
 
+  function renderNavigationButtons() {
+    return `
+      <div class="button-row">
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
+        <button onclick="confirmSubmitExam()">Submit Test</button>
+      </div>
+    `;
+  }
+
   function markAttempted() {
     attempted[currentQ] = true;
   }
 
-  // ✅ PRACTICE MODE
-  function loadQuestionPracticeMode() {
-    const qData = questions[currentQ];
-    updateQuizIndicator();
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
-    qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}" ${qData.selected===idx?'checked':''}> ${opt}</label>`;
-    });
-    html += `</div>
-      <div class="button-row">
-        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="checkPracticeAnswer()">Save & Next</button>` : ''}
-        <button onclick="submitPractice()">Submit Test</button>
-      </div>
-      <div class="message" id="practiceMsg"></div>`;
-    document.getElementById("quizArea").innerHTML = html;
-  }
-
-  function checkPracticeAnswer() {
-    const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
-    const selectedIdx = parseInt(answer.value);
-    questions[currentQ].selected = selectedIdx;
-    markAttempted();
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestionPracticeMode();
-    } else {
-      submitPractice();
-    }
-  }
-
-  function submitPractice() {
-    alert("Answer saved successfully (Practice Mode)");
-    closeTest();
-  }
-
-  // ✅ EXAM MODE
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
     let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}" ${qData.selected===idx?'checked':''}> ${opt}</label>`;
+      html += `<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
     });
-    html += `</div>
-      <div class="button-row">
-        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="nextQuestionExam()">Save & Next</button>` : ''}
-        <button onclick="submitExam()">Submit Test</button>
-      </div>`;
+    html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
   }
 
@@ -278,18 +247,10 @@
     const selectedIdx = parseInt(answer.value);
     questions[currentQ].selected = selectedIdx;
     markAttempted();
-    alert("Answer saved successfully");
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestionExamMode();
-    }
-  }
-
-  function submitExam() {
-    if (confirm("Are you sure you want submit this test?")) {
-      alert("✅ Test submitted successfully!");
-      closeTest();
-    }
+    const selectedLetter = String.fromCharCode(65 + selectedIdx);
+    if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    currentQ++;
+    loadQuestionExamMode();
   }
 
   function prevQuestion() {
@@ -300,12 +261,68 @@
     }
   }
 
+  // 🔹 Confirmation before submit
+  function confirmSubmitExam() {
+    if (confirm("Are you sure you want submit this test?")) {
+      submitExam();
+    }
+  }
+
+  function submitExam() {
+    clearInterval(timerInterval);
+    const answer = document.querySelector("input[name='option']:checked");
+    if (answer) {
+      const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+      if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    }
+    document.getElementById("quizArea").innerHTML =
+      `<h3>Exam Completed!</h3>
+       <p>Your Score: ${score} / ${questions.length}</p>
+       <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
+    document.getElementById("quizIndicator").textContent = "";
+    document.getElementById("questionNav").innerHTML = "";
+  }
+
+  function loadQuestionPracticeMode() {
+    const qData = questions[currentQ];
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+    });
+    html += `</div>` + renderNavigationButtons() + `<div class="message" id="practiceMsg"></div>`;
+    document.getElementById("quizArea").innerHTML = html;
+  }
+
+  function checkPracticeAnswer() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) { alert("Please select an answer!"); return; }
+    markAttempted();
+    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
+    if (selectedLetter === correctAnswer) {
+      if (currentQ < questions.length - 1) {
+        currentQ++;
+        loadQuestionPracticeMode();
+      } else {
+        clearInterval(timerInterval);
+        document.getElementById("quizArea").innerHTML =
+          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+        document.getElementById("quizIndicator").textContent = "";
+        document.getElementById("questionNav").innerHTML = "";
+      }
+    } else {
+      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
+    }
+  }
+
   function closeTest() {
-    window.history.back();
+    if (confirm("Are you sure you want to close the test?")) {
+      window.history.back();
+    }
   }
 
   function startTimer(durationMinutes) {
-    startTime = new Date();
     let timer = durationMinutes * 60;
     function updateTimer() {
       const minutes = Math.floor(timer / 60);
@@ -314,16 +331,14 @@
         `⏳ Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
-        alert("⏳ Time is up! Test will be submitted.");
-        if (mode === "exam") submitExam();
-        else submitPractice();
+        alert("⏳ Time is up! Submitting your test...");
+        submitExam();
       }
     }
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
   }
 
-  // Backend Fetch
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
   function initTest() {
@@ -341,9 +356,17 @@
           return;
         }
 
+        if ((data.paymentStatus || "").toLowerCase() !== "confirm") {
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          return;
+        }
+
+        document.getElementById("examNameLabel").textContent = "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         testDuration = data.testDuration || 0;
         document.getElementById("examTimeInTest").textContent = testDuration;
+        maxMarks = data.maxMarks || 0;
 
         questions = data.questions || [];
         attempted = new Array(questions.length).fill(false);
@@ -353,10 +376,12 @@
         }
 
         currentQ = 0;
+        score = 0;
         startTimer(testDuration);
 
-        if (mode === "practice") loadQuestionPracticeMode();
-        else loadQuestionExamMode();
+        if (mode === "exam") loadQuestionExamMode();
+        else if (mode === "practice") loadQuestionPracticeMode();
+        else document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
       })
       .catch(err => {
         console.error("Error loading test:", err);
