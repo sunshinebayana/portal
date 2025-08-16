@@ -112,12 +112,12 @@ function submitExam(){
   let total=questions.length*2,obt=score*2;
   document.getElementById("quizArea").innerHTML=
     `<h3>📊 Test Completed!</h3>
-     <p>Your Score: ${score}/${questions.length}</p>
      <p>Marks Obtained: ${obt}/${total}</p>
      <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
 }
+
 
 // ---------------- Timer ----------------
 function closeTest(){if(confirm("Are you sure you want to close the test?"))window.history.back()}
@@ -145,3 +145,4 @@ initTest();
 </script>
 </body>
 </html>
+
