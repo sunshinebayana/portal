@@ -126,7 +126,6 @@
       padding: 20px;
       color: #1976d2;
     }
-
     /* Question Navigation */
     .question-nav {
       display: flex;
@@ -222,7 +221,7 @@
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
         ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
-        <button onclick="submitExam()">Submit Test</button>
+        <button onclick="confirmSubmitExam()">Submit Test</button>
       </div>
     `;
   }
@@ -259,6 +258,13 @@
       currentQ--;
       if (mode === "exam") loadQuestionExamMode();
       else loadQuestionPracticeMode();
+    }
+  }
+
+  // 🔹 Confirmation before submit
+  function confirmSubmitExam() {
+    if (confirm("Are you sure you want submit this test?")) {
+      submitExam();
     }
   }
 
