@@ -49,103 +49,34 @@ button:hover{background:#125aa0}
 <div id="questionNav" class="question-nav"></div>
 </div>
 <script>
-const code=localStorage.getItem("test_code")||"",
-      mode=(localStorage.getItem("test_mode")||"").toLowerCase(),
-      username=(localStorage.getItem("test_username")||"").trim(),
-      fullname=localStorage.getItem("test_fullname")||"";
-
+const code=localStorage.getItem("test_code")||"",mode=(localStorage.getItem("test_mode")||"").toLowerCase(),username=(localStorage.getItem("test_username")||"").trim(),fullname=localStorage.getItem("test_fullname")||"";
 document.getElementById("modeLabel").textContent=mode?`Mode: ${mode.charAt(0).toUpperCase()+mode.slice(1)}`:"";
 document.getElementById("fullnameLabel").textContent=fullname?`👤 ${fullname}`:"👤 Guest User";
 
-let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,attempted=[],incorrectAttemptsCounter=0,startTime,totalTimeSec;
+let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,attempted=[],startTime;
 
 const updateQuizIndicator=()=>{document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;renderQuestionNav();}
 const renderQuestionNav=()=>{const nav=document.getElementById("questionNav");nav.innerHTML="";questions.forEach((_,i)=>{const btn=document.createElement("div");btn.textContent=i+1;btn.className="question-btn";if(attempted[i])btn.classList.add("attempted");btn.onclick=()=>{currentQ=i;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()};nav.appendChild(btn);});};
 const renderNavigationButtons=()=>`<div class="button-row"><button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>Previous</button>${currentQ<questions.length-1?`<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>`:""}<button onclick="endPracticeTest()">Submit Test</button></div>`;
 const markAttempted=()=>{attempted[currentQ]=true};
 
-function loadQuestionExamMode(){
-    const q=questions[currentQ];
-    updateQuizIndicator();
-    let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;
-    q.options.forEach((opt,idx)=>{
-        html+=`<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ]&&q.selected===idx?'checked':''}> ${opt}</label>`;
-    });
-    html+=`</div>`+renderNavigationButtons();
-    document.getElementById("quizArea").innerHTML=html;
-}
-
-function nextQuestionExam(){
-    const a=document.querySelector("input[name='option']:checked");
-    if(!a){alert("Please select an answer!");return;}
-    const idx=parseInt(a.value);
-    questions[currentQ].selected=idx;
-    markAttempted();
-    if(String.fromCharCode(65+idx)===(questions[currentQ].answer||"").trim().toUpperCase())score++;
-    currentQ++;
-    loadQuestionExamMode();
-}
-
+function loadQuestionExamMode(){const q=questions[currentQ];updateQuizIndicator();let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;q.options.forEach((opt,idx)=>{html+=`<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ]&&q.selected===idx?'checked':''}> ${opt}</label>`});html+=`</div>`+renderNavigationButtons();document.getElementById("quizArea").innerHTML=html;}
+function nextQuestionExam(){const a=document.querySelector("input[name='option']:checked");if(!a){alert("Please select an answer!");return}const idx=parseInt(a.value);questions[currentQ].selected=idx;markAttempted();if(String.fromCharCode(65+idx)===(questions[currentQ].answer||"").trim().toUpperCase())score++;currentQ++;loadQuestionExamMode();}
 function prevQuestion(){if(currentQ>0){currentQ--;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode();}}
-
 function closeTest(){if(confirm("Are you sure you want to close the test?"))window.history.back();}
-
-function startTimer(mins){
-    let t=mins*60;
-    totalTimeSec = t;
-    const update=()=>{
-        const m=Math.floor(t/60),s=t%60;
-        document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;
-        if(--t<0){
-            clearInterval(timerInterval);
-            if(mode==="practice")endPracticeTest();
-            else{alert("⏳ Time is up! Submitting your test...");submitExam();}
-        }
-    };
-    update();
-    timerInterval=setInterval(update,1000);
-    startTime=Date.now();
-}
-
-function loadQuestionPracticeMode(){
-    const q=questions[currentQ];
-    updateQuizIndicator();
-    let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;
-    q.options.forEach((opt,idx)=>{
-        html+=`<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
-    });
-    html+=`</div>`+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`;
-    document.getElementById("quizArea").innerHTML=html;
-}
-
-function checkPracticeAnswer(){
-    const a=document.querySelector("input[name='option']:checked");
-    if(!a){alert("Please select an answer!");return;}
-    markAttempted();
-    const sel=String.fromCharCode(65+parseInt(a.value)),
-          correct=(questions[currentQ].answer||"").trim().toUpperCase();
-    if(sel===correct){
-        score++;
-        if(currentQ<questions.length-1){currentQ++;loadQuestionPracticeMode();}
-        else endPracticeTest();
-    } else {
-        incorrectAttemptsCounter++;
-        document.getElementById("practiceMsg").textContent="❌ Galat Answer! Dubara try karein.";
-        if(currentQ<questions.length-1){currentQ++;loadQuestionPracticeMode();}
-        else endPracticeTest();
-    }
-}
+function startTimer(mins){let t=mins*60;const update=()=>{const m=Math.floor(t/60),s=t%60;document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;if(--t<0){clearInterval(timerInterval);if(mode==="practice")endPracticeTest();else{alert("⏳ Time is up! Submitting your test...");submitExam();}}};update();timerInterval=setInterval(update,1000);startTime=Date.now();}
+function loadQuestionPracticeMode(){const q=questions[currentQ];updateQuizIndicator();let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;q.options.forEach((opt,idx)=>{html+=`<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`});html+=`</div>`+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`;document.getElementById("quizArea").innerHTML=html;}
+function checkPracticeAnswer(){const a=document.querySelector("input[name='option']:checked");if(!a){alert("Please select an answer!");return}markAttempted();const sel=String.fromCharCode(65+parseInt(a.value)),correct=(questions[currentQ].answer||"").trim().toUpperCase();if(sel===correct){score++;if(currentQ<questions.length-1){currentQ++;loadQuestionPracticeMode()}else endPracticeTest()}else document.getElementById("practiceMsg").textContent="❌ Galat Answer! Dubara try karein.";}
 
 function endPracticeTest(){
-    clearInterval(timerInterval);
-    let attemptedCount=attempted.filter(v=>v).length;
-    let correctCount=score;
-    let incorrect=incorrectAttemptsCounter;
-    let remainingTime = parseInt(document.getElementById("timerDisplay").textContent.split(':')[1]) + parseInt(document.getElementById("timerDisplay").textContent.split(':')[0])*60;
-    let timeTaken=Math.ceil((totalTimeSec - remainingTime)/60);
-    let result="N/A";
-    if(questions.length>0){result=(score/questions.length)>=0.4?"Pass":"Fail";}
-    document.getElementById("quizArea").innerHTML=`
+clearInterval(timerInterval);
+const timeTaken=Math.floor((Date.now()-startTime)/60000);
+let attemptedCount=attempted.filter(v=>v).length;
+let correctCount=score;
+let incorrect=attemptedCount-correctCount;
+let result="N/A";
+if(questions.length>0){result=(score/questions.length)>=0.4?"Pass":"Fail";}
+document.getElementById("quizArea").innerHTML=`
 <div class="scoreboard">
 <h3>🏆 Practice Test Completed</h3>
 <p><strong>Result:</strong> ${result}</p>
@@ -163,35 +94,23 @@ function endPracticeTest(){
 }
 
 const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
 function initTest(){
-    if(!username){
-        document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-        return;
-    }
-    fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
-    .then(res=>res.json())
-    .then(data=>{
-        document.getElementById("examNameLabel").textContent="";
-        document.getElementById("examNameInTest").textContent=`Exam Name: ${data.examName||""}`;
-        testDuration=data.testDuration||0;
-        document.getElementById("examTimeInTest").textContent=testDuration;
-        maxMarks=data.maxMarks||0;
-        questions=data.questions||[];
-        attempted=new Array(questions.length).fill(false);
-        if(!questions.length){
-            document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;
-            return;
-        }
-        currentQ=0;
-        score=0;
-        incorrectAttemptsCounter=0;
-        startTimer(testDuration);
-        mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
-    })
-    .catch(err=>{console.error(err);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;});
+if(!username){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;return;}
+fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("examNameLabel").textContent="";
+document.getElementById("examNameInTest").textContent=`Exam Name: ${data.examName||""}`;
+testDuration=data.testDuration||0;
+document.getElementById("examTimeInTest").textContent=testDuration;
+maxMarks=data.maxMarks||0;
+questions=data.questions||[];
+attempted=new Array(questions.length).fill(false);
+if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return;}
+currentQ=0;score=0;startTimer(testDuration);mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+})
+.catch(err=>{console.error(err);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;});
 }
-
 initTest();
 </script>
 </body>
