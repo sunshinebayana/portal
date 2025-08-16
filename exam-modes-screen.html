@@ -231,6 +231,24 @@
     attempted[currentQ] = true;
   }
 
+  // ✅ Show saved message
+  function showSavedMessage() {
+    const msgDiv = document.createElement("div");
+    msgDiv.textContent = "✅ Answer saved successfully";
+    msgDiv.style.color = "green";
+    msgDiv.style.fontWeight = "bold";
+    msgDiv.style.marginTop = "10px";
+    msgDiv.style.textAlign = "center";
+    msgDiv.id = "savedMsg";
+
+    const quizArea = document.getElementById("quizArea");
+    quizArea.appendChild(msgDiv);
+
+    setTimeout(() => {
+      if (msgDiv) msgDiv.remove();
+    }, 2000);
+  }
+
   function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -250,6 +268,9 @@
     markAttempted();
     const selectedLetter = String.fromCharCode(65 + selectedIdx);
     if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+
+    showSavedMessage(); // ✅ show message
+
     currentQ++;
     loadQuestionExamMode();
   }
@@ -263,6 +284,10 @@
   }
 
   function submitExam() {
+    if (!confirm("Are you sure you want submit this test?")) {
+      return; // ❌ stay on test screen
+    }
+
     clearInterval(timerInterval);
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
@@ -295,6 +320,7 @@
     const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
     if (selectedLetter === correctAnswer) {
+      showSavedMessage(); // ✅ show message
       if (currentQ < questions.length - 1) {
         currentQ++;
         loadQuestionPracticeMode();
