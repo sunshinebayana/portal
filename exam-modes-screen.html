@@ -74,39 +74,72 @@ function renderQuestionNav(){const nav=document.getElementById("questionNav");na
 function renderNavigationButtons(){return `<div class="button-row"><button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>Previous</button>${currentQ<questions.length-1?`<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>`:""}<button onclick="showConfirmBox()">Submit Test</button></div>`}
 function markAttempted(){attempted[currentQ]=true}
 
+// ---------------- Exam Mode ----------------
 function loadQuestionExamMode(){const q=questions[currentQ];updateQuizIndicator();let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;q.options.forEach((opt,i)=>{html+=`<label><input type="radio" name="option" value="${i}" ${attempted[currentQ]&&q.selected===i?'checked':''}> ${opt}</label>`});document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons()}
 
-function nextQuestionExam(){const ans=document.querySelector("input[name='option']:checked");if(!ans){alert("Please select an answer!");return}const idx=parseInt(ans.value);questions[currentQ].selected=idx;markAttempted();if(String.fromCharCode(65+idx)===(questions[currentQ].answer||"").trim().toUpperCase())score++;currentQ++;loadQuestionExamMode()}
+function nextQuestionExam(){
+  const ans=document.querySelector("input[name='option']:checked");
+  if(!ans){alert("Please select an answer!");return}
+  const idx=parseInt(ans.value);
+  questions[currentQ].selected=idx;
+  markAttempted();
+  if(String.fromCharCode(65+idx)===(questions[currentQ].answer||"").trim().toUpperCase()) score++;
+  currentQ++;
+  if(currentQ<questions.length){loadQuestionExamMode()}else{showConfirmBox()}
+}
+
 function prevQuestion(){if(currentQ>0){currentQ--;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()}}
 
+// ---------------- Practice Mode ----------------
+function loadQuestionPracticeMode(){const q=questions[currentQ];updateQuizIndicator();let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;q.options.forEach((opt,i)=>{html+=`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`});document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`}
+
+function checkPracticeAnswer(){
+  const ans=document.querySelector("input[name='option']:checked");
+  if(!ans){alert("Please select an answer!");return}
+  markAttempted();
+  const selected=String.fromCharCode(65+parseInt(ans.value)),correct=(questions[currentQ].answer||"").trim().toUpperCase();
+  if(selected===correct){score++;currentQ<questions.length-1?loadQuestionPracticeMode(++currentQ):submitExam()}
+  else document.getElementById("practiceMsg").textContent="❌ Galat Answer! Dubara try karein."
+}
+
+// ---------------- Submit ----------------
 function showConfirmBox(){document.getElementById("confirmBox").style.display="flex"}
 function confirmSubmit(){document.getElementById("confirmBox").style.display="none";submitExam()}
 function cancelSubmit(){document.getElementById("confirmBox").style.display="none"}
 
-function submitExam(){clearInterval(timerInterval);const ans=document.querySelector("input[name='option']:checked");if(ans){if(String.fromCharCode(65+parseInt(ans.value))===(questions[currentQ].answer||"").trim().toUpperCase())score++}let total=questions.length*2,obt=score*2;document.getElementById("quizArea").innerHTML=`<h3>📊 Test Completed!</h3><p>Your Score: ${score}/${questions.length}</p><p>Marks Obtained: ${obt}/${total}</p><p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;document.getElementById("quizIndicator").textContent="";document.getElementById("questionNav").innerHTML=""}
+function submitExam(){
+  clearInterval(timerInterval);
+  let total=questions.length*2,obt=score*2;
+  document.getElementById("quizArea").innerHTML=
+    `<h3>📊 Test Completed!</h3>
+     <p>Your Score: ${score}/${questions.length}</p>
+     <p>Marks Obtained: ${obt}/${total}</p>
+     <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
+  document.getElementById("quizIndicator").textContent="";
+  document.getElementById("questionNav").innerHTML="";
+}
 
-function loadQuestionPracticeMode(){const q=questions[currentQ];updateQuizIndicator();let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;q.options.forEach((opt,i)=>{html+=`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`});document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`}
-
-function checkPracticeAnswer(){const ans=document.querySelector("input[name='option']:checked");if(!ans){alert("Please select an answer!");return}markAttempted();const selected=String.fromCharCode(65+parseInt(ans.value)),correct=(questions[currentQ].answer||"").trim().toUpperCase();if(selected===correct){score++;currentQ<questions.length-1?loadQuestionPracticeMode(++currentQ):submitExam()}else document.getElementById("practiceMsg").textContent="❌ Galat Answer! Dubara try karein."}
-
+// ---------------- Timer ----------------
 function closeTest(){if(confirm("Are you sure you want to close the test?"))window.history.back()}
-
 function startTimer(mins){let t=mins*60;function update(){const m=Math.floor(t/60),s=t%60;document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;if(--t<0){clearInterval(timerInterval);alert("⏳ Time is up! Submitting your test...");submitExam()}}update();timerInterval=setInterval(update,1000)}
 
+// ---------------- Backend Init ----------------
 const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-function initTest(){if(!username){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;return}
-fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
-.then(r=>r.json()).then(d=>{
-  if(!d.success){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;return}
-  if((d.paymentStatus||"").toLowerCase()!=="confirm"){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">💰 Your Payment is Pending.</h3>`;return}
-  document.getElementById("examNameInTest").textContent=`Exam Name: ${d.examName||""}`;
-  testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
-  maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
-  if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return}
-  currentQ=0;score=0;startTimer(testDuration);
-  mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
-}).catch(e=>{console.error("Error:",e);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`})}
+function initTest(){
+  if(!username){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;return}
+  fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+  .then(r=>r.json()).then(d=>{
+    if(!d.success){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;return}
+    if((d.paymentStatus||"").toLowerCase()!=="confirm"){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">💰 Your Payment is Pending.</h3>`;return}
+    document.getElementById("examNameInTest").textContent=`Exam Name: ${d.examName||""}`;
+    testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
+    maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
+    if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return}
+    currentQ=0;score=0;startTimer(testDuration);
+    mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
+  }).catch(e=>{console.error("Error:",e);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`})
+}
 
 initTest();
 </script>
