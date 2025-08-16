@@ -84,8 +84,10 @@ document.getElementById("fullnameLabel").textContent=fullname?`👤 ${fullname}`
 let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,attempted=[];
 let startTime=Date.now();
 
-// ================= Quiz Functions =================
-function updateQuizIndicator(){document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;renderQuestionNav();}
+function updateQuizIndicator(){
+  document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;
+  renderQuestionNav();
+}
 function renderQuestionNav(){
   const nav=document.getElementById("questionNav");
   nav.innerHTML="";
@@ -107,7 +109,7 @@ function renderNavigationButtons(){
 }
 function markAttempted(){attempted[currentQ]=true}
 
-// ================= Exam Mode =================
+/* ---------------- Exam Mode ---------------- */
 function loadQuestionExamMode(){
   const q=questions[currentQ];
   updateQuizIndicator();
@@ -117,6 +119,7 @@ function loadQuestionExamMode(){
   });
   document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons();
 }
+
 function nextQuestionExam(){
   const ans=document.querySelector("input[name='option']:checked");
   if(!ans){alert("Please select an answer!");return}
@@ -128,7 +131,9 @@ function nextQuestionExam(){
   if(currentQ<questions.length){loadQuestionExamMode()}else{showConfirmBox()}
 }
 
-// ================= Practice Mode =================
+function prevQuestion(){if(currentQ>0){currentQ--;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()}}
+
+/* ---------------- Practice Mode ---------------- */
 function loadQuestionPracticeMode(){
   const q=questions[currentQ];
   updateQuizIndicator();
@@ -136,6 +141,7 @@ function loadQuestionPracticeMode(){
   q.options.forEach((opt,i)=>{html+=`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`});
   document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`;
 }
+
 function checkPracticeAnswer(){
   const ans=document.querySelector("input[name='option']:checked");
   if(!ans){alert("Please select an answer!");return}
@@ -150,7 +156,7 @@ function checkPracticeAnswer(){
   }
 }
 
-// ================= Submit =================
+/* ---------------- Submit ---------------- */
 function showConfirmBox(){document.getElementById("confirmBox").style.display="flex"}
 function confirmSubmit(){document.getElementById("confirmBox").style.display="none";submitExam()}
 function cancelSubmit(){document.getElementById("confirmBox").style.display="none"}
@@ -171,10 +177,11 @@ function submitExam(){
   const mins=Math.floor(timeTakenMs/60000);
   const secs=Math.floor((timeTakenMs%60000)/1000);
 
+  // ✅ Current Date dd-mm-yyyy
   const today=new Date();
   const currentDate=`${String(today.getDate()).padStart(2,'0')}-${String(today.getMonth()+1).padStart(2,'0')}-${today.getFullYear()}`;
 
-  // ================= Scoreboard UI ==================
+  // ✅ Scoreboard UI (Full Name & Test Time removed, margin reduced, current date added)
   document.getElementById("quizArea").innerHTML=`
     <div class="scoreboard">
       <h2>📊 Scoreboard</h2>
@@ -191,39 +198,16 @@ function submitExam(){
   `;
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
-
-  // ================= Send Exam Data to Backend ==================
-  if(mode==="exam"){
-    const payload={
-      action:"appendExamResult",
-      code:code,
-      username:username,
-      fullname:fullname,
-      result:result,
-      maxMarks:maxMarksCalc,
-      obtainedMarks:obtained,
-      totalQuestions:totalQ,
-      attempted:attemptedQ,
-      correctAnswers:correctAns,
-      testTime:testDuration,
-      timeTaken:`${mins}m ${secs}s`
-    };
-
-    // ✅ Send to Google Apps Script backend
-    fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
-      method:"POST",
-      headers:{"Content-Type":"application/x-www-form-urlencoded"},
-      body:new URLSearchParams(payload)
-    }).then(r=>r.text()).then(d=>console.log("✅ Result sent:",d))
-    .catch(e=>console.error("❌ Error sending result:",e));
-  }
 }
 
-// ================= Timer & Close =================
+/* ---------------- Timer ---------------- */
 function closeTest(){
   const stored = localStorage.getItem('test_selection_url');
   if (stored) { window.location.href = stored; return; }
-  if (document.referrer && document.referrer !== location.href) { window.history.back(); return; }
+  if (document.referrer && document.referrer !== location.href) {
+    window.history.back();
+    return;
+  }
   window.location.href = "/";
 }
 function startTimer(mins){
@@ -231,28 +215,49 @@ function startTimer(mins){
   function update(){
     const m=Math.floor(t/60),s=t%60;
     document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;
-    if(--t<0){ clearInterval(timerInterval); alert("⏳ Time is up! Submitting your test..."); submitExam(); }
+    if(--t<0){
+      clearInterval(timerInterval);
+      alert("⏳ Time is up! Submitting your test...");
+      submitExam();
+    }
   }
   update();
   timerInterval=setInterval(update,1000);
 }
 
-// ================= Backend Init =================
+/* ---------------- Backend Init ---------------- */
+const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+
 function initTest(){
   if(!username){
     document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
     return;
   }
-  fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+  fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
-    if(!d.success){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;return;}
+    if(!d.success){
+      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;
+      return;
+    }
+    if((d.paymentStatus||"").toLowerCase()!=="confirm"){
+      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">💰 Your Payment is Pending.</h3>`;
+      return;
+    }
     document.getElementById("examNameInTest").textContent=`Exam Name: ${d.examName||""}`;
     testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
     maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
-    if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return;}
+    if(!questions.length){
+      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;
+      return;
+    }
     currentQ=0;score=0;startTime=Date.now();startTimer(testDuration);
-    mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
-  }).catch(e=>{console.error("Error:",e);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;})
+    mode==="exam"?loadQuestionExamMode():
+    mode==="practice"?loadQuestionPracticeMode():
+    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
+  }).catch(e=>{
+    console.error("Error:",e);
+    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;
+  })
 }
 
 initTest();
