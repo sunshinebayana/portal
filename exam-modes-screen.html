@@ -156,25 +156,6 @@
       color: #fff;
       border-color: #4caf50;
     }
-    .scoreboard {
-      text-align: left;
-      margin-top: 15px;
-    }
-    .scoreboard h3 {
-      color: #1976d2;
-      margin-bottom: 10px;
-    }
-    .scoreboard ul {
-      padding-left: 20px;
-    }
-    .scoreboard li.correct {
-      color: green;
-      font-weight: bold;
-    }
-    .scoreboard li.wrong {
-      color: red;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -241,7 +222,7 @@
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
         ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
-        <button onclick="confirmSubmit()">Submit Test</button>
+        <button onclick="submitExam()">Submit Test</button>
       </div>
     `;
   }
@@ -281,48 +262,17 @@
     }
   }
 
-  // ✅ Confirmation before Submit
-  function confirmSubmit() {
-    if (confirm("Are you sure you want to submit this test?")) {
-      submitExam();
-    }
-  }
-
-  // ✅ Scoreboard with 2 marks each question
   function submitExam() {
     clearInterval(timerInterval);
-
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
       const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
       if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
     }
-
-    let totalMarks = questions.length * 2;
-    let obtainedMarks = score * 2;
-
-    let scoreboardHtml = `<div class="scoreboard">
-      <h3>📊 Scoreboard</h3>
-      <p><strong>Your Score:</strong> ${obtainedMarks} / ${totalMarks}</p>
-      <ul>`;
-
-    questions.forEach((q, i) => {
-      const correctAns = (q.answer || "").trim().toUpperCase();
-      const selected = q.selected !== undefined ? String.fromCharCode(65 + q.selected) : "-";
-      if (selected === correctAns) {
-        scoreboardHtml += `<li class="correct">Q${i+1}. Correct ✅ (+2 Marks)</li>`;
-      } else {
-        scoreboardHtml += `<li class="wrong">Q${i+1}. Wrong ❌ (0 Marks) | Correct: ${correctAns}</li>`;
-      }
-    });
-
-    scoreboardHtml += "</ul></div>";
-
     document.getElementById("quizArea").innerHTML =
-      `<h3>✅ Exam Completed!</h3>
-       ${scoreboardHtml}
+      `<h3>Exam Completed!</h3>
+       <p>Your Score: ${score} / ${questions.length}</p>
        <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
-
     document.getElementById("quizIndicator").textContent = "";
     document.getElementById("questionNav").innerHTML = "";
   }
