@@ -31,7 +31,7 @@
     .confirm-buttons button{flex:1;margin:0 5px}
 
     /* ✅ Scoreboard Styling */
-    .scoreboard{max-width:600px;margin:-10px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
+    .scoreboard{max-width:600px;margin:10px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
     .scoreboard h2{text-align:center;margin-bottom:20px;color:#1976d2}
     .score-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
     .score-item:last-child{border-bottom:none}
@@ -166,7 +166,7 @@ function submitExam(){
   const totalQ=questions.length;
   const attemptedQ=attempted.filter(Boolean).length;
   const correctAns=score;
-  const maxMarksCalc=maxMarks||totalQ; // fallback: 1 mark per question
+  const maxMarksCalc=maxMarks||totalQ;
   const obtained=correctAns;
   const percentage=maxMarksCalc>0? (obtained/maxMarksCalc)*100 : 0;
   let result="N/A";
@@ -177,18 +177,21 @@ function submitExam(){
   const mins=Math.floor(timeTakenMs/60000);
   const secs=Math.floor((timeTakenMs%60000)/1000);
 
-  // ✅ Scoreboard UI (with Close that redirects back)
+  // ✅ Current Date dd-mm-yyyy
+  const today=new Date();
+  const currentDate=`${String(today.getDate()).padStart(2,'0')}-${String(today.getMonth()+1).padStart(2,'0')}-${today.getFullYear()}`;
+
+  // ✅ Scoreboard UI (Full Name & Test Time removed, margin reduced, current date added)
   document.getElementById("quizArea").innerHTML=`
     <div class="scoreboard">
       <h2>📊 Scoreboard</h2>
-      <div class="score-item"><span class="score-label">Full Name:</span><span class="score-value">${fullname||"—"}</span></div>
+      <div class="score-item"><span class="score-label">Date:</span><span class="score-value">${currentDate}</span></div>
       <div class="score-item"><span class="score-label">Result:</span><span class="score-result ${String(result).toLowerCase()}">${result}</span></div>
       <div class="score-item"><span class="score-label">Max Marks:</span><span class="score-value">${maxMarksCalc}</span></div>
       <div class="score-item"><span class="score-label">Obtained Marks:</span><span class="score-value">${obtained}</span></div>
       <div class="score-item"><span class="score-label">Total Questions:</span><span class="score-value">${totalQ}</span></div>
       <div class="score-item"><span class="score-label">Attempted:</span><span class="score-value">${attemptedQ}</span></div>
       <div class="score-item"><span class="score-label">Correct Answers:</span><span class="score-value">${correctAns}</span></div>
-      <div class="score-item"><span class="score-label">Test Time:</span><span class="score-value">${testDuration} minutes</span></div>
       <div class="score-item"><span class="score-label">Time Taken:</span><span class="score-value">${mins}m ${secs}s</span></div>
       <div class="score-close"><button onclick="closeTest()">Close</button></div>
     </div>
@@ -199,14 +202,12 @@ function submitExam(){
 
 /* ---------------- Timer ---------------- */
 function closeTest(){
-  // Redirect back to previous test selection screen — no confirmation
-  const stored = localStorage.getItem('test_selection_url'); // optional: set this elsewhere if you have a known url
+  const stored = localStorage.getItem('test_selection_url');
   if (stored) { window.location.href = stored; return; }
   if (document.referrer && document.referrer !== location.href) {
     window.history.back();
     return;
   }
-  // Final fallback: root or your known selection page
   window.location.href = "/";
 }
 function startTimer(mins){
@@ -263,4 +264,3 @@ initTest();
 </script>
 </body>
 </html>
-
