@@ -180,16 +180,23 @@
     papersList.appendChild(btn);
   });
 
-  // ✅ Start Test
+  // ✅ Start Test (with fullname + username + mode)
   function startTest(code) {
     const username = userData?.username || "guest";
-    startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username);
+    const fullname = userData?.fullname || "Guest User";
+    startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
   }
 
-  // ✅ Actual Test Starter
-  function startRscitTest(code, message, mode, username) {
-    alert(`Starting ${mode} for ${code} by ${username}...\n${message}`);
-    // Add actual redirection logic here
+  // ✅ Actual Test Starter (redirect with localStorage)
+  function startRscitTest(code, message, mode, username, fullname) {
+    localStorage.setItem("test_code", code);
+    localStorage.setItem("test_message", message);
+    localStorage.setItem("test_mode", mode);
+    localStorage.setItem("test_username", username);
+    localStorage.setItem("test_fullname", fullname);
+
+    // Redirect to test screen
+    location.href = "exam-modes-screen.html";
   }
 
   // ✅ Back to RS-CIT Module
