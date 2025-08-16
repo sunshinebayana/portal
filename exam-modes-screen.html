@@ -120,14 +120,18 @@
       text-align: center;
       color: red;
     }
+    .saved-message {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+      color: green;
+    }
     .loading {
       text-align: center;
       font-size: 16px;
       padding: 20px;
       color: #1976d2;
     }
-
-    /* Question Navigation */
     .question-nav {
       display: flex;
       flex-wrap: wrap;
@@ -231,18 +235,17 @@
     attempted[currentQ] = true;
   }
 
-  // ✅ Show saved message
+  // ✅ Saved message below question
   function showSavedMessage() {
-    const msgDiv = document.createElement("div");
-    msgDiv.textContent = "✅ Answer saved successfully";
-    msgDiv.style.color = "green";
-    msgDiv.style.fontWeight = "bold";
-    msgDiv.style.marginTop = "10px";
-    msgDiv.style.textAlign = "center";
-    msgDiv.id = "savedMsg";
+    const oldMsg = document.getElementById("savedMsg");
+    if (oldMsg) oldMsg.remove();
 
-    const quizArea = document.getElementById("quizArea");
-    quizArea.appendChild(msgDiv);
+    const msgDiv = document.createElement("div");
+    msgDiv.id = "savedMsg";
+    msgDiv.className = "saved-message";
+    msgDiv.textContent = "✅ Answer saved successfully";
+
+    document.getElementById("quizArea").appendChild(msgDiv);
 
     setTimeout(() => {
       if (msgDiv) msgDiv.remove();
@@ -285,9 +288,8 @@
 
   function submitExam() {
     if (!confirm("Are you sure you want submit this test?")) {
-      return; // ❌ stay on test screen
+      return;
     }
-
     clearInterval(timerInterval);
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
@@ -320,7 +322,7 @@
     const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
     const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
     if (selectedLetter === correctAnswer) {
-      showSavedMessage(); // ✅ show message
+      showSavedMessage();
       if (currentQ < questions.length - 1) {
         currentQ++;
         loadQuestionPracticeMode();
