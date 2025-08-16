@@ -85,10 +85,7 @@ let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,atte
 let startTime=Date.now();
 
 // ================= Quiz Functions =================
-function updateQuizIndicator(){
-  document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;
-  renderQuestionNav();
-}
+function updateQuizIndicator(){document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;renderQuestionNav();}
 function renderQuestionNav(){
   const nav=document.getElementById("questionNav");
   nav.innerHTML="";
@@ -199,7 +196,6 @@ function submitExam(){
   if(mode==="exam"){
     const payload={
       action:"appendExamResult",
-      date:currentDate,
       code:code,
       username:username,
       fullname:fullname,
@@ -212,6 +208,8 @@ function submitExam(){
       testTime:testDuration,
       timeTaken:`${mins}m ${secs}s`
     };
+
+    // ✅ Send to Google Apps Script backend
     fetch("https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec", {
       method:"POST",
       headers:{"Content-Type":"application/x-www-form-urlencoded"},
@@ -225,10 +223,7 @@ function submitExam(){
 function closeTest(){
   const stored = localStorage.getItem('test_selection_url');
   if (stored) { window.location.href = stored; return; }
-  if (document.referrer && document.referrer !== location.href) {
-    window.history.back();
-    return;
-  }
+  if (document.referrer && document.referrer !== location.href) { window.history.back(); return; }
   window.location.href = "/";
 }
 function startTimer(mins){
@@ -236,11 +231,7 @@ function startTimer(mins){
   function update(){
     const m=Math.floor(t/60),s=t%60;
     document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;
-    if(--t<0){
-      clearInterval(timerInterval);
-      alert("⏳ Time is up! Submitting your test...");
-      submitExam();
-    }
+    if(--t<0){ clearInterval(timerInterval); alert("⏳ Time is up! Submitting your test..."); submitExam(); }
   }
   update();
   timerInterval=setInterval(update,1000);
@@ -254,25 +245,14 @@ function initTest(){
   }
   fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
-    if(!d.success){
-      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;
-      return;
-    }
+    if(!d.success){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;return;}
     document.getElementById("examNameInTest").textContent=`Exam Name: ${d.examName||""}`;
     testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
     maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
-    if(!questions.length){
-      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;
-      return;
-    }
+    if(!questions.length){document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;return;}
     currentQ=0;score=0;startTime=Date.now();startTimer(testDuration);
-    mode==="exam"?loadQuestionExamMode():
-    mode==="practice"?loadQuestionPracticeMode():
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
-  }).catch(e=>{
-    console.error("Error:",e);
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;
-  })
+    mode==="exam"?loadQuestionExamMode():mode==="practice"?loadQuestionPracticeMode():document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
+  }).catch(e=>{console.error("Error:",e);document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;})
 }
 
 initTest();
