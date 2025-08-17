@@ -33,7 +33,7 @@
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
     <div class="center"><strong>Remaining Time:</strong> <span id="timer"></span></div>
-    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span></div>
   </div>
   <div class="quiz-indicator-row">
     <div id="quizIndicator"></div>
@@ -58,6 +58,7 @@
 
   function startTimer(minutes) {
     let time = minutes * 60; 
+    clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       let m = Math.floor(time / 60);
       let s = time % 60;
@@ -140,7 +141,7 @@
 
   function showAnswer() {
     const qData = questions[currentQ];
-    const correctIdx = qData.correct; // ✅ backend se correct index aana chahiye
+    const correctIdx = qData.correct; 
     const options = document.querySelectorAll(".options label");
     options.forEach((opt) => {
       if (parseInt(opt.getAttribute("data-idx")) === correctIdx) {
@@ -150,7 +151,7 @@
   }
 
   function closeTest() {
-    window.history.back(); // ✅ bina alert ya confirm ke close
+    window.history.back(); // ✅ बिना alert/confirm के बंद
   }
 
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
@@ -170,11 +171,12 @@
           return;
         }
 
+        // ✅ fresh exam data set
         document.getElementById("examNameLabel").textContent = data.examName || "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         
         duration = data.testDuration || 0;
-        document.getElementById("examTimeInTest").textContent = duration;
+        document.getElementById("examTimeInTest").textContent = `${duration} mins`;
         document.getElementById("timer").textContent = `${duration}:00`;
         startTimer(duration);
 
