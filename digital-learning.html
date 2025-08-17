@@ -82,9 +82,11 @@
     location.replace("login.html");
   }
 
-  // ✅ Username Display
+  // ✅ Username & Fullname from userData
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const username = userData?.username || "guest";
   const fullname = userData?.fullname || "";
+
   if (fullname) {
     document.getElementById("username").textContent = `Welcome, ${fullname}`;
   }
@@ -113,7 +115,7 @@
     const btn = document.createElement("button");
     btn.className = "module-btn";
     btn.textContent = `${topic.title} 🔹${topic.code}`;
-    btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", fullname);
+    btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", username, fullname);
     topicList.appendChild(btn);
   });
 
@@ -122,10 +124,10 @@
     location.href = "rs-cit-module.html";
   }
 
-  // ✅ Start Test Function (updated)
-  function startRscitTest(testCode, loadingMessage, mode, fullname) {
+  // ✅ Start Test Function (final fixed)
+  function startRscitTest(testCode, loadingMessage, mode, username, fullname) {
     localStorage.setItem("test_code", testCode);       // test code save
-    localStorage.setItem("test_username", fullname);   // username save (same as fullname for now)
+    localStorage.setItem("test_username", username);   // username save
     localStorage.setItem("test_fullname", fullname);   // fullname save
     location.href = "digital-exam-screen.html";        // open test screen
   }
