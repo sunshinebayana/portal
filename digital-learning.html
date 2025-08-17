@@ -84,9 +84,9 @@
 
   // ✅ Username Display
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const username = userData?.fullname || "";
-  if (username) {
-    document.getElementById("username").textContent = `Welcome, ${username}`;
+  const fullname = userData?.fullname || "";
+  if (fullname) {
+    document.getElementById("username").textContent = `Welcome, ${fullname}`;
   }
 
   // ✅ Topic List
@@ -113,23 +113,22 @@
     const btn = document.createElement("button");
     btn.className = "module-btn";
     btn.textContent = `${topic.title} 🔹${topic.code}`;
-    btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", username);
+    btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", fullname);
     topicList.appendChild(btn);
   });
 
-  // ✅ Back Button (typo fixed)
+  // ✅ Back Button
   function goBack() {
     location.href = "rs-cit-module.html";
   }
 
-  // ✅ Example start function
-  function startRscitTest(testCode, loadingMessage, mode, username) {
-    //alert(`Code: ${testCode}\nMessage: ${loadingMessage}\nMode: ${mode}\nUser: ${username}`);
-    // yaha real logic laga sakte ho
-    location.href = "digital-exam-screen.html";
+  // ✅ Start Test Function (updated)
+  function startRscitTest(testCode, loadingMessage, mode, fullname) {
+    localStorage.setItem("test_code", testCode);       // test code save
+    localStorage.setItem("test_username", fullname);   // username save (same as fullname for now)
+    localStorage.setItem("test_fullname", fullname);   // fullname save
+    location.href = "digital-exam-screen.html";        // open test screen
   }
 </script>
 </body>
 </html>
-
-
