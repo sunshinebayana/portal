@@ -7,15 +7,14 @@
   <style>
     body {font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0;}
     header {background: #1976d2; color: #fff; padding: 10px 20px; font-size: 18px; display: flex; flex-direction: column; gap: 5px;}
-    .exam-name {font-size: 20px; font-weight: bold; text-transform: uppercase;}
-    .container {max-width: 700px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative;}
-    .close-btn {position: absolute; top: -14px; right: -14px; background: #fff; color: #1976d2; font-size: 18px; border: 1px solid #ccc; border-radius: 50%; width: 30px; height: 30px; line-height: 28px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.2s ease;}
-    .close-btn:hover {background: #f5f5f5; color: #d32f2f; border-color: #d32f2f;}
+    .exam-name {font-size: 20px; font-weight: bold; text-transform: uppercase; text-align:center;}
+    .container {max-width: 700px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
     .top-info-row {display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: #555; font-weight: bold;}
     .quiz-indicator-row {display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #555; margin-top: 10px; margin-bottom: 10px;}
     .question {font-size: 16px; font-weight: bold; margin-bottom: 10px; text-align: left;}
     .options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left;}
-    .button-row {display: flex; justify-content: space-between; margin-top: 10px;}
+    .options label.correct {background: #4caf50; color: white;} /* ✅ Correct answer highlight */
+    .button-row {display: flex; justify-content: space-between; margin-top: 10px; flex-wrap:wrap; gap:5px;}
     button {padding: 8px 16px; border: none; border-radius: 4px; background: #1976d2; color: white; font-size: 14px; cursor: pointer;}
     button:hover {background: #125aa0;}
     .loading {text-align: center; font-size: 16px; padding: 20px; color: #1976d2;}
@@ -30,10 +29,9 @@
   <span id="examNameLabel" class="exam-name"></span>
 </header>
 <div class="container">
-  <button class="close-btn" onclick="closeTest()">✖</button>
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
-    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+    <div><strong>Remaining Time:</strong> <span id="timer"></span></div>
   </div>
   <div class="quiz-indicator-row">
     <div id="quizIndicator"></div>
@@ -42,6 +40,7 @@
   <div id="quizArea" class="loading">⏳ Please wait...</div>
   <div id="questionNav" class="question-nav"></div>
 </div>
+
 <script>
   const code = localStorage.getItem("test_code") || "";
   const username = (localStorage.getItem("test_username") || "").trim();
@@ -52,6 +51,22 @@
   let questions = [];
   let currentQ = 0;
   let attempted = [];
+  let duration = 0;
+  let timerInterval;
+
+  function startTimer(minutes) {
+    let time = minutes * 60; 
+    timerInterval = setInterval(() => {
+      let m = Math.floor(time / 60);
+      let s = time % 60;
+      document.getElementById("timer").textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+      if (time <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⏰ Time Over! Test Finished.</h3>`;
+      }
+      time--;
+    }, 1000);
+  }
 
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
@@ -79,8 +94,9 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="nextQuestion()">Save & Next</button>` : ''}
-        <button onclick="closeTest()">Close Test</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="nextQuestion()">Next</button>` : ''}
+        <button onclick="showAnswer()">Show Answer</button>
+        <button onclick="closeTest()">Close</button>
       </div>
     `;
   }
@@ -94,7 +110,7 @@
     updateQuizIndicator();
     let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
+      html += `<label data-idx="${idx}"><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
     });
     html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
@@ -102,12 +118,15 @@
 
   function nextQuestion() {
     const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
-    const selectedIdx = parseInt(answer.value);
-    questions[currentQ].selected = selectedIdx;
-    markAttempted();
-    currentQ++;
-    loadQuestion();
+    if (answer) {
+      const selectedIdx = parseInt(answer.value);
+      questions[currentQ].selected = selectedIdx;
+      markAttempted();
+    }
+    if (currentQ < questions.length - 1) {
+      currentQ++;
+      loadQuestion();
+    }
   }
 
   function prevQuestion() {
@@ -117,10 +136,19 @@
     }
   }
 
+  function showAnswer() {
+    const qData = questions[currentQ];
+    const correctIdx = qData.correct; // ✅ backend se correct index aana chahiye
+    const options = document.querySelectorAll(".options label");
+    options.forEach((opt) => {
+      if (parseInt(opt.getAttribute("data-idx")) === correctIdx) {
+        opt.classList.add("correct");
+      }
+    });
+  }
+
   function closeTest() {
-    if (confirm("Are you sure you want to close the test?")) {
-      window.history.back();
-    }
+    window.history.back(); // ✅ bina alert ya confirm ke close
   }
 
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
@@ -140,15 +168,12 @@
           return;
         }
 
-        if ((data.paymentStatus || "").toLowerCase() !== "confirm") {
-          document.getElementById("quizArea").innerHTML =
-            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
-          return;
-        }
-
-        document.getElementById("examNameLabel").textContent = "";
+        document.getElementById("examNameLabel").textContent = data.examName || "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
-        document.getElementById("examTimeInTest").textContent = data.testDuration || 0;
+        
+        duration = data.testDuration || 0;
+        document.getElementById("timer").textContent = `${duration}:00`;
+        startTimer(duration);
 
         questions = data.questions || [];
         attempted = new Array(questions.length).fill(false);
