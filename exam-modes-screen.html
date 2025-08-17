@@ -29,8 +29,6 @@
     .confirm-content p{margin-bottom:15px;font-size:16px;font-weight:bold}
     .confirm-buttons{display:flex;justify-content:space-around}
     .confirm-buttons button{flex:1;margin:0 5px}
-
-    /* ✅ Scoreboard Styling */
     .scoreboard{max-width:600px;margin:10px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
     .scoreboard h2{text-align:center;margin-bottom:20px;color:#1976d2}
     .score-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
@@ -181,7 +179,7 @@ function submitExam(){
   const today=new Date();
   const currentDate=`${String(today.getDate()).padStart(2,'0')}-${String(today.getMonth()+1).padStart(2,'0')}-${today.getFullYear()}`;
 
-  // ✅ Scoreboard UI (Full Name & Test Time removed, margin reduced, current date added)
+  // ✅ Scoreboard UI
   document.getElementById("quizArea").innerHTML=`
     <div class="scoreboard">
       <h2>📊 Scoreboard</h2>
@@ -196,6 +194,29 @@ function submitExam(){
       <div class="score-close"><button onclick="closeTest()">Close</button></div>
     </div>
   `;
+
+  // ✅ Append result to Google Sheet (exam mode only)
+  if(mode==="exam"){
+    const resultPayload = new FormData();
+    resultPayload.append("action", "appendResult");
+    resultPayload.append("date", currentDate);
+    resultPayload.append("code", code);
+    resultPayload.append("username", username);
+    resultPayload.append("fullname", fullname);
+    resultPayload.append("result", result);
+    resultPayload.append("maxMarks", maxMarksCalc);
+    resultPayload.append("obtainedMarks", obtained);
+    resultPayload.append("totalQuestions", totalQ);
+    resultPayload.append("attempted", attemptedQ);
+    resultPayload.append("correctAnswers", correctAns);
+    resultPayload.append("timeTaken", `${mins}m ${secs}s`);
+
+    fetch(backendUrl, { method: "POST", body: resultPayload })
+      .then(res => res.text())
+      .then(data => console.log("✅ Result saved:", data))
+      .catch(err => console.error("❌ Error saving result:", err));
+  }
+
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
 }
