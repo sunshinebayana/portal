@@ -44,6 +44,7 @@
 </div>
 
 <script>
+  // ✅ User details from localStorage
   const code = localStorage.getItem("test_code") || "";
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
@@ -56,6 +57,7 @@
   let duration = 0;
   let timerInterval;
 
+  // ✅ Timer Function
   function startTimer(minutes) {
     let time = minutes * 60; 
     clearInterval(timerInterval);
@@ -71,12 +73,14 @@
     }, 1000);
   }
 
+  // ✅ Quiz Indicator
   function updateQuizIndicator() {
     document.getElementById("quizIndicator").textContent =
       `Question ${currentQ + 1} of ${questions.length}`;
     renderQuestionNav();
   }
 
+  // ✅ Question Navigation (buttons)
   function renderQuestionNav() {
     const nav = document.getElementById("questionNav");
     nav.innerHTML = "";
@@ -93,6 +97,7 @@
     }
   }
 
+  // ✅ Navigation Buttons
   function renderNavigationButtons() {
     return `
       <div class="button-row">
@@ -108,6 +113,7 @@
     attempted[currentQ] = true;
   }
 
+  // ✅ Load Question
   function loadQuestion() {
     const qData = questions[currentQ];
     updateQuizIndicator();
@@ -119,6 +125,7 @@
     document.getElementById("quizArea").innerHTML = html;
   }
 
+  // ✅ Next Question
   function nextQuestion() {
     const answer = document.querySelector("input[name='option']:checked");
     if (answer) {
@@ -132,6 +139,7 @@
     }
   }
 
+  // ✅ Previous Question
   function prevQuestion() {
     if (currentQ > 0) {
       currentQ--;
@@ -139,6 +147,7 @@
     }
   }
 
+  // ✅ Show Correct Answer
   function showAnswer() {
     const qData = questions[currentQ];
     const correctIdx = qData.correct; 
@@ -150,14 +159,17 @@
     });
   }
 
+  // ✅ Close Test
   function closeTest() {
-    window.history.back(); // ✅ बिना alert/confirm के बंद
+    window.history.back();
   }
 
+  // ✅ Backend URL
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
+  // ✅ Init Test
   function initTest() {
-    if (!username) {
+    if (!username || !code) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
@@ -171,7 +183,7 @@
           return;
         }
 
-        // ✅ fresh exam data set
+        // ✅ Set Exam Data
         document.getElementById("examNameLabel").textContent = data.examName || "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         
