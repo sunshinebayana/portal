@@ -10,10 +10,11 @@
     .exam-name {font-size: 20px; font-weight: bold; text-transform: uppercase; text-align:center;}
     .container {max-width: 700px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
     .top-info-row {display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: #555; font-weight: bold;}
+    .top-info-row .center {flex: 1; text-align: center;}
     .quiz-indicator-row {display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #555; margin-top: 10px; margin-bottom: 10px;}
     .question {font-size: 16px; font-weight: bold; margin-bottom: 10px; text-align: left;}
     .options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left;}
-    .options label.correct {background: #4caf50; color: white;} /* ✅ Correct answer highlight */
+    .options label.correct {background: #4caf50; color: white;}
     .button-row {display: flex; justify-content: space-between; margin-top: 10px; flex-wrap:wrap; gap:5px;}
     button {padding: 8px 16px; border: none; border-radius: 4px; background: #1976d2; color: white; font-size: 14px; cursor: pointer;}
     button:hover {background: #125aa0;}
@@ -31,7 +32,8 @@
 <div class="container">
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
-    <div><strong>Remaining Time:</strong> <span id="timer"></span></div>
+    <div class="center"><strong>Remaining Time:</strong> <span id="timer"></span></div>
+    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
   </div>
   <div class="quiz-indicator-row">
     <div id="quizIndicator"></div>
@@ -172,6 +174,7 @@
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         
         duration = data.testDuration || 0;
+        document.getElementById("examTimeInTest").textContent = duration;
         document.getElementById("timer").textContent = `${duration}:00`;
         startTimer(duration);
 
