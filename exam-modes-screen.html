@@ -196,26 +196,28 @@ function submitExam(){
   `;
 
   // ✅ Append result to Google Sheet (exam mode only)
-  if(mode==="exam"){
-    const resultPayload = new FormData();
-    resultPayload.append("action", "appendResult");
-    resultPayload.append("date", currentDate);
-    resultPayload.append("code", code);
-    resultPayload.append("username", username);
-    resultPayload.append("fullname", fullname);
-    resultPayload.append("result", result);
-    resultPayload.append("maxMarks", maxMarksCalc);
-    resultPayload.append("obtainedMarks", obtained);
-    resultPayload.append("totalQuestions", totalQ);
-    resultPayload.append("attempted", attemptedQ);
-    resultPayload.append("correctAnswers", correctAns);
-    resultPayload.append("timeTaken", `${mins}m ${secs}s`);
+  if(mode === "exam") {
+  const resultPayload = new FormData();
+  resultPayload.append("action", "appendResult");
+  resultPayload.append("date", currentDate);
+  resultPayload.append("code", code);
+  resultPayload.append("username", username);
+  resultPayload.append("fullname", fullname);
+  resultPayload.append("result", result);
+  resultPayload.append("maxMarks", maxMarksCalc);
+  resultPayload.append("obtainedMarks", obtained);
+  resultPayload.append("totalQuestions", totalQ);
+  resultPayload.append("attempted", attemptedQ);
+  resultPayload.append("correctAnswers", correctAns);
+  resultPayload.append("examTime", testDuration);         // ✅ Added examTime
+  resultPayload.append("timeTaken", `${mins}m ${secs}s`);
 
-    fetch(backendUrl, { method: "POST", body: resultPayload })
-      .then(res => res.text())
-      .then(data => console.log("✅ Result saved:", data))
-      .catch(err => console.error("❌ Error saving result:", err));
-  }
+  fetch(backendUrl, { method: "POST", body: resultPayload })
+    .then(res => res.text())
+    .then(data => console.log("✅ Result saved:", data))
+    .catch(err => console.error("❌ Error saving result:", err));
+}
+
 
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
@@ -285,3 +287,4 @@ initTest();
 </script>
 </body>
 </html>
+
