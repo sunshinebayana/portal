@@ -68,7 +68,9 @@
       document.getElementById("timer").textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
       if (time <= 0) {
         clearInterval(timerInterval);
+        document.getElementById("timer").textContent = "00:00";
         document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⏰ Time Over! Test Finished.</h3>`;
+        return;
       }
       time--;
     }, 1000);
@@ -148,19 +150,18 @@
     }
   }
 
-  // ✅ Show Correct Answer (highlight user selection + correct one)
-// ✅ Show Correct Answer
-function showAnswer() {
-  const correct = questions[currentQ].correct;   // sahi option ka index
-  const input = document.querySelector(`input[name='option'][value='${correct}']`);
-  if (input && input.parentElement) {
-    input.parentElement.classList.add('correct');
+  // ✅ Show Correct Answer (highlight correct option)
+  function showAnswer() {
+    const correct = questions[currentQ].correct;   // correct option index
+    const input = document.querySelector(`input[name='option'][value='${correct}']`);
+    if (input && input.parentElement) {
+      input.parentElement.classList.add('correct');
+    }
   }
-}
 
   // ✅ Close Test
   function closeTest() {
-    window.history.back();
+    window.location.href = "index.html"; // redirect to home/login
   }
 
   // ✅ Backend URL
@@ -173,7 +174,7 @@ function showAnswer() {
       return;
     }
 
-    fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+    fetch(`${backendUrl}?action=starttest&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
@@ -191,7 +192,7 @@ function showAnswer() {
         document.getElementById("timer").textContent = `${duration}:00`;
         startTimer(duration);
 
-        questions = data.questions || [];
+        questions = (data.questions || []).map(q => ({ ...q, selected: null }));
         attempted = new Array(questions.length).fill(false);
         if (!questions.length) {
           document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
