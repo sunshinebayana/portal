@@ -207,11 +207,12 @@
     }
   }
 
+<script>
   function renderNavigationButtons() {
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        <button onclick="saveAndNext()">Save & Next</button>
+        <button onclick="showAnswer()">Show Answer</button>
         <button onclick="finishPractice()">Finish</button>
       </div>
     `;
@@ -242,6 +243,7 @@
         label.classList.add("correct");
       }
     });
+    markAttempted(); // attempt mark kar de
   }
 
   function saveAndNext() {
