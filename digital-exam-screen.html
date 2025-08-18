@@ -98,7 +98,7 @@
       text-align: left;
     }
     .options label.correct {
-      background: #c8e6c9 !important; /* हरा रंग highlight */
+      background: #c8e6c9 !important;
       border: 2px solid #2e7d32;
       font-weight: bold;
       color: #2e7d32;
@@ -211,7 +211,7 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        <button onclick="showAnswer()">Show Answer</button>
+        <button onclick="saveAndNext()">Save & Next</button>
         <button onclick="finishPractice()">Finish</button>
       </div>
     `;
@@ -233,16 +233,28 @@
   }
 
   function showAnswer() {
-    markAttempted();
     const qData = questions[currentQ];
     const correctLetter = (qData.answer || "").trim().toUpperCase();
     const correctIdx = correctLetter.charCodeAt(0) - 65;
     const optionLabels = document.querySelectorAll(".options label");
     optionLabels.forEach((label, idx) => {
       if (idx === correctIdx) {
-        label.classList.add("correct"); // ✅ सही option highlight
+        label.classList.add("correct");
       }
     });
+  }
+
+  function saveAndNext() {
+    markAttempted();
+    showAnswer(); 
+    setTimeout(() => {
+      if (currentQ < questions.length - 1) {
+        currentQ++;
+        loadQuestionPracticeMode();
+      } else {
+        finishPractice();
+      }
+    }, 800); 
   }
 
   function prevQuestion() {
