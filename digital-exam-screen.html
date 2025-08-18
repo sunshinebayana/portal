@@ -13,8 +13,9 @@
     .top-info-row .center {flex: 1; text-align: center;}
     .quiz-indicator-row {display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #555; margin-top: 10px; margin-bottom: 10px;}
     .question {font-size: 16px; font-weight: bold; margin-bottom: 10px; text-align: left;}
-    .options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left;}
+    .options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left; transition: background 0.3s ease;}
     .options label.correct {background: #4caf50; color: white;}
+    .options label.wrong {background: #f44336; color: white;}
     .button-row {display: flex; justify-content: space-between; margin-top: 10px; flex-wrap:wrap; gap:5px;}
     button {padding: 8px 16px; border: none; border-radius: 4px; background: #1976d2; color: white; font-size: 14px; cursor: pointer;}
     button:hover {background: #125aa0;}
@@ -147,14 +148,18 @@
     }
   }
 
-  // ✅ Show Correct Answer (only correct one highlight hoga)
+  // ✅ Show Correct Answer (highlight user selection + correct one)
   function showAnswer() {
     const qData = questions[currentQ];
     const correctIdx = qData.correct; 
     const options = document.querySelectorAll(".options label");
     options.forEach((opt) => {
-      if (parseInt(opt.getAttribute("data-idx")) === correctIdx) {
+      const idx = parseInt(opt.getAttribute("data-idx"));
+      if (idx === correctIdx) {
         opt.classList.add("correct");
+      }
+      if (qData.selected !== undefined && idx === qData.selected && qData.selected !== correctIdx) {
+        opt.classList.add("wrong");
       }
     });
   }
