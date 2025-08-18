@@ -147,28 +147,17 @@
     }
   }
 
-  // ✅ Show Correct Answer
-function showAnswer() {
-  const qData = questions[currentQ];
-  const correctIdx = qData.correct; 
-  const options = document.querySelectorAll(".options label");
-
-  options.forEach((opt) => {
-    const idx = parseInt(opt.getAttribute("data-idx"));
-    // ✅ Reset previous highlights
-    opt.classList.remove("correct");
-    opt.style.opacity = "1";  
-
-    if (idx === correctIdx) {
-      // ✅ Correct answer ko highlight karo
-      opt.classList.add("correct");
-    } else {
-      // ✅ Wrong answers ko halka fade karo
-      opt.style.opacity = "0.6";
-    }
-  });
-}
-
+  // ✅ Show Correct Answer (only correct one highlight hoga)
+  function showAnswer() {
+    const qData = questions[currentQ];
+    const correctIdx = qData.correct; 
+    const options = document.querySelectorAll(".options label");
+    options.forEach((opt) => {
+      if (parseInt(opt.getAttribute("data-idx")) === correctIdx) {
+        opt.classList.add("correct");
+      }
+    });
+  }
 
   // ✅ Close Test
   function closeTest() {
