@@ -171,25 +171,21 @@
   <div class="quiz-indicator-row">
     <div id="quizIndicator"></div>
     <div id="examNameInTest"></div>
-    <div id="modeLabel"></div>
+    <div id="modeLabel">Mode: Practice</div>
   </div>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
   <div id="questionNav" class="question-nav"></div>
 </div>
 <script>
   const code = localStorage.getItem("test_code") || "";
-  const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
 
-  document.getElementById("modeLabel").textContent = mode ? `Mode: ${mode.charAt(0).toUpperCase() + mode.slice(1)}` : "";
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
   let questions = [];
   let currentQ = 0;
-  let score = 0;
   let testDuration = 0;
-  let maxMarks = 0;
   let timerInterval;
   let attempted = [];
 
@@ -209,8 +205,7 @@
       if (attempted[i]) btn.classList.add("attempted");
       btn.onclick = () => {
         currentQ = i;
-        if (mode === "exam") loadQuestionExamMode();
-        else loadQuestionPracticeMode();
+        loadQuestionPracticeMode();
       };
       nav.appendChild(btn);
     }
@@ -220,67 +215,14 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
-        <button onclick="confirmSubmitExam()">Submit Test</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="checkPracticeAnswer()">Save & Next</button>` : ''}
+        <button onclick="finishPractice()">Finish</button>
       </div>
     `;
   }
 
   function markAttempted() {
     attempted[currentQ] = true;
-  }
-
-  function loadQuestionExamMode() {
-    const qData = questions[currentQ];
-    updateQuizIndicator();
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
-    qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
-    });
-    html += `</div>` + renderNavigationButtons();
-    document.getElementById("quizArea").innerHTML = html;
-  }
-
-  function nextQuestionExam() {
-    const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
-    const selectedIdx = parseInt(answer.value);
-    questions[currentQ].selected = selectedIdx;
-    markAttempted();
-    const selectedLetter = String.fromCharCode(65 + selectedIdx);
-    if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
-    currentQ++;
-    loadQuestionExamMode();
-  }
-
-  function prevQuestion() {
-    if (currentQ > 0) {
-      currentQ--;
-      if (mode === "exam") loadQuestionExamMode();
-      else loadQuestionPracticeMode();
-    }
-  }
-
-  // 🔹 Confirmation before submit
-  function confirmSubmitExam() {
-    if (confirm("Are you sure you want submit this test?")) {
-      submitExam();
-    }
-  }
-
-  function submitExam() {
-    clearInterval(timerInterval);
-    const answer = document.querySelector("input[name='option']:checked");
-    if (answer) {
-      const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
-      if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
-    }
-    document.getElementById("quizArea").innerHTML =
-      `<h3>Exam Completed!</h3>
-       <p>Your Score: ${score} / ${questions.length}</p>
-       <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
-    document.getElementById("quizIndicator").textContent = "";
-    document.getElementById("questionNav").innerHTML = "";
   }
 
   function loadQuestionPracticeMode() {
@@ -305,15 +247,26 @@
         currentQ++;
         loadQuestionPracticeMode();
       } else {
-        clearInterval(timerInterval);
-        document.getElementById("quizArea").innerHTML =
-          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
-        document.getElementById("quizIndicator").textContent = "";
-        document.getElementById("questionNav").innerHTML = "";
+        finishPractice();
       }
     } else {
       document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
     }
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) {
+      currentQ--;
+      loadQuestionPracticeMode();
+    }
+  }
+
+  function finishPractice() {
+    clearInterval(timerInterval);
+    document.getElementById("quizArea").innerHTML =
+      `<h3>✅ Practice Completed!</h3><p>Aapne sabhi questions attempt kar liye hain.</p>`;
+    document.getElementById("quizIndicator").textContent = "";
+    document.getElementById("questionNav").innerHTML = "";
   }
 
   function closeTest() {
@@ -331,8 +284,8 @@
         `⏳ Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
-        alert("⏳ Time is up! Submitting your test...");
-        submitExam();
+        alert("⏳ Time is up! Finishing practice...");
+        finishPractice();
       }
     }
     updateTimer();
@@ -366,7 +319,6 @@
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         testDuration = data.testDuration || 0;
         document.getElementById("examTimeInTest").textContent = testDuration;
-        maxMarks = data.maxMarks || 0;
 
         questions = data.questions || [];
         attempted = new Array(questions.length).fill(false);
@@ -376,12 +328,8 @@
         }
 
         currentQ = 0;
-        score = 0;
         startTimer(testDuration);
-
-        if (mode === "exam") loadQuestionExamMode();
-        else if (mode === "practice") loadQuestionPracticeMode();
-        else document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+        loadQuestionPracticeMode();
       })
       .catch(err => {
         console.error("Error loading test:", err);
