@@ -1,211 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RS-CIT Test Screen</title>
-<style>
-body {font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0;}
-header {background: #1976d2; color: #fff; padding: 10px 20px; font-size: 18px; display: flex; flex-direction: column; gap: 5px;}
-.exam-name {font-size: 20px; font-weight: bold; text-transform: uppercase; text-align:center;}
-.container {max-width: 700px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
-.top-info-row {display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: #555; font-weight: bold;}
-.top-info-row .center {flex: 1; text-align: center;}
-.quiz-indicator-row {display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #555; margin-top: 10px; margin-bottom: 10px;}
-.question {font-size: 16px; font-weight: bold; margin-bottom: 10px; text-align: left;}
-.options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left;}
-.options label.correct {background: #4caf50; color: white;}
-.options label.wrong {background: #f44336; color: white;}
-.button-row {display: flex; justify-content: space-between; margin-top: 10px; flex-wrap:wrap; gap:5px;}
-button {padding: 8px 16px; border: none; border-radius: 4px; background: #1976d2; color: white; font-size: 14px; cursor: pointer;}
-button:hover {background: #125aa0;}
-.loading {text-align: center; font-size: 16px; padding: 20px; color: #1976d2;}
-.question-nav {display: flex; flex-wrap: wrap; gap: 5px; margin-top: 15px; justify-content: center;}
-.question-btn {width: 32px; height: 32px; border: 1px solid #1976d2; background: #f1f1f1; color: #1976d2; text-align: center; line-height: 30px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s ease;}
-.question-btn:hover {background: #e0e0e0;}
-.question-btn.attempted {background: #4caf50; color: #fff; border-color: #4caf50;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RS-CIT Test Screen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1976d2;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .exam-name {
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      background: #fff;
+      color: #1976d2;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+    .close-btn:hover {
+      background: #f5f5f5;
+      color: #d32f2f;
+      border-color: #d32f2f;
+    }
+    .top-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
+      font-weight: bold;
+    }
+    #timerDisplay {
+      font-weight: bold;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 4px;
+      color: #1976d2;
+      font-size: 16px;
+    }
+    .quiz-indicator-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .question {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .options label {
+      display: block;
+      background: #f1f1f1;
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      background: #1976d2;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #125aa0;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+      color: red;
+    }
+    .loading {
+      text-align: center;
+      font-size: 16px;
+      padding: 20px;
+      color: #1976d2;
+    }
+    /* Question Navigation */
+    .question-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 15px;
+      justify-content: center;
+    }
+    .question-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #1976d2;
+      background: #f1f1f1;
+      color: #1976d2;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s ease;
+    }
+    .question-btn:hover {
+      background: #e0e0e0;
+    }
+    .question-btn.attempted {
+      background: #4caf50;
+      color: #fff;
+      border-color: #4caf50;
+    }
+  </style>
 </head>
 <body>
 <header>
-<span id="examNameLabel" class="exam-name"></span>
+  <span id="examNameLabel" class="exam-name"></span>
 </header>
 <div class="container">
-<div class="top-info-row">
-  <div id="fullnameLabel"></div>
-  <div class="center"><strong>Remaining Time:</strong> <span id="timer"></span></div>
-  <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span></div>
+  <button class="close-btn" onclick="closeTest()">✖</button>
+  <div class="top-info-row">
+    <div id="fullnameLabel"></div>
+    <div id="timerDisplay">⏳ Time Left: --:--</div>
+    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
+  </div>
+  <div class="quiz-indicator-row">
+    <div id="quizIndicator"></div>
+    <div id="examNameInTest"></div>
+    <div id="modeLabel"></div>
+  </div>
+  <div id="quizArea" class="loading">⏳ Please wait...</div>
+  <div id="questionNav" class="question-nav"></div>
 </div>
-<div class="quiz-indicator-row">
-  <div id="quizIndicator"></div>
-  <div id="examNameInTest"></div>
-</div>
-<div id="quizArea" class="loading">⏳ Please wait...</div>
-<div id="questionNav" class="question-nav"></div>
-</div>
-
 <script>
-// ✅ User details
-const code = localStorage.getItem("test_code") || "";
-const username = (localStorage.getItem("test_username") || "").trim();
-const fullname = localStorage.getItem("test_fullname") || "";
-document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+  const code = localStorage.getItem("test_code") || "";
+  const mode = (localStorage.getItem("test_mode") || "").toLowerCase();
+  const username = (localStorage.getItem("test_username") || "").trim();
+  const fullname = localStorage.getItem("test_fullname") || "";
 
-let questions = [];
-let currentQ = 0;
-let attempted = [];
-let duration = 0;
-let timerInterval;
+  document.getElementById("modeLabel").textContent = mode ? `Mode: ${mode.charAt(0).toUpperCase() + mode.slice(1)}` : "";
+  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
-// ✅ Timer
-function startTimer(minutes) {
-    let time = minutes * 60;
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        let m = Math.floor(time / 60);
-        let s = time % 60;
-        document.getElementById("timer").textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
-        if(time <= 0) {
-            clearInterval(timerInterval);
-            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⏰ Time Over! Test Finished.</h3>`;
-        }
-        time--;
-    }, 1000);
-}
+  let questions = [];
+  let currentQ = 0;
+  let score = 0;
+  let testDuration = 0;
+  let maxMarks = 0;
+  let timerInterval;
+  let attempted = [];
 
-// ✅ Quiz Indicator
-function updateQuizIndicator() {
-    document.getElementById("quizIndicator").textContent = `Question ${currentQ+1} of ${questions.length}`;
+  function updateQuizIndicator() {
+    document.getElementById("quizIndicator").textContent =
+      `Question ${currentQ + 1} of ${questions.length}`;
     renderQuestionNav();
-}
+  }
 
-// ✅ Question Navigation
-function renderQuestionNav() {
+  function renderQuestionNav() {
     const nav = document.getElementById("questionNav");
     nav.innerHTML = "";
-    for(let i=0;i<questions.length;i++){
-        const btn = document.createElement("div");
-        btn.textContent = i+1;
-        btn.className = "question-btn";
-        if(attempted[i]) btn.classList.add("attempted");
-        btn.onclick = () => { currentQ=i; loadQuestion(); }
-        nav.appendChild(btn);
+    for (let i = 0; i < questions.length; i++) {
+      const btn = document.createElement("div");
+      btn.textContent = i + 1;
+      btn.className = "question-btn";
+      if (attempted[i]) btn.classList.add("attempted");
+      btn.onclick = () => {
+        currentQ = i;
+        if (mode === "exam") loadQuestionExamMode();
+        else loadQuestionPracticeMode();
+      };
+      nav.appendChild(btn);
     }
-}
+  }
 
-// ✅ Navigation Buttons
-function renderNavigationButtons() {
+  function renderNavigationButtons() {
     return `
-    <div class="button-row">
-      <button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>Previous</button>
-      ${currentQ < questions.length-1? `<button onclick="nextQuestion()">Next</button>`:''}
-      <button id="showAnswerBtn">Show Answer</button>
-      <button onclick="closeTest()">Close</button>
-    </div>`;
-}
+      <div class="button-row">
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
+        ${currentQ < questions.length - 1 ? `<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>` : ''}
+        <button onclick="confirmSubmitExam()">Submit Test</button>
+      </div>
+    `;
+  }
 
-// ✅ Load Question
-function loadQuestion(){
+  function markAttempted() {
+    attempted[currentQ] = true;
+  }
+
+  function loadQuestionExamMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
-    let html = `<div class="question">${currentQ+1}. ${qData.question}</div><div class="options">`;
-    qData.options.forEach((opt, idx)=>{
-        html += `<label data-idx="${idx}"><input type="radio" name="option" value="${idx}" ${qData.selected===idx?'checked':''}> ${opt}</label>`;
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
     });
     html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
+  }
 
-    // ✅ Attach Show Answer event dynamically
-    document.getElementById("showAnswerBtn").onclick = showAnswer;
-}
-
-// ✅ Next Question
-function nextQuestion(){
+  function nextQuestionExam() {
     const answer = document.querySelector("input[name='option']:checked");
-    if(answer){
-        questions[currentQ].selected = parseInt(answer.value);
-        attempted[currentQ]=true;
+    if (!answer) { alert("Please select an answer!"); return; }
+    const selectedIdx = parseInt(answer.value);
+    questions[currentQ].selected = selectedIdx;
+    markAttempted();
+    const selectedLetter = String.fromCharCode(65 + selectedIdx);
+    if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    currentQ++;
+    loadQuestionExamMode();
+  }
+
+  function prevQuestion() {
+    if (currentQ > 0) {
+      currentQ--;
+      if (mode === "exam") loadQuestionExamMode();
+      else loadQuestionPracticeMode();
     }
-    if(currentQ < questions.length-1){
+  }
+
+  // 🔹 Confirmation before submit
+  function confirmSubmitExam() {
+    if (confirm("Are you sure you want submit this test?")) {
+      submitExam();
+    }
+  }
+
+  function submitExam() {
+    clearInterval(timerInterval);
+    const answer = document.querySelector("input[name='option']:checked");
+    if (answer) {
+      const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+      if (selectedLetter === (questions[currentQ].answer || "").trim().toUpperCase()) score++;
+    }
+    document.getElementById("quizArea").innerHTML =
+      `<h3>Exam Completed!</h3>
+       <p>Your Score: ${score} / ${questions.length}</p>
+       <p>Max Marks: ${maxMarks}, Duration: ${testDuration} mins</p>`;
+    document.getElementById("quizIndicator").textContent = "";
+    document.getElementById("questionNav").innerHTML = "";
+  }
+
+  function loadQuestionPracticeMode() {
+    const qData = questions[currentQ];
+    updateQuizIndicator();
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    qData.options.forEach((opt, idx) => {
+      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+    });
+    html += `</div>` + renderNavigationButtons() + `<div class="message" id="practiceMsg"></div>`;
+    document.getElementById("quizArea").innerHTML = html;
+  }
+
+  function checkPracticeAnswer() {
+    const answer = document.querySelector("input[name='option']:checked");
+    if (!answer) { alert("Please select an answer!"); return; }
+    markAttempted();
+    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
+    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
+    if (selectedLetter === correctAnswer) {
+      if (currentQ < questions.length - 1) {
         currentQ++;
-        loadQuestion();
+        loadQuestionPracticeMode();
+      } else {
+        clearInterval(timerInterval);
+        document.getElementById("quizArea").innerHTML =
+          `<h3>✅ Practice Completed!</h3><p>You answered all questions correctly!</p>`;
+        document.getElementById("quizIndicator").textContent = "";
+        document.getElementById("questionNav").innerHTML = "";
+      }
+    } else {
+      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
     }
-}
+  }
 
-// ✅ Previous Question
-function prevQuestion(){
-    if(currentQ>0){
-        currentQ--;
-        loadQuestion();
+  function closeTest() {
+    if (confirm("Are you sure you want to close the test?")) {
+      window.history.back();
     }
-}
+  }
 
-function showAnswer() {
-  const correct = questions[currentIndex][6]; // 'A', 'B', 'C', 'D'
-  ['A', 'B', 'C', 'D'].forEach(opt => {
-    const input = document.getElementById('lInput' + opt);
-    const label = input?.parentElement;
-    if (!label) return;
-
-    label.classList.remove('correct', 'wrong'); // clear old highlights
-
-    if (opt === correct) {
-      label.classList.add('correct'); // highlight correct
-    } else if (input.checked && opt !== correct) {
-      label.classList.add('wrong'); // highlight user's wrong selection
+  function startTimer(durationMinutes) {
+    let timer = durationMinutes * 60;
+    function updateTimer() {
+      const minutes = Math.floor(timer / 60);
+      const seconds = timer % 60;
+      document.getElementById("timerDisplay").textContent =
+        `⏳ Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      if (--timer < 0) {
+        clearInterval(timerInterval);
+        alert("⏳ Time is up! Submitting your test...");
+        submitExam();
+      }
     }
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
 
-    input.disabled = true; // disable all options
-  });
-}
+  const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-
-// ✅ Close Test
-function closeTest(){ window.history.back(); }
-
-// ✅ Backend URL
-const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
-// ✅ Init Test
-function initTest(){
-    if(!username || !code){
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-        return;
+  function initTest() {
+    if (!username) {
+      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      return;
     }
 
     fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
-    .then(res=>res.json())
-    .then(data=>{
-        if(!data.success){
-            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ ${data.message || "Error starting test."}</h3>`;
-            return;
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">⚠ ${data.message || "Error starting test."}</h3>`;
+          return;
         }
 
-        document.getElementById("examNameLabel").textContent = data.examName || "";
-        document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
+        if ((data.paymentStatus || "").toLowerCase() !== "confirm") {
+          document.getElementById("quizArea").innerHTML =
+            `<h3 style="color:red;">💰 Your Payment is Pending. Please complete payment to start the test.</h3>`;
+          return;
+        }
 
-        duration = data.testDuration || 0;
-        document.getElementById("examTimeInTest").textContent = `${duration} mins`;
-        document.getElementById("timer").textContent = `${duration}:00`;
-        startTimer(duration);
+        document.getElementById("examNameLabel").textContent = "";
+        document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
+        testDuration = data.testDuration || 0;
+        document.getElementById("examTimeInTest").textContent = testDuration;
+        maxMarks = data.maxMarks || 0;
 
         questions = data.questions || [];
         attempted = new Array(questions.length).fill(false);
-        if(!questions.length){
-            document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
-            return;
+        if (!questions.length) {
+          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
+          return;
         }
 
         currentQ = 0;
-        loadQuestion();
-    })
-    .catch(err=>{
-        console.error("Error loading test:",err);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
-    });
-}
+        score = 0;
+        startTimer(testDuration);
 
-initTest();
+        if (mode === "exam") loadQuestionExamMode();
+        else if (mode === "practice") loadQuestionPracticeMode();
+        else document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ Invalid test mode specified.</h3>`;
+      })
+      .catch(err => {
+        console.error("Error loading test:", err);
+        document.getElementById("quizArea").innerHTML =
+          `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
+      });
+  }
+
+  initTest();
 </script>
 </body>
 </html>
