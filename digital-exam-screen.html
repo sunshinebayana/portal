@@ -25,6 +25,7 @@
     .question-btn {width: 32px; height: 32px; border: 1px solid #1976d2; background: #f1f1f1; color: #1976d2; text-align: center; line-height: 30px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s ease;}
     .question-btn:hover {background: #e0e0e0;}
     .question-btn.attempted {background: #4caf50; color: #fff; border-color: #4caf50;}
+    #message {margin: 15px 0;}
   </style>
 </head>
 <body>
@@ -37,186 +38,178 @@
     <div class="center"><strong>Remaining Time:</strong> <span id="timer"></span></div>
     <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span></div>
   </div>
-  <div class="quiz-indicator-row">
-    <div id="quizIndicator"></div>
-    <div id="examNameInTest"></div>
+  <div id="message" class="loading">⏳ Please wait...</div>
+  <div id="quizArea" style="display:none;">
+    <div id="learnQNo"></div>
+    <div id="learnQText"></div>
+    <div class="options">
+      <label><input type="radio" name="lOptions" id="lInputA" value="A"><span id="lOptionA"></span></label>
+      <label><input type="radio" name="lOptions" id="lInputB" value="B"><span id="lOptionB"></span></label>
+      <label><input type="radio" name="lOptions" id="lInputC" value="C"><span id="lOptionC"></span></label>
+      <label><input type="radio" name="lOptions" id="lInputD" value="D"><span id="lOptionD"></span></label>
+    </div>
+    <div class="button-row">
+      <button onclick="LearnDigital.prevQuestion()">Previous</button>
+      <button onclick="LearnDigital.saveAndNext()">Save & Next</button>
+      <button onclick="LearnDigital.showAnswer()">Show Answer</button>
+      <button onclick="LearnDigital.speakQuestion()">Speak</button>
+      <button onclick="LearnDigital.closeViewer()">Close</button>
+    </div>
+    <div id="learnIndicators" class="question-nav"></div>
   </div>
-  <div id="quizArea" class="loading">⏳ Please wait...</div>
-  <div id="questionNav" class="question-nav"></div>
 </div>
 
 <script>
   // ✅ User details
-  const code = localStorage.getItem("test_code") || "";
-  const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
-
   document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
 
-  let questions = [];
-  let currentQ = 0;
-  let attempted = [];
+  const testCode = localStorage.getItem("test_code") || "";
+  const currentUser = { username: localStorage.getItem("test_username") || "" };
+
+  // ✅ Timer logic
   let duration = 0;
   let timerInterval;
-
-  // ✅ Timer
   function startTimer(minutes) {
-    let time = minutes * 60; 
+    let time = minutes * 60;
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       let m = Math.floor(time / 60);
       let s = time % 60;
-      document.getElementById("timer").textContent = `${m}:${s < 10 ? "0" : ""}${s}`;
+      document.getElementById("timer").textContent = `${m}:${s < 10 ? '0':''}${s}`;
       if (time <= 0) {
         clearInterval(timerInterval);
-        document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⏰ Time Over! Test Finished.</h3>`;
+        document.getElementById("message").textContent = "⏰ Time Over! Test Finished.";
       }
       time--;
-    }, 1000);
+    },1000);
   }
 
-  // ✅ Quiz Indicator
-  function updateQuizIndicator() {
-    document.getElementById("quizIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
-    renderQuestionNav();
-  }
+  // ✅ LearnDigital Logic
+  const LearnDigital = (() => {
+    let questions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
 
-  // ✅ Question Navigation
-  function renderQuestionNav() {
-    const nav = document.getElementById("questionNav");
-    nav.innerHTML = "";
-    for (let i = 0; i < questions.length; i++) {
-      const btn = document.createElement("div");
-      btn.textContent = i + 1;
-      btn.className = "question-btn";
-      if (attempted[i]) btn.classList.add("attempted");
-      btn.onclick = () => {
-        currentQ = i;
-        loadQuestion();
-      };
-      nav.appendChild(btn);
+    function showMessage(msg, isError=false){
+      const msgDiv = document.getElementById('message');
+      msgDiv.textContent = msg;
+      msgDiv.style.color = isError ? 'red' : 'green';
+      msgDiv.style.fontSize = '20px';
+      msgDiv.style.fontWeight = 'bold';
+      msgDiv.style.textAlign = 'center';
     }
-  }
 
-  // ✅ Navigation Buttons
-  function renderNavigationButtons() {
-    return `
-      <div class="button-row">
-        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        <button onclick="nextQuestion()" ${currentQ === questions.length - 1 ? 'disabled' : ''}>Next</button>
-        <button onclick="showAnswer()">Show Answer</button>
-        <button onclick="closeTest()">Close</button>
-      </div>
-    `;
-  }
-
-  function markAttempted() {
-    attempted[currentQ] = true;
-  }
-
-  // ✅ Load Question
-  function loadQuestion() {
-    const qData = questions[currentQ];
-    updateQuizIndicator();
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
-    qData.options.forEach((opt, idx) => {
-      html += `<label data-idx="${idx}">
-        <input type="radio" name="option" value="${idx}" ${qData.selected === idx ? 'checked' : ''}> ${opt}
-      </label>`;
-    });
-    html += `</div>` + renderNavigationButtons();
-    document.getElementById("quizArea").innerHTML = html;
-  }
-
-  // ✅ Next Question
-  function nextQuestion() {
-    const answer = document.querySelector("input[name='option']:checked");
-    if (answer) {
-      const selectedIdx = parseInt(answer.value);
-      questions[currentQ].selected = selectedIdx;
-      markAttempted();
+    function startTest() {
+      showMessage('Loading...');
+      google.script.run
+        .withSuccessHandler(onTestData)
+        .withFailureHandler(e => showMessage('❌ Error: ' + e.message, true))
+        .startTest(currentUser.username, testCode);
     }
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestion();
-    }
-  }
 
-  // ✅ Previous Question
-  function prevQuestion() {
-    if (currentQ > 0) {
-      currentQ--;
-      loadQuestion();
-    }
-  }
-
-  // ✅ Show Correct Answer
-  function showAnswer() {
-    const qData = questions[currentQ];
-    const answerMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
-    const correctIdx = answerMap[qData.correct.trim().toUpperCase()] ?? -1;
-
-    const options = document.querySelectorAll(".options label");
-    options.forEach((opt) => {
-      const idx = parseInt(opt.getAttribute("data-idx"));
-      if (idx === correctIdx) {
-        opt.classList.add("correct");
-      } else if (qData.selected === idx) {
-        opt.classList.add("wrong");
+    function onTestData(data) {
+      if(data.status === 'payment_pending'){
+        showMessage('🛑 Payment pending. Please contact admin.', true);
+        return;
       }
-    });
-  }
+      if(data.status === 'ok'){
+        questions = data.questions;
+        userAnswers = new Array(questions.length).fill(null);
+        currentIndex = 0;
 
-  // ✅ Close Test
-  function closeTest() {
-    window.history.back();
-  }
-
-  // ✅ Backend URL
-  const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
-  // ✅ Init Test
-  function initTest() {
-    if (!username || !code) {
-      document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-      return;
-    }
-
-    fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (!data.success) {
-          document.getElementById("quizArea").innerHTML =
-            `<h3 style="color:red;">⚠ ${data.message || "Error starting test."}</h3>`;
-          return;
-        }
-
-        document.getElementById("examNameLabel").textContent = data.examName || "";
-        document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
-        
+        document.getElementById('quizArea').style.display = 'block';
+        showMessage('');
         duration = data.testDuration || 0;
         document.getElementById("examTimeInTest").textContent = `${duration} mins`;
-        document.getElementById("timer").textContent = `${duration}:00`;
         startTimer(duration);
+        document.getElementById("examNameLabel").textContent = data.examName || "";
 
-        questions = data.questions || [];
-        attempted = new Array(questions.length).fill(false);
-        if (!questions.length) {
-          document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">⚠ No questions found.</h3>`;
-          return;
-        }
+        showQuestion(0);
+      } else {
+        showMessage('❌ Invalid access.', true);
+      }
+    }
 
-        currentQ = 0;
-        loadQuestion();
-      })
-      .catch(err => {
-        console.error("Error loading test:", err);
-        document.getElementById("quizArea").innerHTML =
-          `<h3 style="color:red;">⚠ Error loading test. Please try again later.</h3>`;
+    function showQuestion(index){
+      if(index<0 || index>=questions.length) return;
+      currentIndex = index;
+      const q = questions[index];
+
+      document.getElementById('learnQNo').textContent = `Question ${index+1} of ${questions.length}`;
+      document.getElementById('learnQText').textContent = q[1];
+
+      ['A','B','C','D'].forEach((opt,i)=>{
+        const span = document.getElementById('lOption'+opt);
+        const input = document.getElementById('lInput'+opt);
+        const label = input?.parentElement;
+        if(span) span.textContent = q[i+2];
+        if(input) input.checked = (userAnswers[index]===opt);
+        if(label) label.classList.remove('correct');
       });
-  }
 
-  initTest();
+      let indicators='';
+      for(let i=0;i<questions.length;i++){
+        let cls = (i===index)? 'active' : (userAnswers[i]? 'answered':'');
+        indicators += `<button class="${cls}" onclick="LearnDigital.showQuestion(${i})">${i+1}</button>`;
+      }
+      document.getElementById('learnIndicators').innerHTML = indicators;
+    }
+
+    function saveAndNext(){
+      const selected = document.querySelector('input[name="lOptions"]:checked');
+      if(selected) userAnswers[currentIndex] = selected.value;
+      if(currentIndex<questions.length-1) showQuestion(currentIndex+1);
+    }
+
+    function prevQuestion(){
+      if(currentIndex>0) showQuestion(currentIndex-1);
+    }
+
+    function showAnswer(){
+      const correct = questions[currentIndex][6];
+      const input = document.getElementById('lInput'+correct);
+      if(input && input.parentElement) input.parentElement.classList.add('correct');
+    }
+
+    function speakQuestion(){
+      if(!questions || !questions[currentIndex]) return;
+      const question = questions[currentIndex][1];
+      const correctOption = questions[currentIndex][6];
+      const optionMap = {A:2,B:3,C:4,D:5};
+      const answerText = questions[currentIndex][optionMap[correctOption]];
+      const finalText = `${question}. इस प्रश्न का उत्तर है: ${answerText}`;
+      const speakNow = (voice)=>{
+        const utterance = new SpeechSynthesisUtterance(finalText);
+        utterance.lang = 'hi-IN';
+        utterance.rate = 0.95;
+        utterance.pitch = 1;
+        if(voice) utterance.voice = voice;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      };
+      let voices = speechSynthesis.getVoices();
+      if(voices.length===0){
+        speechSynthesis.onvoiceschanged=()=>{
+          voices=speechSynthesis.getVoices();
+          const hindiVoice = voices.find(v=>v.lang.includes('hi')||v.name.toLowerCase().includes('hindi')||v.name.toLowerCase().includes('india'));
+          speakNow(hindiVoice);
+        };
+      }else{
+        const hindiVoice = voices.find(v=>v.lang.includes('hi')||v.name.toLowerCase().includes('hindi')||v.name.toLowerCase().includes('india'));
+        speakNow(hindiVoice);
+      }
+    }
+
+    function closeViewer(){
+      document.getElementById('quizArea').style.display='none';
+      document.getElementById('message').textContent = '';
+    }
+
+    return {startTest, showQuestion, saveAndNext, prevQuestion, showAnswer, speakQuestion, closeViewer};
+  })();
+
+  LearnDigital.startTest();
 </script>
 </body>
 </html>
