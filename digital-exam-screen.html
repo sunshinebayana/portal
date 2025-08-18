@@ -97,6 +97,12 @@
       cursor: pointer;
       text-align: left;
     }
+    .options label.correct {
+      background: #c8e6c9 !important; /* हरा रंग highlight */
+      border: 2px solid #2e7d32;
+      font-weight: bold;
+      color: #2e7d32;
+    }
     .button-row {
       display: flex;
       justify-content: space-between;
@@ -114,19 +120,12 @@
     button:hover {
       background: #125aa0;
     }
-    .message {
-      margin-top: 10px;
-      font-weight: bold;
-      text-align: center;
-      color: red;
-    }
     .loading {
       text-align: center;
       font-size: 16px;
       padding: 20px;
       color: #1976d2;
     }
-    /* Question Navigation */
     .question-nav {
       display: flex;
       flex-wrap: wrap;
@@ -146,9 +145,6 @@
       cursor: pointer;
       font-weight: bold;
       transition: background 0.2s ease;
-    }
-    .question-btn:hover {
-      background: #e0e0e0;
     }
     .question-btn.attempted {
       background: #4caf50;
@@ -215,7 +211,7 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="checkPracticeAnswer()">Save & Next</button>` : ''}
+        <button onclick="showAnswer()">Show Answer</button>
         <button onclick="finishPractice()">Finish</button>
       </div>
     `;
@@ -230,28 +226,23 @@
     updateQuizIndicator();
     let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
-      html += `<label><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
+      html += `<label data-idx="${idx}"><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
-    html += `</div>` + renderNavigationButtons() + `<div class="message" id="practiceMsg"></div>`;
+    html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
   }
 
-  function checkPracticeAnswer() {
-    const answer = document.querySelector("input[name='option']:checked");
-    if (!answer) { alert("Please select an answer!"); return; }
+  function showAnswer() {
     markAttempted();
-    const selectedLetter = String.fromCharCode(65 + parseInt(answer.value));
-    const correctAnswer = (questions[currentQ].answer || "").trim().toUpperCase();
-    if (selectedLetter === correctAnswer) {
-      if (currentQ < questions.length - 1) {
-        currentQ++;
-        loadQuestionPracticeMode();
-      } else {
-        finishPractice();
+    const qData = questions[currentQ];
+    const correctLetter = (qData.answer || "").trim().toUpperCase();
+    const correctIdx = correctLetter.charCodeAt(0) - 65;
+    const optionLabels = document.querySelectorAll(".options label");
+    optionLabels.forEach((label, idx) => {
+      if (idx === correctIdx) {
+        label.classList.add("correct"); // ✅ सही option highlight
       }
-    } else {
-      document.getElementById("practiceMsg").textContent = "❌ Galat Answer! Dubara try karein.";
-    }
+    });
   }
 
   function prevQuestion() {
