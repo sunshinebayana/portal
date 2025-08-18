@@ -149,20 +149,14 @@
   }
 
   // ✅ Show Correct Answer (highlight user selection + correct one)
-  function showAnswer() {
-    const qData = questions[currentQ];
-    const correctIdx = qData.correct; 
-    const options = document.querySelectorAll(".options label");
-    options.forEach((opt) => {
-      const idx = parseInt(opt.getAttribute("data-idx"));
-      if (idx === correctIdx) {
-        opt.classList.add("correct");
-      }
-      if (qData.selected !== undefined && idx === qData.selected && qData.selected !== correctIdx) {
-        opt.classList.add("wrong");
-      }
-    });
+// ✅ Show Correct Answer
+function showAnswer() {
+  const correct = questions[currentQ].correct;   // sahi option ka index
+  const input = document.querySelector(`input[name='option'][value='${correct}']`);
+  if (input && input.parentElement) {
+    input.parentElement.classList.add('correct');
   }
+}
 
   // ✅ Close Test
   function closeTest() {
