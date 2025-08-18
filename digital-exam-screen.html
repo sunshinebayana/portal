@@ -14,11 +14,12 @@
     .quiz-indicator-row {display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #555; margin-top: 10px; margin-bottom: 10px;}
     .question {font-size: 16px; font-weight: bold; margin-bottom: 10px; text-align: left;}
     .options label {display: block; background: #f1f1f1; padding: 8px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left;}
-    .options label.correct {background: #4caf50; color: white;}   /* ✅ Green for correct */
-    .options label.wrong {background: #f44336; color: white;}     /* ✅ Red for wrong */
+    .options label.correct {background: #4caf50; color: white;}
+    .options label.wrong {background: #f44336; color: white;}
     .button-row {display: flex; justify-content: space-between; margin-top: 10px; flex-wrap:wrap; gap:5px;}
     button {padding: 8px 16px; border: none; border-radius: 4px; background: #1976d2; color: white; font-size: 14px; cursor: pointer;}
-    button:hover {background: #125aa0;}
+    button:disabled {background: #aaa; cursor: not-allowed;}
+    button:hover:not(:disabled) {background: #125aa0;}
     .loading {text-align: center; font-size: 16px; padding: 20px; color: #1976d2;}
     .question-nav {display: flex; flex-wrap: wrap; gap: 5px; margin-top: 15px; justify-content: center;}
     .question-btn {width: 32px; height: 32px; border: 1px solid #1976d2; background: #f1f1f1; color: #1976d2; text-align: center; line-height: 30px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s ease;}
@@ -45,7 +46,7 @@
 </div>
 
 <script>
-  // ✅ User details from localStorage
+  // ✅ User details
   const code = localStorage.getItem("test_code") || "";
   const username = (localStorage.getItem("test_username") || "").trim();
   const fullname = localStorage.getItem("test_fullname") || "";
@@ -58,7 +59,7 @@
   let duration = 0;
   let timerInterval;
 
-  // ✅ Timer Function
+  // ✅ Timer
   function startTimer(minutes) {
     let time = minutes * 60; 
     clearInterval(timerInterval);
@@ -76,12 +77,11 @@
 
   // ✅ Quiz Indicator
   function updateQuizIndicator() {
-    document.getElementById("quizIndicator").textContent =
-      `Question ${currentQ + 1} of ${questions.length}`;
+    document.getElementById("quizIndicator").textContent = `Question ${currentQ + 1} of ${questions.length}`;
     renderQuestionNav();
   }
 
-  // ✅ Question Navigation (buttons)
+  // ✅ Question Navigation
   function renderQuestionNav() {
     const nav = document.getElementById("questionNav");
     nav.innerHTML = "";
@@ -103,7 +103,7 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        ${currentQ < questions.length - 1 ? `<button onclick="nextQuestion()">Next</button>` : ''}
+        <button onclick="nextQuestion()" ${currentQ === questions.length - 1 ? 'disabled' : ''}>Next</button>
         <button onclick="showAnswer()">Show Answer</button>
         <button onclick="closeTest()">Close</button>
       </div>
@@ -120,7 +120,9 @@
     updateQuizIndicator();
     let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
     qData.options.forEach((opt, idx) => {
-      html += `<label data-idx="${idx}"><input type="radio" name="option" value="${idx}" ${attempted[currentQ] && qData.selected === idx ? 'checked' : ''}> ${opt}</label>`;
+      html += `<label data-idx="${idx}">
+        <input type="radio" name="option" value="${idx}" ${qData.selected === idx ? 'checked' : ''}> ${opt}
+      </label>`;
     });
     html += `</div>` + renderNavigationButtons();
     document.getElementById("quizArea").innerHTML = html;
@@ -148,19 +150,19 @@
     }
   }
 
-  // ✅ Show Correct Answer (Best Way)
+  // ✅ Show Correct Answer
   function showAnswer() {
     const qData = questions[currentQ];
     const answerMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
-    const correctIdx = answerMap[qData.correct.trim().toUpperCase()];
+    const correctIdx = answerMap[qData.correct.trim().toUpperCase()] ?? -1;
 
     const options = document.querySelectorAll(".options label");
     options.forEach((opt) => {
       const idx = parseInt(opt.getAttribute("data-idx"));
       if (idx === correctIdx) {
-        opt.classList.add("correct");  // ✅ Green
+        opt.classList.add("correct");
       } else if (qData.selected === idx) {
-        opt.classList.add("wrong");    // ✅ Red (if attempted wrong)
+        opt.classList.add("wrong");
       }
     });
   }
@@ -189,7 +191,6 @@
           return;
         }
 
-        // ✅ Set Exam Data
         document.getElementById("examNameLabel").textContent = data.examName || "";
         document.getElementById("examNameInTest").textContent = `Exam Name: ${data.examName || ""}`;
         
