@@ -143,9 +143,10 @@ function prevQuestion(){
 // ✅ Show Answer
 function showAnswer(){
     const qData = questions[currentQ];
-    let correctIdx = qData.correct;
+    let correctIdx = qData.correct; // e.g., 'A', 'B', etc.
 
-    if(typeof correctIdx==='string'){
+    // Convert letter to index if necessary
+    if(typeof correctIdx === 'string'){
         const map = {A:0, B:1, C:2, D:3};
         correctIdx = map[correctIdx.trim().toUpperCase()];
     }
@@ -153,13 +154,21 @@ function showAnswer(){
     const options = document.querySelectorAll(".options label");
     options.forEach((opt)=>{
         const idx = parseInt(opt.getAttribute("data-idx"));
+        opt.classList.remove("correct", "wrong"); // Clear previous highlights
+
+        const input = opt.querySelector("input");
+        const selected = input.checked;
+
         if(idx === correctIdx){
+            // Highlight correct answer in green
             opt.classList.add("correct");
-        } else {
-            opt.classList.remove("correct");
+        } else if(selected && idx !== correctIdx){
+            // Highlight user’s wrong selection in red
+            opt.classList.add("wrong");
         }
     });
 }
+
 
 // ✅ Close Test
 function closeTest(){ window.history.back(); }
