@@ -212,8 +212,7 @@
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
         <button onclick="saveAndNext()">Save & Next</button>
-        <button onclick="nextQuestion()">Next</button>
-        <button onclick="closeTest()">Close</button>
+        <button onclick="finishPractice()">Finish</button>
       </div>
     `;
   }
@@ -258,13 +257,6 @@
     }, 800); 
   }
 
-  function nextQuestion() {
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      loadQuestionPracticeMode();
-    }
-  }
-
   function prevQuestion() {
     if (currentQ > 0) {
       currentQ--;
@@ -281,7 +273,9 @@
   }
 
   function closeTest() {
-    window.history.back();
+    if (confirm("Are you sure you want to close the test?")) {
+      window.history.back();
+    }
   }
 
   function startTimer(durationMinutes) {
@@ -293,7 +287,8 @@
         `⏳ Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
       if (--timer < 0) {
         clearInterval(timerInterval);
-        closeTest();
+        alert("⏳ Time is up! Finishing practice...");
+        finishPractice();
       }
     }
     updateTimer();
