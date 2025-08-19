@@ -210,10 +210,10 @@
   function renderNavigationButtons() {
     return `
       <div class="button-row">
-        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        <button onclick="nextQuestion()" ${currentQ === questions.length - 1 ? 'disabled' : ''}>Next</button>
-        <button onclick="showAnswer()">Show Answer</button>
-        <button onclick="closeTest()">Close</button>
+        <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>⬅ Previous</button>
+        <button onclick="nextQuestion()" ${currentQ === questions.length - 1 ? 'disabled' : ''}>Next ➡</button>
+        <button onclick="showAnswer()">👁 Show Answer</button>
+        <button onclick="closeTest()">❌ Close</button>
       </div>
     `;
   }
