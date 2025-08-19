@@ -198,47 +198,50 @@
       window.scrollTo({top: area.offsetTop - 20, behavior:'smooth'});
     }
 
-    function renderModule(key){
-      switch(key){
-        case 'book-chapters':
-  window.location.href = 'book-chapters.html';
-  break;
+   function renderModule(key){
+  switch(key){
+    case 'book-chapters':
+      location.href = 'book-chapters.html';
+      return ''; // ✅ return empty string so no innerHTML error
 
-        case 'internal-test':
-  window.location.href = 'internal-tests.html';
-  break;
-          
-       case 'old-papers':
-  window.location.href = 'old-papers.html';
-  break;
+    case 'internal-test':
+      location.href = 'internal-tests.html';
+      return '';
 
-        case 'important-tests':
-          return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">High-yield quick tests to strengthen weak areas.</p>`;
-       
-        case 'digital-zone':
-  window.location.href = 'digital-learning.html';
-  break;
+    case 'old-papers':
+      location.href = 'old-papers.html';
+      return '';
 
-          
-        case 'ai-skill-bot':
-  // यहां अपने बोट सिस्टम का लिंक दें
-  window.location.href = 'ai-skill-bot.html';
-  break;
+    case 'important-tests':
+      return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">High-yield quick tests to strengthen weak areas.</p>`;
 
-        case 'common-test':
-          return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test. Recommended before final exam.</p>`;
-        case 'schedule':
-          return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests schedule.</p>`;
-        case 'contact':
-          return `<h2>📞 Contact & Support</h2><p class="lead">Contact your trainer or admin for help.</p><p>Director: Atendra Sharma — 9929856121</p>`;
-        default:
-          return `<p>Module not found.</p>`;
-      }
-    }
+    case 'digital-zone':
+      location.href = 'digital-learning.html';
+      return '';
+
+    case 'ai-skill-bot':
+      location.href = 'ai-skill-bot.html'; // ✅ now it will work fine
+      return '';
+
+    case 'common-test':
+      return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test. Recommended before final exam.</p>`;
+
+    case 'schedule':
+      return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests schedule.</p>`;
+
+    case 'contact':
+      return `<h2>📞 Contact & Support</h2><p class="lead">Contact your trainer or admin for help.</p><p>Director: Atendra Sharma — 9929856121</p>`;
+
+    default:
+      return `<p>Module not found.</p>`;
+  }
+}
+
   </script>
 
 </body>
 </html>
+
 
 
 
