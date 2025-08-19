@@ -100,9 +100,9 @@ function renderQuestionNav(){
 }
 function renderNavigationButtons(){
   return `<div class="button-row">
-    <button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>Previous</button>
-    ${currentQ<questions.length-1?`<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">Save & Next</button>`:""}
-    <button onclick="showConfirmBox()">Submit Test</button>
+    <button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>⏪ Previous</button>
+    ${currentQ<questions.length-1?`<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">💾 Save & Next</button>`:""}
+    <button onclick="showConfirmBox()">✅ Submit Test</button>
   </div>`;
 }
 function markAttempted(){attempted[currentQ]=true}
@@ -287,4 +287,5 @@ initTest();
 </script>
 </body>
 </html>
+
 
