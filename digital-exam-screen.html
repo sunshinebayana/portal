@@ -225,7 +225,9 @@
   function loadQuestionPracticeMode() {
     const qData = questions[currentQ];
     updateQuizIndicator();
-    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div><div class="options">`;
+    let html = `<div class="question">${currentQ + 1}. ${qData.question}</div>`;
+    html += `<button onclick="speakQuestion()">🔊 Speak Question</button>`;
+    html += `<div class="options">`;
     qData.options.forEach((opt, idx) => {
       html += `<label data-idx="${idx}"><input type="radio" name="option" value="${idx}"> ${opt}</label>`;
     });
@@ -299,6 +301,44 @@
     }
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  // 🔊 Speak Question function
+  function speakQuestion() {
+    if (!questions || !questions[currentQ]) return;
+
+    const question = questions[currentQ].question;
+    const correctOption = (questions[currentQ].answer || "").trim().toUpperCase();
+    const optionMap = { A: 0, B: 1, C: 2, D: 3 };
+    const answerText = questions[currentQ].options[optionMap[correctOption]];
+
+    const finalText = `${question}. इस प्रश्न का उत्तर है: ${answerText}`;
+
+    const speakNow = (voice) => {
+      const utterance = new SpeechSynthesisUtterance(finalText);
+      utterance.lang = 'hi-IN';
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      if (voice) utterance.voice = voice;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    };
+
+    let voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      speechSynthesis.onvoiceschanged = () => {
+        voices = speechSynthesis.getVoices();
+        const hindiVoice = voices.find(v =>
+          v.lang.includes('hi') || v.name.toLowerCase().includes('hindi') || v.name.toLowerCase().includes('india')
+        );
+        speakNow(hindiVoice);
+      };
+    } else {
+      const hindiVoice = voices.find(v =>
+        v.lang.includes('hi') || v.name.toLowerCase().includes('hindi') || v.name.toLowerCase().includes('india')
+      );
+      speakNow(hindiVoice);
+    }
   }
 
   const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
