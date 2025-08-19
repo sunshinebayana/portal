@@ -211,12 +211,13 @@
     return `
       <div class="button-row">
         <button onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>Previous</button>
-        <button onclick="saveAndNext()">Save & Next</button>
+        <button onclick="showAnswer()">Show Answer</button>
         <button onclick="finishPractice()">Finish</button>
       </div>
     `;
   }
 
+  
   function markAttempted() {
     attempted[currentQ] = true;
   }
@@ -232,7 +233,7 @@
     document.getElementById("quizArea").innerHTML = html;
   }
 
-  function showAnswer() {
+ function showAnswer() {
     const qData = questions[currentQ];
     const correctLetter = (qData.answer || "").trim().toUpperCase();
     const correctIdx = correctLetter.charCodeAt(0) - 65;
@@ -242,8 +243,9 @@
         label.classList.add("correct");
       }
     });
+    markAttempted(); // attempt mark kar de
   }
-
+  
   function saveAndNext() {
     markAttempted();
     showAnswer(); 
