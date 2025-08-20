@@ -16,9 +16,35 @@
     .bot-msg{background:#f1f8e9;color:#2e7d32;text-align:left;margin-right:auto}
     .bot-msg.wrong{background:#ffebee;color:#c62828}
     .question{font-size:16px;font-weight:bold;margin:12px 0;text-align:left}
-    .options button{display:block;width:100%;margin:6px 0;padding:8px;border:1px solid #1976d2;border-radius:6px;cursor:pointer;background:#f9f9f9;color:#1976d2;font-weight:bold;transition:.2s}
-    .options button:hover{background:#1976d2;color:#fff}
     .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
+
+    /* Fixed Options at Bottom */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 -2px 6px rgba(0,0,0,.1);
+    }
+    .options-grid button {
+      padding: 12px;
+      border: 1px solid #1976d2;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #f9f9f9;
+      color: #1976d2;
+      font-weight: bold;
+      transition: .2s;
+    }
+    .options-grid button:hover {
+      background: #1976d2;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -65,6 +91,7 @@ const ChatBot = (() => {
           Apni skills ko next level par le jao! 😉
         </div>
         <div id="chatBody"></div>
+        <div id="optionsArea" class="options-grid"></div>
       </div>
     `;
   }
@@ -103,19 +130,23 @@ const ChatBot = (() => {
   function loadQuestion() {
     if (currentIndex >= questions.length) {
       showBotMessage(`✅ Practice Complete!<br> Total Score: ${score}/${questions.length*2}`, "correct");
+      document.getElementById("optionsArea").innerHTML="";
       return;
     }
 
     const q = questions[currentIndex];
     let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
-    html += `<div class="options">`;
-    q.options.forEach((opt, i) => {
-      html += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
-    });
-    html += `</div>`;
     const box=document.createElement("div");
     box.innerHTML=html;
     document.getElementById("chatBody").appendChild(box);
+
+    // Render options at bottom fixed area
+    let opts = "";
+    q.options.forEach((opt, i) => {
+      opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
+    });
+    document.getElementById("optionsArea").innerHTML = opts;
+
     scrollDown();
   }
 
@@ -131,7 +162,6 @@ const ChatBot = (() => {
     if(option===correctOption){
       score+=2;
       showBotMessage(`🤖 Wah, ${fullname}! 👆 सही जवाब! (+2 Marks) | Total: ${score} Marks`,"correct");
-      // 🎉 Example confetti/celebration trigger
       if(score===28){
         showBotMessage(`🎉 Celebration Time, ${fullname}! You hit 28 Marks!`,"correct");
       }
