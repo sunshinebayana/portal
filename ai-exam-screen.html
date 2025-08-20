@@ -68,7 +68,6 @@
 
 <script>
 const code=localStorage.getItem("test_code")||"",
-      mode=(localStorage.getItem("test_mode")||"").toLowerCase(),
       username=(localStorage.getItem("test_username")||"").trim(),
       fullname=localStorage.getItem("test_fullname")||"";
 
@@ -80,19 +79,21 @@ const ChatBot = (() => {
   let currentIndex = 0;
   let score = 0;
   let attempted = 0;
+  let correct = 0;
 
   function loadChatWindow() {
     questions = (window.loadedQuestions || []).sort(() => 0.5 - Math.random()).slice(0, 35);
     currentIndex = 0;
     score = 0;
     attempted = 0;
+    correct = 0;
 
     renderChatWindow();
 
-    // Welcome message भी chatBody में scroll होगा
+    // Welcome message भी scroll होगा
     showBotMessage(`🙏 राधे राधे, ${fullname}!<br>🤖 Hey Champion 👋<br>
     Sunshine Bot में आपका स्वागत है 🌸<br>
-    Practice करो, marks कमाओ और RS-CIT परीक्षा की मजेदार तैयारी करो! 😉`,"correct");
+    Practice करो, marks कमाओ और RS-CIT परीक्षा की मजेदार तैयारी करो! 😉`);
 
     loadQuestion();
   }
@@ -139,8 +140,7 @@ const ChatBot = (() => {
 
   function loadQuestion() {
     if (currentIndex >= questions.length) {
-      showBotMessage(`✅ Practice Complete!<br> Total Score: ${score}/${questions.length*2}`, "correct");
-      document.getElementById("optionsArea").innerHTML="";
+      showSummary();
       return;
     }
 
@@ -171,17 +171,36 @@ const ChatBot = (() => {
 
     if(option===correctOption){
       score+=2;
-      showBotMessage(`🤖 Wah, ${fullname}! 👆 सही जवाब! (+2 Marks) | Total: ${score} Marks`,"correct");
-      if(score===28){
-        showBotMessage(`🎉 Celebration Time, ${fullname}! You hit 28 Marks!`,"correct");
-      }
+      correct++;
+      showBotMessage(`🤖 Wah, ${fullname}! 👆 सही जवाब! (+2 Marks) | Total: ${score}`,"correct");
+      checkMilestones();
     } else {
-      showBotMessage(`🤖 Oops, ${fullname}! 👆 गलत जवाब. | Total: ${score} Marks`,"wrong");
+      showBotMessage(`🤖 Oops, ${fullname}! 👆 गलत जवाब. | Total: ${score}`,"wrong");
       showCorrectAnswer(`🤖 सही जवाब है👉: ${correctOption}. ${correctText}`);
     }
 
     currentIndex++;
     setTimeout(loadQuestion,1200);
+  }
+
+  function checkMilestones(){
+    if(score===28){
+      showBotMessage(`🎉 Celebration Time, ${fullname}! You hit 28 Marks!`);
+    } else if(score===42){
+      showBotMessage(`🚀 ${fullname}, First Division हासिल! Keep going!`);
+    } else if(score===50){
+      showBotMessage(`🔥 Excellent! 25 Questions Correct! Next Goal – 30! 🌟`);
+    } else if(score===60){
+      showBotMessage(`🌟 Outstanding! 30 Correct – Almost Topper! 🚀`);
+    } else if(score===70){
+      showBotMessage(`🎊 Incredible! Perfect 35/35 – Record Tod Diya! 🏆`);
+    }
+  }
+
+  function showSummary(){
+    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
+    showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
+    document.getElementById("optionsArea").innerHTML="";
   }
 
   return { loadChatWindow, chooseAnswer };
