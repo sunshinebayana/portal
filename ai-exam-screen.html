@@ -11,12 +11,13 @@
     .container{max-width:700px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);position:relative}
     .close-btn{position:absolute;top:-14px;right:-14px;background:#fff;color:#1976d2;font-size:18px;border:1px solid #ccc;border-radius:50%;width:30px;height:30px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:.2s}
     .close-btn:hover{background:#f5f5f5;color:#d32f2f;border-color:#d32f2f}
-    .top-info-row,.quiz-indicator-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#555;margin:10px 0;font-weight:bold}
-    #timerDisplay{font-weight:bold;background:rgba(255,255,255,.8);padding:5px 10px;border-radius:4px;color:#1976d2;font-size:16px}
-    .question{font-size:16px;font-weight:bold;margin-bottom:10px;text-align:left}
+    .chat-message{margin:8px 0;padding:10px;border-radius:6px;max-width:85%;line-height:1.4}
+    .user-msg{background:#e3f2fd;color:#1976d2;text-align:right;margin-left:auto}
+    .bot-msg{background:#f1f8e9;color:#2e7d32;text-align:left;margin-right:auto}
+    .bot-msg.wrong{background:#ffebee;color:#c62828}
+    .question{font-size:16px;font-weight:bold;margin:12px 0;text-align:left}
     .options button{display:block;width:100%;margin:6px 0;padding:8px;border:1px solid #1976d2;border-radius:6px;cursor:pointer;background:#f9f9f9;color:#1976d2;font-weight:bold;transition:.2s}
     .options button:hover{background:#1976d2;color:#fff}
-    .message{text-align:center;color:red;margin-top:10px;font-weight:bold}
     .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
   </style>
 </head>
@@ -40,12 +41,14 @@ const ChatBot = (() => {
   let questions = [];
   let currentIndex = 0;
   let score = 0;
+  let attempted = 0;
 
   function loadChatWindow() {
     // 35 Random Questions
     questions = (window.loadedQuestions || []).sort(() => 0.5 - Math.random()).slice(0, 35);
     currentIndex = 0;
     score = 0;
+    attempted = 0;
 
     renderChatWindow();
     loadQuestion();
@@ -53,7 +56,7 @@ const ChatBot = (() => {
 
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
-      <div id="chatWindow" style="background:#fff; border-radius:10px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.1);">
+      <div id="chatWindow" style="background:#fff; border-radius:10px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.1); height:500px; overflow-y:auto;">
         <div id="chatHeader" style="margin-bottom:15px; text-align:center; font-size:15px; font-weight:bold; color:#1976d2;">
           🙏राधे राधे🙏, दोस्तों<br>
           🤖 Hey Champion, ${fullname}! 👋<br>
@@ -66,12 +69,40 @@ const ChatBot = (() => {
     `;
   }
 
+  function showUserMessage(msg) {
+    const div = document.createElement("div");
+    div.className="chat-message user-msg";
+    div.innerHTML=msg;
+    document.getElementById("chatBody").appendChild(div);
+    scrollDown();
+  }
+
+  function showBotMessage(msg,type="correct") {
+    const div = document.createElement("div");
+    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"");
+    div.innerHTML=msg;
+    document.getElementById("chatBody").appendChild(div);
+    scrollDown();
+  }
+
+  function showCorrectAnswer(msg){
+    const div=document.createElement("div");
+    div.className="chat-message bot-msg";
+    div.style.background="#fffde7";
+    div.style.color="#f57f17";
+    div.innerHTML=msg;
+    document.getElementById("chatBody").appendChild(div);
+    scrollDown();
+  }
+
+  function scrollDown(){
+    const chat=document.getElementById("chatBody");
+    chat.scrollTop=chat.scrollHeight;
+  }
+
   function loadQuestion() {
     if (currentIndex >= questions.length) {
-      document.getElementById("chatBody").innerHTML = `
-        <h3>✅ Practice Complete!</h3>
-        <p>Total Score: ${score}/${questions.length}</p>
-      `;
+      showBotMessage(`✅ Practice Complete!<br> Total Score: ${score}/${questions.length*2}`, "correct");
       return;
     }
 
@@ -79,31 +110,41 @@ const ChatBot = (() => {
     let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
     html += `<div class="options">`;
     q.options.forEach((opt, i) => {
-      html += `<button onclick="ChatBot.checkAnswer(${i})">${opt}</button>`;
+      html += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
     });
-    html += `</div><div id="feedback" style="margin-top:10px; font-weight:bold;"></div>`;
-
-    document.getElementById("chatBody").innerHTML = html;
+    html += `</div>`;
+    const box=document.createElement("div");
+    box.innerHTML=html;
+    document.getElementById("chatBody").appendChild(box);
+    scrollDown();
   }
 
-  function checkAnswer(selected) {
-    const correct = (questions[currentIndex].answer || "").trim().toUpperCase();
-    const chosen = String.fromCharCode(65 + selected);
+  function chooseAnswer(option){
+    const q = questions[currentIndex];
+    const correctOption = (q.answer||"").trim().toUpperCase();
+    const correctText = q.options[correctOption.charCodeAt(0)-65] || "";
+    const selectedText = q.options[option.charCodeAt(0)-65] || "";
 
-    if (chosen === correct) {
-      score++;
-      document.getElementById("feedback").innerHTML = `<span style="color:green;">✅ Bilkul sahi jawab!</span>`;
+    attempted++;
+    showUserMessage(`👤 ${fullname}: ${option}. ${selectedText}`);
+
+    if(option===correctOption){
+      score+=2;
+      showBotMessage(`🤖 Wah, ${fullname}! 👆 सही जवाब! (+2 Marks) | Total: ${score} Marks`,"correct");
+      // 🎉 Example confetti/celebration trigger
+      if(score===28){
+        showBotMessage(`🎉 Celebration Time, ${fullname}! You hit 28 Marks!`,"correct");
+      }
     } else {
-      document.getElementById("feedback").innerHTML = `<span style="color:red;">❌ Galat! Sahi jawab: ${correct}</span>`;
+      showBotMessage(`🤖 Oops, ${fullname}! 👆 गलत जवाब. | Total: ${score} Marks`,"wrong");
+      showCorrectAnswer(`🤖 सही जवाब है👉: ${correctOption}. ${correctText}`);
     }
 
-    setTimeout(() => {
-      currentIndex++;
-      loadQuestion();
-    }, 1200);
+    currentIndex++;
+    setTimeout(loadQuestion,1200);
   }
 
-  return { loadChatWindow, checkAnswer };
+  return { loadChatWindow, chooseAnswer };
 })();
 
 /* ---------------- Backend Init ---------------- */
