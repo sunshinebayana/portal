@@ -14,60 +14,17 @@
     .top-info-row,.quiz-indicator-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#555;margin:10px 0;font-weight:bold}
     #timerDisplay{font-weight:bold;background:rgba(255,255,255,.8);padding:5px 10px;border-radius:4px;color:#1976d2;font-size:16px}
     .question{font-size:16px;font-weight:bold;margin-bottom:10px;text-align:left}
-    .options label{display:block;background:#f1f1f1;padding:8px;margin:6px 0;border-radius:4px;cursor:pointer;text-align:left}
-    .button-row{display:flex;justify-content:space-between;margin-top:10px}
-    button{padding:8px 16px;border:none;border-radius:4px;background:#1976d2;color:#fff;font-size:14px;cursor:pointer}
-    button:hover{background:#125aa0}
+    .options button{display:block;width:100%;margin:6px 0;padding:8px;border:1px solid #1976d2;border-radius:6px;cursor:pointer;background:#f9f9f9;color:#1976d2;font-weight:bold;transition:.2s}
+    .options button:hover{background:#1976d2;color:#fff}
     .message{text-align:center;color:red;margin-top:10px;font-weight:bold}
     .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
-    .question-nav{display:flex;flex-wrap:wrap;gap:5px;margin-top:15px;justify-content:center}
-    .question-btn{width:32px;height:32px;border:1px solid #1976d2;background:#f1f1f1;color:#1976d2;text-align:center;line-height:30px;border-radius:4px;cursor:pointer;font-weight:bold;transition:.2s}
-    .question-btn:hover{background:#e0e0e0}
-    .question-btn.attempted{background:#4caf50;color:#fff;border-color:#4caf50}
-    .confirm-box{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:1000}
-    .confirm-content{background:#fff;padding:20px;border-radius:8px;text-align:center;width:300px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-    .confirm-content p{margin-bottom:15px;font-size:16px;font-weight:bold}
-    .confirm-buttons{display:flex;justify-content:space-around}
-    .confirm-buttons button{flex:1;margin:0 5px}
-    .scoreboard{max-width:600px;margin:10px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
-    .scoreboard h2{text-align:center;margin-bottom:20px;color:#1976d2}
-    .score-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
-    .score-item:last-child{border-bottom:none}
-    .score-label{font-weight:bold;color:#444}
-    .score-value{color:#1976d2}
-    .score-result.pass{color:#4caf50;font-weight:bold}
-    .score-result.fail{color:#d32f2f;font-weight:bold}
-    .score-close{text-align:center;margin-top:20px}
-    .score-close button{background:#d32f2f}
-    .score-close button:hover{background:#b71c1c}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
 <header><span id="examNameLabel" class="exam-name"></span></header>
 <div class="container">
   <button class="close-btn" onclick="closeTest()">✖</button>
-  <div class="top-info-row">
-    <div id="fullnameLabel"></div>
-    <div id="timerDisplay">⏳ Time Left: --:--</div>
-    <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
-  </div>
-  <div class="quiz-indicator-row">
-    <div id="quizIndicator"></div><div id="examNameInTest"></div><div id="modeLabel"></div>
-  </div>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
-  <div id="questionNav" class="question-nav"></div>
-</div>
-
-<!-- Confirm box -->
-<div id="confirmBox" class="confirm-box" style="display:none;">
-  <div class="confirm-content">
-    <p>Are you sure you want to submit this test?</p>
-    <div class="confirm-buttons">
-      <button onclick="confirmSubmit()">OK</button>
-      <button onclick="cancelSubmit()">Cancel</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -76,181 +33,80 @@ const code=localStorage.getItem("test_code")||"",
       username=(localStorage.getItem("test_username")||"").trim(),
       fullname=localStorage.getItem("test_fullname")||"";
 
-document.getElementById("modeLabel").textContent=mode?`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`:"";
-document.getElementById("fullnameLabel").textContent=fullname?`👤 ${fullname}`:"👤 Guest User";
-
-let questions=[],currentQ=0,score=0,testDuration=0,maxMarks=0,timerInterval,attempted=[];
-let startTime=Date.now();
-
-function updateQuizIndicator(){
-  document.getElementById("quizIndicator").textContent=`Question ${currentQ+1} of ${questions.length}`;
-  renderQuestionNav();
-}
-function renderQuestionNav(){
-  const nav=document.getElementById("questionNav");
-  nav.innerHTML="";
-  questions.forEach((q,i)=>{
-    const btn=document.createElement("div");
-    btn.textContent=i+1;
-    btn.className="question-btn";
-    if(attempted[i]) btn.classList.add("attempted");
-    btn.onclick=()=>{currentQ=i;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()};
-    nav.appendChild(btn);
-  });
-}
-function renderNavigationButtons(){
-  return `<div class="button-row">
-    <button onclick="prevQuestion()" ${currentQ===0?'disabled':''}>⏪ Previous</button>
-    ${currentQ<questions.length-1?`<button onclick="${mode==='exam'?'nextQuestionExam()':'checkPracticeAnswer()'}">💾 Save & Next</button>`:""}
-    <button onclick="showConfirmBox()">✅ Submit Test</button>
-  </div>`;
-}
-function markAttempted(){attempted[currentQ]=true}
-
-/* ---------------- Exam Mode ---------------- */
-function loadQuestionExamMode(){
-  const q=questions[currentQ];
-  updateQuizIndicator();
-  let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;
-  q.options.forEach((opt,i)=>{
-    html+=`<label><input type="radio" name="option" value="${i}" ${attempted[currentQ]&&q.selected===i?'checked':''}> ${opt}</label>`;
-  });
-  document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons();
-}
-
-function nextQuestionExam(){
-  const ans=document.querySelector("input[name='option']:checked");
-  if(!ans){alert("Please select an answer!");return}
-  const idx=parseInt(ans.value);
-  questions[currentQ].selected=idx;
-  markAttempted();
-  if(String.fromCharCode(65+idx)===(questions[currentQ].answer||"").trim().toUpperCase()) score++;
-  currentQ++;
-  if(currentQ<questions.length){loadQuestionExamMode()}else{showConfirmBox()}
-}
-
-function prevQuestion(){if(currentQ>0){currentQ--;mode==="exam"?loadQuestionExamMode():loadQuestionPracticeMode()}}
-
-/* ---------------- Practice Mode ---------------- */
-function loadQuestionPracticeMode(){
-  const q=questions[currentQ];
-  updateQuizIndicator();
-  let html=`<div class="question">${currentQ+1}. ${q.question}</div><div class="options">`;
-  q.options.forEach((opt,i)=>{html+=`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`});
-  document.getElementById("quizArea").innerHTML=html+"</div>"+renderNavigationButtons()+`<div class="message" id="practiceMsg"></div>`;
-}
-
-function checkPracticeAnswer(){
-  const ans=document.querySelector("input[name='option']:checked");
-  if(!ans){alert("Please select an answer!");return}
-  markAttempted();
-  const selected=String.fromCharCode(65+parseInt(ans.value)),
-        correct=(questions[currentQ].answer||"").trim().toUpperCase();
-  if(selected===correct){
-    score++;
-    currentQ<questions.length-1?loadQuestionPracticeMode(++currentQ):submitExam()
-  }else{
-    document.getElementById("practiceMsg").textContent="❌ Galat Answer! Dubara try karein.";
-  }
-}
-
-/* ---------------- Submit ---------------- */
-function showConfirmBox(){document.getElementById("confirmBox").style.display="flex"}
-function confirmSubmit(){document.getElementById("confirmBox").style.display="none";submitExam()}
-function cancelSubmit(){document.getElementById("confirmBox").style.display="none"}
-
-function submitExam(){
-  clearInterval(timerInterval);
-  const totalQ=questions.length;
-  const attemptedQ=attempted.filter(Boolean).length;
-  const correctAns=score;
-  const maxMarksCalc=maxMarks||totalQ;
-  const obtained=correctAns;
-  const percentage=maxMarksCalc>0? (obtained/maxMarksCalc)*100 : 0;
-  let result="N/A";
-  if(maxMarksCalc>0){ result=percentage>=40?"Pass":"Fail"; }
-
-  const endTime=Date.now();
-  const timeTakenMs=endTime-startTime;
-  const mins=Math.floor(timeTakenMs/60000);
-  const secs=Math.floor((timeTakenMs%60000)/1000);
-
-  // ✅ Current Date dd-mm-yyyy
-  const today=new Date();
-  const currentDate=`${String(today.getDate()).padStart(2,'0')}-${String(today.getMonth()+1).padStart(2,'0')}-${today.getFullYear()}`;
-
-  // ✅ Scoreboard UI
-  document.getElementById("quizArea").innerHTML=`
-    <div class="scoreboard">
-      <h2>📊 Scoreboard</h2>
-      <div class="score-item"><span class="score-label">Date:</span><span class="score-value">${currentDate}</span></div>
-      <div class="score-item"><span class="score-label">Result:</span><span class="score-result ${String(result).toLowerCase()}">${result}</span></div>
-      <div class="score-item"><span class="score-label">Max Marks:</span><span class="score-value">${maxMarksCalc}</span></div>
-      <div class="score-item"><span class="score-label">Obtained Marks:</span><span class="score-value">${obtained}</span></div>
-      <div class="score-item"><span class="score-label">Total Questions:</span><span class="score-value">${totalQ}</span></div>
-      <div class="score-item"><span class="score-label">Attempted:</span><span class="score-value">${attemptedQ}</span></div>
-      <div class="score-item"><span class="score-label">Correct Answers:</span><span class="score-value">${correctAns}</span></div>
-      <div class="score-item"><span class="score-label">Time Taken:</span><span class="score-value">${mins}m ${secs}s</span></div>
-      <div class="score-close"><button onclick="closeTest()">Close</button></div>
-    </div>
-  `;
-
-  // ✅ Append result to Google Sheet (exam mode only)
-  if(mode === "exam") {
-  const resultPayload = new FormData();
-  resultPayload.append("action", "appendResult");
-  resultPayload.append("date", currentDate);
-  resultPayload.append("code", code);
-  resultPayload.append("username", username);
-  resultPayload.append("fullname", fullname);
-  resultPayload.append("result", result);
-  resultPayload.append("maxMarks", maxMarksCalc);
-  resultPayload.append("obtainedMarks", obtained);
-  resultPayload.append("totalQuestions", totalQ);
-  resultPayload.append("attempted", attemptedQ);
-  resultPayload.append("correctAnswers", correctAns);
-  resultPayload.append("examTime", testDuration);         // ✅ Added examTime
-  resultPayload.append("timeTaken", `${mins}m ${secs}s`);
-
-  fetch(backendUrl, { method: "POST", body: resultPayload })
-    .then(res => res.text())
-    .then(data => console.log("✅ Result saved:", data))
-    .catch(err => console.error("❌ Error saving result:", err));
-}
-
-
-  document.getElementById("quizIndicator").textContent="";
-  document.getElementById("questionNav").innerHTML="";
-}
-
-/* ---------------- Timer ---------------- */
-function closeTest(){
-  const stored = localStorage.getItem('test_selection_url');
-  if (stored) { window.location.href = stored; return; }
-  if (document.referrer && document.referrer !== location.href) {
-    window.history.back();
-    return;
-  }
-  window.location.href = "/";
-}
-function startTimer(mins){
-  let t=mins*60;
-  function update(){
-    const m=Math.floor(t/60),s=t%60;
-    document.getElementById("timerDisplay").textContent=`⏳ Time Left: ${m}:${s<10?"0":""}${s}`;
-    if(--t<0){
-      clearInterval(timerInterval);
-      alert("⏳ Time is up! Submitting your test...");
-      submitExam();
-    }
-  }
-  update();
-  timerInterval=setInterval(update,1000);
-}
-
-/* ---------------- Backend Init ---------------- */
 const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
+/* ---------------- ChatBot ---------------- */
+const ChatBot = (() => {
+  let questions = [];
+  let currentIndex = 0;
+  let score = 0;
+
+  function loadChatWindow() {
+    // 35 Random Questions
+    questions = (window.loadedQuestions || []).sort(() => 0.5 - Math.random()).slice(0, 35);
+    currentIndex = 0;
+    score = 0;
+
+    renderChatWindow();
+    loadQuestion();
+  }
+
+  function renderChatWindow() {
+    document.getElementById("quizArea").innerHTML = `
+      <div id="chatWindow" style="background:#fff; border-radius:10px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.1);">
+        <div id="chatHeader" style="margin-bottom:15px; text-align:center; font-size:15px; font-weight:bold; color:#1976d2;">
+          🙏राधे राधे🙏, दोस्तों<br>
+          🤖 Hey Champion, ${fullname}! 👋<br>
+          Sunshine Bot me swagat hai –<br>
+          Practice karo, marks jeeto aur 3 August 2025 ko hone wali RS-CIT pariksha ki mazedar tarike se taiyari karo!<br>
+          Apni skills ko next level par le jao! 😉
+        </div>
+        <div id="chatBody"></div>
+      </div>
+    `;
+  }
+
+  function loadQuestion() {
+    if (currentIndex >= questions.length) {
+      document.getElementById("chatBody").innerHTML = `
+        <h3>✅ Practice Complete!</h3>
+        <p>Total Score: ${score}/${questions.length}</p>
+      `;
+      return;
+    }
+
+    const q = questions[currentIndex];
+    let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
+    html += `<div class="options">`;
+    q.options.forEach((opt, i) => {
+      html += `<button onclick="ChatBot.checkAnswer(${i})">${opt}</button>`;
+    });
+    html += `</div><div id="feedback" style="margin-top:10px; font-weight:bold;"></div>`;
+
+    document.getElementById("chatBody").innerHTML = html;
+  }
+
+  function checkAnswer(selected) {
+    const correct = (questions[currentIndex].answer || "").trim().toUpperCase();
+    const chosen = String.fromCharCode(65 + selected);
+
+    if (chosen === correct) {
+      score++;
+      document.getElementById("feedback").innerHTML = `<span style="color:green;">✅ Bilkul sahi jawab!</span>`;
+    } else {
+      document.getElementById("feedback").innerHTML = `<span style="color:red;">❌ Galat! Sahi jawab: ${correct}</span>`;
+    }
+
+    setTimeout(() => {
+      currentIndex++;
+      loadQuestion();
+    }, 1200);
+  }
+
+  return { loadChatWindow, checkAnswer };
+})();
+
+/* ---------------- Backend Init ---------------- */
 function initTest(){
   if(!username){
     document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
@@ -266,25 +122,37 @@ function initTest(){
       document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">💰 Your Payment is Pending.</h3>`;
       return;
     }
-    document.getElementById("examNameInTest").textContent=`Exam Name: ${d.examName||""}`;
-    testDuration=d.testDuration||0;document.getElementById("examTimeInTest").textContent=testDuration;
-    maxMarks=d.maxMarks||0;questions=d.questions||[];attempted=new Array(questions.length).fill(false);
-    if(!questions.length){
-      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ No questions found.</h3>`;
-      return;
-    }
-    currentQ=0;score=0;startTime=Date.now();startTimer(testDuration);
-    mode==="exam"?loadQuestionExamMode():
-    mode==="practice"?loadQuestionPracticeMode():
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Invalid test mode.</h3>`;
+
+    // ✅ Store questions for chatbot
+    window.loadedQuestions = d.questions || [];
+
+    // ✅ Show Sunshine Bot Welcome Screen
+    document.getElementById("quizArea").innerHTML = `
+      <div style="text-align:center; padding:20px;">
+        <h2>🌞 Welcome to Sunshine Skill Bot!</h2>
+        <p>35 Random Questions | Har Baar Naya Challenge!</p>
+        <p>अब होगी आने वाले RS-CIT परीक्षा की शानदार तैयारी!</p>
+        <button onclick="ChatBot.loadChatWindow()" style="padding:10px 20px; background:#1976d2; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">🚀 Start Practice</button>
+      </div>
+    `;
   }).catch(e=>{
     console.error("Error:",e);
     document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;
   })
 }
 
+/* ---------------- Close Test ---------------- */
+function closeTest(){
+  const stored = localStorage.getItem('test_selection_url');
+  if (stored) { window.location.href = stored; return; }
+  if (document.referrer && document.referrer !== location.href) {
+    window.history.back();
+    return;
+  }
+  window.location.href = "/";
+}
+
 initTest();
 </script>
 </body>
 </html>
-
