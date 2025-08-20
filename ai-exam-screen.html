@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>RS-CIT Test Screen</title>
   <style>
-    body{font-family:Arial,sans-serif;background:#f9f9f9;margin:0;padding:0}
-    header{background:#1976d2;color:#fff;padding:10px 20px;font-size:18px;display:flex;flex-direction:column;gap:5px}
+    body{font-family:Arial,sans-serif;background:#ffe6f0;margin:0;padding:0}
+    header{background:#e91e63;color:#fff;padding:10px 20px;font-size:18px;display:flex;flex-direction:column;gap:5px}
     .exam-name{font-size:20px;font-weight:bold;text-transform:uppercase}
     .container{max-width:700px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);position:relative}
-    .close-btn{position:absolute;top:-14px;right:-14px;background:#fff;color:#1976d2;font-size:18px;border:1px solid #ccc;border-radius:50%;width:30px;height:30px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:.2s}
-    .close-btn:hover{background:#f5f5f5;color:#d32f2f;border-color:#d32f2f}
+    .close-btn{position:absolute;top:-14px;right:-14px;background:#fff;color:#e91e63;font-size:18px;border:1px solid #ccc;border-radius:50%;width:30px;height:30px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:.2s}
+    .close-btn:hover{background:#f5f5f5;color:#c2185b;border-color:#c2185b}
     .chat-message{margin:8px 0;padding:10px;border-radius:6px;max-width:85%;line-height:1.4}
-    .user-msg{background:#e3f2fd;color:#1976d2;text-align:right;margin-left:auto}
-    .bot-msg{background:#f1f8e9;color:#2e7d32;text-align:left;margin-right:auto}
-    .bot-msg.wrong{background:#ffebee;color:#c62828}
+    .user-msg{background:#fce4ec;color:#d81b60;text-align:right;margin-left:auto}
+    .bot-msg{background:#f8bbd0;color:#880e4f;text-align:left;margin-right:auto}
+    .bot-msg.wrong{background:#ffcdd2;color:#b71c1c}
     .question{font-size:16px;font-weight:bold;margin:12px 0;text-align:left}
-    .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
+    .loading{text-align:center;font-size:16px;padding:20px;color:#e91e63}
 
     /* Chat Window */
     #chatWindow {
@@ -45,16 +45,16 @@
     }
     #optionsArea button {
       padding: 12px;
-      border: 1px solid #1976d2;
+      border: 1px solid #e91e63;
       border-radius: 6px;
       cursor: pointer;
-      background: #f9f9f9;
-      color: #1976d2;
+      background: #fff0f6;
+      color: #e91e63;
       font-weight: bold;
       transition: .2s;
     }
     #optionsArea button:hover {
-      background: #1976d2;
+      background: #e91e63;
       color: #fff;
     }
   </style>
@@ -88,19 +88,18 @@ const ChatBot = (() => {
     attempted = 0;
 
     renderChatWindow();
+
+    // Welcome message भी chatBody में scroll होगा
+    showBotMessage(`🙏 राधे राधे, ${fullname}!<br>🤖 Hey Champion 👋<br>
+    Sunshine Bot में आपका स्वागत है 🌸<br>
+    Practice करो, marks कमाओ और RS-CIT परीक्षा की मजेदार तैयारी करो! 😉`,"correct");
+
     loadQuestion();
   }
 
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
       <div id="chatWindow">
-        <div id="chatHeader" style="margin:15px; text-align:center; font-size:15px; font-weight:bold; color:#1976d2;">
-          🙏राधे राधे🙏, दोस्तों<br>
-          🤖 Hey Champion, ${fullname}! 👋<br>
-          Sunshine Bot me swagat hai –<br>
-          Practice karo, marks jeeto aur 3 August 2025 ko hone wali RS-CIT pariksha ki mazedar tarike se taiyari karo!<br>
-          Apni skills ko next level par le jao! 😉
-        </div>
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>
@@ -151,7 +150,7 @@ const ChatBot = (() => {
     box.innerHTML=html;
     document.getElementById("chatBody").appendChild(box);
 
-    // Render options INSIDE container bottom
+    // Render options bottom पर
     let opts = "";
     q.options.forEach((opt, i) => {
       opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
@@ -209,10 +208,10 @@ function initTest(){
 
     document.getElementById("quizArea").innerHTML = `
       <div style="text-align:center; padding:20px;">
-        <h2>🌞 Welcome to Sunshine Skill Bot!</h2>
-        <p>35 Random Questions | Har Baar Naya Challenge!</p>
-        <p>अब होगी आने वाले RS-CIT परीक्षा की शानदार तैयारी!</p>
-        <button onclick="ChatBot.loadChatWindow()" style="padding:10px 20px; background:#1976d2; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">🚀 Start Practice</button>
+        <h2 style="color:#e91e63;">🌸 Welcome to Sunshine Skill Bot!</h2>
+        <p>35 Random Questions | हर बार नया challenge!</p>
+        <p>अब होगी RS-CIT परीक्षा की शानदार तैयारी!</p>
+        <button onclick="ChatBot.loadChatWindow()" style="padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">🚀 Start Practice</button>
       </div>
     `;
   }).catch(e=>{
