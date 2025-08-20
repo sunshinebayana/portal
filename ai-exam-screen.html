@@ -18,20 +18,32 @@
     .question{font-size:16px;font-weight:bold;margin:12px 0;text-align:left}
     .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
 
-    /* Fixed Options at Bottom */
-    .options-grid {
+    /* Chat Window */
+    #chatWindow {
+      background:#fff;
+      border-radius:10px;
+      padding:0;
+      box-shadow:0 2px 10px rgba(0,0,0,.1);
+      height:500px;
+      display:flex;
+      flex-direction:column;
+    }
+    #chatBody {
+      flex:1;
+      padding:20px;
+      overflow-y:auto;
+    }
+
+    /* Options fixed at bottom INSIDE container */
+    #optionsArea {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #fff;
-      padding: 12px;
-      box-shadow: 0 -2px 6px rgba(0,0,0,.1);
+      padding:12px 20px;
+      border-top:1px solid #ddd;
+      background:#fff;
     }
-    .options-grid button {
+    #optionsArea button {
       padding: 12px;
       border: 1px solid #1976d2;
       border-radius: 6px;
@@ -41,7 +53,7 @@
       font-weight: bold;
       transition: .2s;
     }
-    .options-grid button:hover {
+    #optionsArea button:hover {
       background: #1976d2;
       color: #fff;
     }
@@ -70,7 +82,6 @@ const ChatBot = (() => {
   let attempted = 0;
 
   function loadChatWindow() {
-    // 35 Random Questions
     questions = (window.loadedQuestions || []).sort(() => 0.5 - Math.random()).slice(0, 35);
     currentIndex = 0;
     score = 0;
@@ -82,8 +93,8 @@ const ChatBot = (() => {
 
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
-      <div id="chatWindow" style="background:#fff; border-radius:10px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.1); height:500px; overflow-y:auto;">
-        <div id="chatHeader" style="margin-bottom:15px; text-align:center; font-size:15px; font-weight:bold; color:#1976d2;">
+      <div id="chatWindow">
+        <div id="chatHeader" style="margin:15px; text-align:center; font-size:15px; font-weight:bold; color:#1976d2;">
           🙏राधे राधे🙏, दोस्तों<br>
           🤖 Hey Champion, ${fullname}! 👋<br>
           Sunshine Bot me swagat hai –<br>
@@ -91,7 +102,7 @@ const ChatBot = (() => {
           Apni skills ko next level par le jao! 😉
         </div>
         <div id="chatBody"></div>
-        <div id="optionsArea" class="options-grid"></div>
+        <div id="optionsArea"></div>
       </div>
     `;
   }
@@ -140,7 +151,7 @@ const ChatBot = (() => {
     box.innerHTML=html;
     document.getElementById("chatBody").appendChild(box);
 
-    // Render options at bottom fixed area
+    // Render options INSIDE container bottom
     let opts = "";
     q.options.forEach((opt, i) => {
       opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
@@ -194,10 +205,8 @@ function initTest(){
       return;
     }
 
-    // ✅ Store questions for chatbot
     window.loadedQuestions = d.questions || [];
 
-    // ✅ Show Sunshine Bot Welcome Screen
     document.getElementById("quizArea").innerHTML = `
       <div style="text-align:center; padding:20px;">
         <h2>🌞 Welcome to Sunshine Skill Bot!</h2>
