@@ -5,329 +5,305 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>RS-CIT Test Screen</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff; /* बाहर का area white */
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #e91e63;
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .exam-name {
-      font-size: 20px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .container {
-      max-width: 420px; /* width कम की */
-      margin: 30px auto;
-      background: #fff;
-      padding: 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: -14px;
-      right: -14px;
-      background: #fff;
-      color: #e91e63;
-      font-size: 18px;
-      border: 1px solid #ccc;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      line-height: 28px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-      transition: .2s;
-    }
-    .close-btn:hover {
-      background: #f5f5f5;
-      color: #c2185b;
-      border-color: #c2185b;
-    }
-    .chat-message {
-      margin: 6px 0;
-      padding: 10px;
-      border-radius: 6px;
-      max-width: 85%;
-      line-height: 1.4;
-    }
-    .user-msg {
-      background: #fce4ec;
-      color: #d81b60;
-      text-align: right;
-      margin-left: auto;
-    }
-    .bot-msg {
-      background: #f8bbd0;
-      color: #880e4f;
-      text-align: left;
-      margin-right: auto;
-    }
-    .bot-msg.wrong {
-      background: #ffcdd2;
-      color: #b71c1c;
-    }
-    .question {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0; /* space हटा दी */
-      text-align: left;
-    }
-    .loading {
-      text-align: center;
-      font-size: 16px;
-      padding: 20px;
-      color: #e91e63;
-    }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff; /* बाहर area white */
+    font-family: Arial, sans-serif;
+  }
 
-    /* Chat Window */
-    #chatWindow {
-      background: #fff;
-      border-radius: 10px;
-      padding: 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,.1);
-      height: 500px;
-      display: flex;
-      flex-direction: column;
-    }
-    #chatBody {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-    }
+  .chat-window {
+    width: 380px;   /* slim window */
+    height: 550px;
+    background: #ffe4ec; /* light pink */
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
 
-    /* Options fixed at bottom */
-    #optionsArea {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 10px 16px;
-      border-top: 1px solid #ddd;
-      background: #fff;
-    }
-    #optionsArea button {
-      padding: 10px;
-      border: 1px solid #e91e63;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #fff0f6;
-      color: #e91e63;
-      font-weight: bold;
-      transition: .2s;
-    }
-    #optionsArea button:hover {
-      background: #e91e63;
-      color: #fff;
-    }
-  </style>
-</head>
-<body>
-<header><span id="examNameLabel" class="exam-name"></span></header>
-<div class="container">
-  <button class="close-btn" onclick="closeTest()">✖</button>
-  <div id="quizArea" class="loading">⏳ Please wait...</div>
-</div>
+  .messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+  }
+
+  .bot-msg {
+    background: #ffb6c1;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 4px 0;
+    max-width: 85%;
+  }
+
+  .user-msg {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 4px 0;
+    max-width: 85%;
+    align-self: flex-end;
+  }
+
+  .question-msg {
+    background: #ffd1dc;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 0; /* question aur options ke beech gap hata diya */
+    max-width: 90%;
+  }
+
+  .correct-answer {
+    background: #e0ffe0;
+    border-left: 4px solid #4caf50;
+    padding: 8px;
+    margin: 4px 0;
+    border-radius: 6px;
+  }
+
+  .celebration-card {
+    background: #fff0f5;
+    border: 2px solid #ff69b4;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 8px 0;
+    text-align: center;
+  }
+
+  .celebration-card.suspense {
+    background: #fff8dc;
+    border: 2px dashed #ffa500;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+    background: #ffe4ec;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .buttons button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #ff69b4;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .buttons button:hover {
+    background: #ff1493;
+  }
+</style>
+
+<div id="chatBotArea"></div>
+<div id="confetti"></div>
 
 <script>
-const code=localStorage.getItem("test_code")||"",
-      username=(localStorage.getItem("test_username")||"").trim(),
-      fullname=localStorage.getItem("test_fullname")||"";
-
-const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
-/* ---------------- ChatBot ---------------- */
-const ChatBot = (() => {
   let questions = [];
   let currentIndex = 0;
   let score = 0;
   let attempted = 0;
   let correct = 0;
+  let userName = "Guest";
 
-  function loadChatWindow() {
-    questions = (window.loadedQuestions || []).sort(() => 0.5 - Math.random()).slice(0, 35);
-    currentIndex = 0;
-    score = 0;
-    attempted = 0;
-    correct = 0;
-
-    renderChatWindow();
-
-    // Welcome message भी scroll होगा
-    showBotMessage(`🙏 राधे राधे, ${fullname}!<br>🤖 Hey Champion 👋<br>
-    Sunshine Bot में आपका स्वागत है 🌸<br>
-    Practice करो, marks कमाओ और RS-CIT परीक्षा की मजेदार तैयारी करो! 😉`);
-
-    setTimeout(loadQuestion,1500);
+  function openChatBot() {
+    const area = document.getElementById('chatBotArea');
+    area.innerHTML = `
+      <div id="chatContainer" class="chat-window">
+        <div id="chatMessages" class="messages"></div>
+        <div id="answerButtons" class="buttons">
+          <button onclick="chooseAnswer('A')">A</button>
+          <button onclick="chooseAnswer('B')">B</button>
+          <button onclick="chooseAnswer('C')">C</button>
+          <button onclick="chooseAnswer('D')">D</button>
+        </div>
+      </div>`;
+    startChatBotTest();
   }
 
-  function renderChatWindow() {
-    document.getElementById("quizArea").innerHTML = `
-      <div id="chatWindow">
-        <div id="chatBody"></div>
-        <div id="optionsArea"></div>
-      </div>
-    `;
+  function startChatBotTest() {
+    google.script.run.withSuccessHandler(initChatBot)
+                     .withFailureHandler(err => alert(err.message))
+                     .startChatBotSession(userName);
   }
 
-  function showUserMessage(msg) {
-    const div = document.createElement("div");
-    div.className="chat-message user-msg";
-    div.innerHTML=msg;
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
+  function initChatBot(data) {
+    if (data.status !== 'ok') { alert("Unable to load questions"); return; }
+    questions = data.questions;
+    showBotMessage(`🙏राधे राधे🙏, दोस्तों<br>🤖 Hey Champion, ${userName}! 👋<br>Sunshine Bot me swagat hai –<br>Practice karo, marks jeeto aur 3 August 2025 ko hone wali RS-CIT pariksha ki mazedar tarike se taiyari karo! Apni skills ko next level par le jao! 😉`, true);
+    askNextQuestion();
   }
 
-  function showBotMessage(msg,type="correct") {
-    const div = document.createElement("div");
-    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"");
-    div.innerHTML=msg;
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
-  }
-
-  function showCorrectAnswer(msg){
-    const div=document.createElement("div");
-    div.className="chat-message bot-msg";
-    div.style.background="#fffde7";
-    div.style.color="#f57f17";
-    div.innerHTML=msg;
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
-  }
-
-  function scrollDown(){
-    const chat=document.getElementById("chatBody");
-    chat.scrollTop=chat.scrollHeight;
-  }
-
-  function loadQuestion() {
-    if (currentIndex >= questions.length) {
-      showSummary();
-      return;
-    }
-
+  function askNextQuestion() {
+    if (currentIndex >= questions.length) { showSummary(); return; }
     const q = questions[currentIndex];
-    let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
-    const box=document.createElement("div");
-    box.innerHTML=html;
-    document.getElementById("chatBody").appendChild(box);
-
-    // Options render करें bottom पर
-    let opts = "";
-    q.options.forEach((opt, i) => {
-      opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
+    showQuestionMessage(`Q${currentIndex + 1}: ${q[1]}`);
+    document.querySelectorAll('#answerButtons button').forEach((btn,i) => {
+      btn.textContent = `${String.fromCharCode(65+i)}. ${q[i+2]}`;
     });
-    document.getElementById("optionsArea").innerHTML = opts;
-
-    scrollDown();
   }
 
-  function chooseAnswer(option){
-    const q = questions[currentIndex];
-    const correctOption = (q.answer||"").trim().toUpperCase();
-    const correctText = q.options[correctOption.charCodeAt(0)-65] || "";
-    const selectedText = q.options[option.charCodeAt(0)-65] || "";
+  function chooseAnswer(option) {
+    const correctOption = questions[currentIndex][6];
+    const correctText = questions[currentIndex][correctOption.charCodeAt(0) - 65 + 2];
+    const selectedText = questions[currentIndex][option.charCodeAt(0) - 65 + 2];
 
     attempted++;
-    showUserMessage(`👤 ${fullname}: ${option}. ${selectedText}`);
+    showUserMessage(`  👤 ${userName}: ${option}. ${selectedText}`);
 
-    if(option===correctOption){
-      score+=2;
-      correct++;
-      showBotMessage(`🤖 Wah, ${fullname}! 👆 सही जवाब! (+2 Marks) | Total: ${score}`,"correct");
-      checkMilestones();
+    if (option === correctOption) {
+      score += 2; correct++;
+      showBotMessage(`🤖 Wah, ${userName}! 👆 सही जवाब! (+2 Marks) | Total: ${score} Marks`, false, 'correct');
+      launchConfetti();
+      if (score === 28) showCelebrationCard(userName);
     } else {
-      showBotMessage(`🤖 Oops, ${fullname}! 👆 गलत जवाब. | Total: ${score}`,"wrong");
+      showBotMessage(`🤖 Oops, ${userName}! 👆 गलत जवाब. | Total: ${score} Marks`, false, 'wrong');
       showCorrectAnswer(`🤖 सही जवाब है👉: ${correctOption}. ${correctText}`);
     }
 
-    currentIndex++;
-    document.getElementById("optionsArea").innerHTML = "";
-
-    // अगला question 2s delay से आएगा
-    setTimeout(loadQuestion,2000);
+    checkMilestones();
+    currentIndex++; setTimeout(askNextQuestion, 2000); // अगला question 2 sec delay से
   }
 
-  function checkMilestones(){
-    if(score===28){
-      showBotMessage(`🎉 Celebration Time, ${fullname}! You hit 28 Marks!`);
-    } else if(score===42){
-      showBotMessage(`🚀 ${fullname}, First Division हासिल! Keep going!`);
-    } else if(score===50){
-      showBotMessage(`🔥 Excellent! 25 Questions Correct! Next Goal – 30! 🌟`);
-    } else if(score===60){
-      showBotMessage(`🌟 Outstanding! 30 Correct – Almost Topper! 🚀`);
-    } else if(score===70){
-      showBotMessage(`🎊 Incredible! Perfect 35/35 – Record Tod Diya! 🏆`);
+  function checkMilestones() {
+    const marks = score;
+    const correctQs = correct;
+    if (marks === 42) {
+      showCustomCelebration("🎉 Shabash Champion!",
+        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+    } 
+    else if (marks === 50) {
+      showCustomCelebration("🔥 Excellent!",
+        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+    } 
+    else if (marks === 60) {
+      showCustomCelebration("🌟 Outstanding!",
+        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+    } 
+    else if (marks === 70) {
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
+        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+    } 
+    else if (correctQs >= 31 && correctQs <= 34) {
+      const suspenseLines = [
+        "⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?",
+        "🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?",
+        "🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!",
+        "🚀 Focus Rakho – Victory Pass Hi Hai!"
+      ];
+      const randomLine = suspenseLines[Math.floor(Math.random() * suspenseLines.length)];
+      showCustomCelebration("Suspense Mode", randomLine, true);
     }
   }
 
-  function showSummary(){
-    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
+  function showSummary() {
+    showBotMessage(`🤖 Practice Complete, ${userName}!`);
     showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
-    document.getElementById("optionsArea").innerHTML="";
-  }
-
-  return { loadChatWindow, chooseAnswer };
-})();
-
-/* ---------------- Backend Init ---------------- */
-function initTest(){
-  if(!username){
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-    return;
-  }
-  fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
-  .then(r=>r.json()).then(d=>{
-    if(!d.success){
-      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;
-      return;
+    if (score < 50) {
+      showCustomCelebration("Motivation Time!", 
+        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+    } 
+    else if (score >= 50 && score <= 60) {
+      showCustomCelebration("शानदार! 🎉", 
+        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+    } 
+    else if (score >= 62 && score <= 68) {
+      showCustomCelebration("कमाल कर दिया! 🚀", 
+        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+    } 
+    else if (score === 70) {
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", 
+        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
     }
-    if((d.paymentStatus||"").toLowerCase()!=="confirm"){
-      document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">💰 Your Payment is Pending.</h3>`;
-      return;
-    }
-
-    window.loadedQuestions = d.questions || [];
-
-    document.getElementById("quizArea").innerHTML = `
-      <div style="text-align:center; padding:20px;">
-        <h2 style="color:#e91e63;">🌸 Welcome to Sunshine Skill Bot!</h2>
-        <p>35 Random Questions | हर बार नया challenge!</p>
-        <p>अब होगी RS-CIT परीक्षा की शानदार तैयारी!</p>
-        <button onclick="ChatBot.loadChatWindow()" style="padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">🚀 Start Practice</button>
-      </div>
-    `;
-  }).catch(e=>{
-    console.error("Error:",e);
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;
-  })
-}
-
-/* ---------------- Close Test ---------------- */
-function closeTest(){
-  const stored = localStorage.getItem('test_selection_url');
-  if (stored) { window.location.href = stored; return; }
-  if (document.referrer && document.referrer !== location.href) {
-    window.history.back();
-    return;
+    showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
   }
-  window.location.href = "/";
-}
 
-initTest();
+  function showBotMessage(msg, isWelcome=false, type='') {
+    const chat = document.getElementById('chatMessages');
+    let extraClass = '';
+    if (type === 'correct') extraClass = 'correct';
+    else if (type === 'wrong') extraClass = 'wrong';
+    chat.innerHTML += `<div class="bot-msg ${isWelcome ? 'welcome' : ''} ${extraClass}">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showUserMessage(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="user-msg">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showQuestionMessage(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="question-msg">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showCorrectAnswer(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="correct-answer">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showCustomCelebration(title, message, isSuspense=false) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `
+      <div class="celebration-card ${isSuspense ? 'suspense' : ''}">
+        <h3>${title}</h3>
+        <p>${message}</p>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+    for (let i = 0; i < 2; i++) setTimeout(launchConfetti, i * 500);
+  }
+
+  function launchConfetti() {
+    const confetti = document.getElementById('confetti');
+    for (let i = 0; i < 16; i++) {
+      const div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.width = `${6+Math.random()*6}px`;
+      div.style.height = div.style.width;
+      div.style.backgroundColor = `hsl(${Math.random()*360},100%,70%)`;
+      div.style.top = '-10px';
+      div.style.left = `${Math.random()*100}%`;
+      div.style.opacity = 1;
+      confetti.appendChild(div);
+      const fall = div.animate([
+        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+        { transform: `translateY(100vh) rotate(${720+Math.random()*360}deg)`, opacity: 0 }
+      ], { duration: 2000 + Math.random()*1000, easing: 'ease-out' });
+      fall.onfinish = () => div.remove();
+    }
+  }
+
+  function showCelebrationCard(name) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `
+      <div class="celebration-card">
+        <h3>🎉 Dear ${name},</h3>
+        <p>RS-CIT परीक्षा पास करने जितने Marks आपने इस प्रैक्टिस टेस्ट में हासिल किए!</p>
+        <p style="margin-top:6px;">अब लक्ष्य है – <b>सबसे बेहतरीन Marks</b> पाना!</p>
+        <p>"ज़्यादा प्रैक्टिस = शानदार रिज़ल्ट!" 🌟</p>
+        <p>"Next Level Practice = Top Result!" 🌟</p>
+        <p>"अब अगला प्रश्न हल करें 👇" 🌟</p>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+    for (let i = 0; i < 3; i++) setTimeout(launchConfetti, i * 500);
+  }
+
+  // Start
+  openChatBot();
 </script>
+
 </body>
 </html>
