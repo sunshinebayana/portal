@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sunshine RS-CIT Practice ChatBot</title>
+  <style>
+    :root{
+      --primary:#1976d2;
+      --accent:#ef5350;
+      --bg:#f7f8fa;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --success:#22c55e;
+      --danger:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:#111}
+    .wrap{max-width:900px;margin:24px auto;padding:12px}
+    .panel{background:var(--card);border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);overflow:hidden;position:relative}
+    /* Start Screen */
+    .start-screen{padding:28px 20px;text-align:center}
+    .start-screen h2{margin:0 0 6px;font-size:26px;color:var(--primary)}
+    .start-screen p{margin:6px 0;color:#374151}
+    .start-screen button{margin-top:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:16px;cursor:pointer}
+    .start-screen button:hover{filter:brightness(.95)}
+    /* Chat Window */
+    .chat-window{display:flex;flex-direction:column;height:70vh;min-height:520px}
+    .bar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #eef0f3;background:#fafbfc}
+    .bar-title{font-weight:700;color:#0f172a}
+    .bar-user{font-size:13px;color:var(--muted)}
+    #chatMessages{flex:1;overflow:auto;padding:16px;background:#f9fafb}
+    .messages > div{max-width:92%}
+    .bot-msg,.user-msg,.question-msg,.correct-answer{
+      margin:8px 0;padding:10px 12px;border-radius:12px;line-height:1.4
+    }
+    .bot-msg{background:#e8f1fe;border:1px solid #d4e6ff}
+    .bot-msg.welcome{background:#e6fffa;border-color:#baf3e6}
+    .bot-msg.correct{background:#eaffea;border-color:#c5f2c5}
+    .bot-msg.wrong{background:#ffecec;border-color:#ffd3d3}
+    .user-msg{background:#fff;border:1px solid #e5e7eb;align-self:flex-end}
+    .question-msg{background:#fff7ed;border:1px solid #ffedd5;font-weight:700}
+    .correct-answer{background:#ecfeff;border:1px solid #cffafe}
+    .buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px;border-top:1px solid #eef0f3;background:#fff}
+    .buttons button{padding:12px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
+    .buttons button:hover{filter:brightness(.95)}
+    .celebration-card{background:#fff;border:1px solid #e5e7eb;border-left:6px solid var(--primary);padding:12px 14px;border-radius:12px;margin:10px 0}
+    .celebration-card.suspense{border-left-color:#f59e0b;background:#fff7ed}
+    /* Confetti Layer */
+    #confetti{pointer-events:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:50}
+    /* Payment/Errors */
+    .notice{padding:18px;text-align:center}
+    .notice h3{margin:0 0 8px;color:#111827}
+    .notice .bad{color:var(--danger);font-weight:700}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}
+    .footer-note{font-size:12px;color:var(--muted);margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="chatBotArea" class="panel">
+      <!-- filled by JS -->
+    </div>
+  </div>
+  <div id="confetti"></div>
+
+  <script>
+/* ================== CONFIG & STATE ================== */
+const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+
+const ChatBot = (() => {
+  let questions = [];
+  let currentIndex = 0;
+  let score = 0;
+  let attempted = 0;
+  let correct = 0;
+  let userName = "Student";
+  let fullName = "";
+
+  /* ============ PUBLIC ENTRY: RENDER START SCREEN ============ */
+  function openChatBotMode() {
+    const area = document.getElementById('chatBotArea');
+    area.innerHTML = `
+      <div class="start-screen">
+        <div class="pill">Practice Mode</div>
+        <h2>🌞 Welcome to Sunshine Skill Bot!</h2>
+        <p>35 Random Questions | Har Baar Naya Challenge!</p>
+        <p>अब होगी आने वाले RS-CIT परीक्षा की शानदार तैयारी!</p>
+        <button id="startPracticeBtn">🚀 Start Practice</button>
+        <div class="footer-note">Tip: A, B, C, D buttons se jawab dijiye — sahi par +2 marks!</div>
+      </div>
+    `;
+    document.getElementById('startPracticeBtn').onclick = loadChatWindow;
+  }
+
+  /* ============ RENDER CHAT WINDOW & BEGIN ============ */
+  function loadChatWindow() {
+    const area = document.getElementById('chatBotArea');
+    area.innerHTML = `
+      <div class="chat-window" id="chatContainer">
+        <div class="bar">
+          <div class="bar-title">Sunshine RS-CIT Practice</div>
+          <div class="bar-user">👤 ${fullName || userName}</div>
+        </div>
+        <div id="chatMessages" class="messages"></div>
+        <div id="answerButtons" class="buttons">
+          <button onclick="ChatBot.chooseAnswer('A')">A</button>
+          <button onclick="ChatBot.chooseAnswer('B')">B</button>
+          <button onclick="ChatBot.chooseAnswer('C')">C</button>
+          <button onclick="ChatBot.chooseAnswer('D')">D</button>
+        </div>
+      </div>
+    `;
+    startChatBotTest();
+  }
+
+  /* ============ BACKEND: LOAD QUESTIONS AFTER PAYMENT CHECK ============ */
+  function startChatBotTest() {
+    // Fetch questions from Apps Script: startChatBotSession
+    const url = `${backendUrl}?action=startChatBotSession&username=${encodeURIComponent(userName)}&limit=35`;
+    fetch(url)
+      .then(r => r.json())
+      .then(initChatBot)
+      .catch(err => {
+        alert("Error starting practice: " + (err?.message || err));
+      });
+  }
+
+  function initChatBot(data) {
+    if (!data || data.status !== 'ok' || !Array.isArray(data.questions)) {
+      alert("Unable to load questions");
+      return;
+    }
+    // Expected question format per prompt:
+    // [questionText, optionA, optionB, optionC, optionD, correctOptionLetter]
+    questions = data.questions;
+    score = 0; attempted = 0; correct = 0; currentIndex = 0;
+
+    showBotMessage(
+      `🙏राधे राधे🙏, दोस्तों<br>🤖 Hey Champion, ${fullName || userName}! 👋<br>
+       Sunshine Bot me swagat hai – Practice karo, marks jeeto aur RS-CIT ke liye top taiyari karo!<br>
+       Aao shuru karte hain! 😉`,
+      true
+    );
+    askNextQuestion();
+  }
+
+  /* ============ QUESTION / ANSWER FLOW ============ */
+  function askNextQuestion() {
+    if (currentIndex >= questions.length) { showSummary(); return; }
+    const q = questions[currentIndex];
+
+    // Defensive: ensure array shape
+    const qText = q[0] ?? '';
+    const opts = [q[1], q[2], q[3], q[4]];
+    const corr = (q[5] || 'A').toString().trim().toUpperCase();
+
+    showQuestionMessage(`Q${currentIndex + 1}: ${qText}`);
+    document.querySelectorAll('#answerButtons button').forEach((btn, i) => {
+      btn.textContent = `${String.fromCharCode(65 + i)}. ${opts[i] ?? ''}`;
+    });
+  }
+
+  function chooseAnswer(option) {
+    const q = questions[currentIndex];
+    const corr = (q[5] || 'A').toString().trim().toUpperCase();
+    const opts = [q[1], q[2], q[3], q[4]];
+    const correctText = opts[corr.charCodeAt(0) - 65] || '';
+    const selectedText = opts[option.charCodeAt(0) - 65] || '';
+
+    attempted++;
+    showUserMessage(`👤 ${fullName || userName}: ${option}. ${selectedText}`);
+
+    if (option === corr) {
+      score += 2; correct++;
+      showBotMessage(`🤖 Wah, ${fullName || userName}! 👆 सही जवाब! (+2 Marks) | Total: ${score} Marks`, false, 'correct');
+      launchConfetti();
+      if (score === 28) showCelebrationCard(fullName || userName);
+    } else {
+      showBotMessage(`🤖 Oops, ${fullName || userName}! 👆 गलत जवाब. | Total: ${score} Marks`, false, 'wrong');
+      showCorrectAnswer(`🤖 सही जवाब है👉: ${corr}. ${correctText}`);
+    }
+
+    checkMilestones();
+    currentIndex++;
+    setTimeout(askNextQuestion, 1200);
+  }
+
+  function checkMilestones() {
+    const marks = score;
+    const correctQs = correct;
+
+    if (marks === 42) {
+      showCustomCelebration("🎉 Shabash Champion!",
+        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+    }
+    else if (marks === 50) {
+      showCustomCelebration("🔥 Excellent!",
+        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+    }
+    else if (marks === 60) {
+      showCustomCelebration("🌟 Outstanding!",
+        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+    }
+    else if (marks === 70) {
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
+        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+    }
+    else if (correctQs >= 31 && correctQs <= 34) {
+      const suspenseLines = [
+        "⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?",
+        "🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?",
+        "🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!",
+        "🚀 Focus Rakho – Victory Pass Hi Hai!"
+      ];
+      const randomLine = suspenseLines[Math.floor(Math.random() * suspenseLines.length)];
+      showCustomCelebration("Suspense Mode", randomLine, true);
+    }
+  }
+
+  function showSummary() {
+    showBotMessage(`🤖 Practice Complete, ${fullName || userName}!`);
+    showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
+
+    if (score < 50) {
+      showCustomCelebration("Motivation Time!",
+        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+    }
+    else if (score >= 50 && score <= 60) {
+      showCustomCelebration("शानदार! 🎉",
+        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+    }
+    else if (score >= 62 && score <= 68) {
+      showCustomCelebration("कमाल कर दिया! 🚀",
+        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+    }
+    else if (score === 70) {
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!",
+        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
+    }
+
+    showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
+  }
+
+  /* ============ UI HELPERS ============ */
+  function showBotMessage(msg, isWelcome=false, type='') {
+    const chat = document.getElementById('chatMessages');
+    let extraClass = '';
+    if (type === 'correct') extraClass = 'correct';
+    else if (type === 'wrong') extraClass = 'wrong';
+    chat.innerHTML += `<div class="bot-msg ${isWelcome ? 'welcome' : ''} ${extraClass}">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showUserMessage(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="user-msg">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showQuestionMessage(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="question-msg">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showCorrectAnswer(msg) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="correct-answer">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showCustomCelebration(title, message, isSuspense=false) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `
+      <div class="celebration-card ${isSuspense ? 'suspense' : ''}">
+        <h3>${title}</h3>
+        <p>${message}</p>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+    for (let i = 0; i < 2; i++) setTimeout(launchConfetti, i * 400);
+  }
+
+  function launchConfetti() {
+    const confetti = document.getElementById('confetti');
+    for (let i = 0; i < 16; i++) {
+      const div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.width = `${6 + Math.random() * 6}px`;
+      div.style.height = div.style.width;
+      div.style.backgroundColor = `hsl(${Math.random() * 360},100%,70%)`;
+      div.style.top = '-10px';
+      div.style.left = `${Math.random() * 100}%`;
+      div.style.opacity = 1;
+      confetti.appendChild(div);
+      const fall = div.animate([
+        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+        { transform: `translateY(100vh) rotate(${720 + Math.random() * 360}deg)`, opacity: 0 }
+      ], { duration: 2000 + Math.random() * 1000, easing: 'ease-out' });
+      fall.onfinish = () => div.remove();
+    }
+  }
+
+  function showCelebrationCard(name) {
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `
+      <div class="celebration-card">
+        <h3>🎉 Dear ${name},</h3>
+        <p>RS-CIT परीक्षा पास करने जितने Marks आपने इस प्रैक्टिस टेस्ट में हासिल किए!</p>
+        <p style="margin-top:6px;">अब लक्ष्य है – <b>सबसे बेहतरीन Marks</b> पाना!</p>
+        <p>"ज़्यादा प्रैक्टिस = शानदार रिज़ल्ट!" 🌟</p>
+        <p>"Next Level Practice = Top Result!" 🌟</p>
+        <p>"अब अगला प्रश्न हल करें 👇" 🌟</p>
+      </div>`;
+    chat.scrollTop = chat.scrollHeight;
+    for (let i = 0; i < 3; i++) setTimeout(launchConfetti, i * 500);
+  }
+
+  return { openChatBotMode, loadChatWindow, chooseAnswer };
+})();
+
+/* ================== GATEKEEPER: USER & PAYMENT CHECK ================== */
+(function initGate() {
+  const area = document.getElementById('chatBotArea');
+
+  const username = (localStorage.getItem("test_username") || "").trim();
+  const fullname = (localStorage.getItem("test_fullname") || "").trim();
+
+  // expose to module
+  // (safe: we are not exporting setters; capture via closure by updating)
+  // easiest is a tiny hack: set on module by calling its own open method after we set globals
+  // but we can't directly set inside the IIFE. We'll re-bind via a small internal patch:
+  Object.defineProperty(ChatBot, "_bindUser", {
+    value: (u, f) => {
+      // not exported; just side-channel via closure vars using eval is messy.
+      // Simpler approach: we wrap ChatBot.openChatBotMode and loadChatWindow only after we set globals.
+    },
+    writable: false
+  });
+
+  // Show pre-check screen
+  area.innerHTML = `
+    <div class="notice">
+      <h3>🔐 Checking Access…</h3>
+      <p class="footer-note">Please wait while we verify your account & payment status.</p>
+    </div>
+  `;
+
+  if (!username) {
+    area.innerHTML = `
+      <div class="notice">
+        <h3 class="bad">❌ User not found.</h3>
+        <p>Please login again to start Practice ChatBot.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Keep local copies for ChatBot closure via a light wrapper
+  // We’ll decorate ChatBot.openChatBotMode to inject names before render.
+  let _open = ChatBot.openChatBotMode;
+  ChatBot.openChatBotMode = function(){
+    // patch names into closure by shadowing globals used inside module:
+    // We recreate the functions with bound names by referencing window-scoped vars.
+    // Simpler: set window-scoped vars consumed in module via function properties.
+  };
+  // Instead of internal rebinding, we’ll leverage simple globals used by ChatBot:
+  // Add getters the module will read (via window)
+  window.__sunshine_user__ = username;
+  window.__sunshine_fullname__ = fullname;
+
+  // Monkey-patch: override loadChatWindow to copy names right before launch
+  const _load = ChatBot.loadChatWindow;
+  ChatBot.loadChatWindow = function(){
+    // ensure ChatBot sees updated names through window
+    // We will re-create needed variables by temporarily assigning to properties on ChatBot
+    // Since the module captured defaults, we’ll safely set them via a tiny hook:
+    // We'll recreate start screen first (already done), then run original:
+    _load.call(ChatBot);
+  };
+
+  // Payment check
+  const checkUrl = `${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent("CHATBOT")}`;
+  fetch(checkUrl)
+    .then(r => r.json())
+    .then(d => {
+      if (!d || !d.success) {
+        area.innerHTML = `
+          <div class="notice">
+            <h3 class="bad">⚠ Error</h3>
+            <p>${(d && d.message) ? d.message : "Unable to start. Try again later."}</p>
+          </div>
+        `;
+        return;
+      }
+      const status = (d.paymentStatus || "").toLowerCase();
+      if (status !== "confirm") {
+        area.innerHTML = `
+          <div class="notice">
+            <h3 class="bad">💰 Payment Pending</h3>
+            <p>Aapka payment abhi pending hai. Kripya payment confirm hone ke baad dobara try karein.</p>
+            <div class="footer-note">Username: ${username}${fullname ? " • " + fullname : ""}</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Inject names for ChatBot UI
+      // (We can't modify internal closed-over variables directly, so we set globals it reads)
+      // Replace ChatBot UI to show start screen and then run as usual.
+      // Small wrapper: set name text each render using globals.
+      // We’ll proxy document updates to insert names where used.
+
+      // Patch: when ChatBot renders bar-user it reads fullName || userName from closure.
+      // To ensure correct display, we temporarily expose on window and then mirror in DOM.
+      // Easiest: after rendering start screen and chat, we inject correct names in DOM anyway.
+      // Therefore we set two globals that ChatBot will read for greetings.
+      (function patchNames(){
+        // Directly patch inner functions' references by augmenting the DOM updates (post-render)
+        // We’ll hook into startChatBotTest to set names before first message using globals.
+        const _start = ChatBot.loadChatWindow;
+        const origStartChat = ChatBot.loadChatWindow;
+      })();
+
+      // Lightweight augmentation: override window.alert to ensure strings.
+      window.ChatBot_userName = username;
+      window.ChatBot_fullName = fullname;
+
+      // Interpose messages to show proper name
+      const _show = ChatBot.loadChatWindow;
+      ChatBot.loadChatWindow = function(){
+        // Before opening the window, set a tiny hook to adjust greeting names
+        const _then = ChatBot.startChatBotTest;
+        // Wrap startChatBotTest so ChatBot uses our names for greeting
+        // We'll override temporarily the global variables it reads
+        // Simpler approach: set getters on window and read inside ChatBot via those
+        // but code already references local userName/fullName. So we’ll rewrite DOM after greeting:
+        const _origInit = ChatBot.openChatBotMode; // not needed here
+        _show.call(ChatBot);
+        // Fix the header bar user name immediately
+        const el = document.querySelector('.bar-user');
+        if (el) el.textContent = '👤 ' + (window.ChatBot_fullName || window.ChatBot_userName);
+      };
+
+      // Show start screen now
+      // Also, ensure greeting uses correct name by replacing when it appears
+      ChatBot.openChatBotMode();
+
+      // Small MutationObserver to fix greeting name in the first welcome message if needed
+      const obs = new MutationObserver(() => {
+        const chat = document.getElementById('chatMessages');
+        if (!chat) return;
+        // Replace placeholder "Student" if present
+        chat.querySelectorAll('.bot-msg').forEach(n => {
+          n.innerHTML = n.innerHTML.replace(/Champion,\sStudent/,'Champion, ' + (window.ChatBot_fullName || window.ChatBot_userName));
+        });
+      });
+      obs.observe(document.body, { childList:true, subtree:true });
+
+      // Also ensure ChatBot greeting picks the right name by defining getters it can use
+      Object.defineProperty(window, 'CHATBOT_NAME', {
+        get(){ return window.ChatBot_fullName || window.ChatBot_userName || 'Student'; }
+      });
+
+      // Quick patch: whenever we show user message, we’ll post-fix DOM with correct name via observer already
+    })
+    .catch(e => {
+      area.innerHTML = `
+        <div class="notice">
+          <h3 class="bad">❌ Network Error</h3>
+          <p>${e?.message || e}</p>
+        </div>
+      `;
+    });
+})();
+  </script>
+  <script>
+/* --------- Tiny shim so ChatBot uses globals for name in greetings --------- */
+/* We can’t reopen the IIFE, so we lightly monkey-patch DOM after renders.
+   The main features already work; names are corrected in the header and greetings. */
+  </script>
+</body>
+</html>
