@@ -30,11 +30,11 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .container {
-      max-width: 650px; /* width increased */
+      max-width: 650px;
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
-      border: 2px solid var(--primary); /* thin pink border */
+      border: 2px solid var(--primary);
       box-shadow: 0 4px 12px rgba(0,0,0,.1);
       position: relative;
       overflow: hidden;
@@ -62,86 +62,23 @@
       border-color: var(--primary-dark);
     }
 
-    /* Chat Window */
-    #chatWindow {
-      display: flex;
-      flex-direction: column;
-      height: 500px;
-    }
-    #chatBody {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      background: #fafafa;
-    }
-    .chat-message {
-      margin: 8px 0;
-      font-size: 15px;
-      line-height: 1.5;
-      animation: fadeIn .3s ease-in;
-    }
-    .user-msg {
-      color: var(--primary-dark);
-      text-align: left; /* left aligned user answer */
-      font-weight: bold;
-    }
-    .bot-msg {
-      color: #4a0e34;
-      text-align: right;
-    }
-    .bot-msg.correct {
-      color: green; /* correct answer green */
-      font-weight: bold;
-    }
-    .bot-msg.wrong {
-      color: red; /* wrong answer red */
-      font-weight: bold;
-    }
+    #chatWindow { display: flex; flex-direction: column; height: 500px; }
+    #chatBody { flex: 1; padding: 16px; overflow-y: auto; background: #fafafa; }
+    .chat-message { margin: 8px 0; font-size: 15px; line-height: 1.5; animation: fadeIn .3s ease-in; }
+    .user-msg { color: var(--primary-dark); text-align: left; font-weight: bold; }
+    .bot-msg { color: #4a0e34; text-align: right; }
+    .bot-msg.correct { color: green; font-weight: bold; }
+    .bot-msg.wrong { color: red; font-weight: bold; }
 
-    .question {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 10px 0 6px;
-      padding: 10px;
-      background: #fce4ec; /* light pink question box */
-      border-radius: 8px;
-    }
+    .question { font-size: 16px; font-weight: 600; margin: 10px 0 6px; padding: 10px; background: #fce4ec; border-radius: 8px; }
 
-    /* Options fixed at bottom */
-    #optionsArea {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 12px 16px;
-      border-top: 1px solid #eee;
-      background: #fff;
-    }
-    #optionsArea button {
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: var(--primary); /* solid pink fill */
-      color: #fff; /* white text */
-      font-weight: bold;
-      font-size: 14px;
-      transition: all .2s;
-    }
-    #optionsArea button:hover {
-      background: var(--primary-dark);
-    }
+    #optionsArea { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px; border-top: 1px solid #eee; background: #fff; }
+    #optionsArea button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; font-size: 14px; transition: all .2s; }
+    #optionsArea button:hover { background: var(--primary-dark); }
 
-    .loading {
-      text-align: center;
-      font-size: 16px;
-      padding: 40px;
-      color: var(--primary);
-    }
+    .loading { text-align: center; font-size: 16px; padding: 40px; color: var(--primary); }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(5px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
   </style>
 </head>
 <body>
@@ -158,7 +95,6 @@ const code=localStorage.getItem("test_code")||"",
 
 const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
-/* ---------------- ChatBot ---------------- */
 const ChatBot = (() => {
   let questions = [], currentIndex = 0, score = 0, attempted = 0, correct = 0;
 
@@ -195,10 +131,16 @@ const ChatBot = (() => {
     scrollDown();
   }
 
-  function scrollDown(){
-    const chat=document.getElementById("chatBody");
-    chat.scrollTop=chat.scrollHeight;
+  function showCustomCelebration(title,msg,isSuspense=false){
+    const div=document.createElement("div");
+    div.className="chat-message bot-msg";
+    div.innerHTML = `<b>${title}</b><br>${msg}`;
+    if(isSuspense){ div.style.color = "#d81b60"; }
+    document.getElementById("chatBody").appendChild(div);
+    scrollDown();
   }
+
+  function scrollDown(){ const chat=document.getElementById("chatBody"); chat.scrollTop=chat.scrollHeight; }
 
   function loadQuestion() {
     if (currentIndex >= questions.length) { showSummary(); return; }
@@ -208,13 +150,9 @@ const ChatBot = (() => {
     box.innerHTML=html;
     document.getElementById("chatBody").appendChild(box);
 
-    // Render options bottom
     let opts = "";
-    q.options.forEach((opt,i)=>{
-      opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`;
-    });
+    q.options.forEach((opt,i)=>{ opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`; });
     document.getElementById("optionsArea").innerHTML = opts;
-
     scrollDown();
   }
 
@@ -241,29 +179,68 @@ const ChatBot = (() => {
     setTimeout(loadQuestion,2000);
   }
 
-  function checkMilestones(){
-    if(score===28) showBotMessage(`🎉 Great! 28 Marks reached!`);
-    else if(score===42) showBotMessage(`🚀 First Division हासिल!`);
-    else if(score===50) showBotMessage(`🔥 Excellent! 25 Questions Correct!`);
-    else if(score===60) showBotMessage(`🌟 Outstanding! 30 Correct – Almost Topper!`);
-    else if(score===70) showBotMessage(`🏆 Incredible! Perfect 35/35 – Record Tod Diya!`);
+  function checkMilestones() {
+    const marks = score;
+    const correctQs = correct;
+
+    if (marks === 42) {
+      showCustomCelebration("🎉 Shabash Champion!",
+        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+    } 
+    else if (marks === 50) {
+      showCustomCelebration("🔥 Excellent!",
+        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+    } 
+    else if (marks === 60) {
+      showCustomCelebration("🌟 Outstanding!",
+        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+    } 
+    else if (marks === 70) {
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
+        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+    } 
+    else if (correctQs >= 31 && correctQs <= 34) {
+      const suspenseLines = [
+        "⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?",
+        "🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?",
+        "🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!",
+        "🚀 Focus Rakho – Victory Pass Hi Hai!"
+      ];
+      const randomLine = suspenseLines[Math.floor(Math.random() * suspenseLines.length)];
+      showCustomCelebration("Suspense Mode", randomLine, true);
+    }
   }
 
-  function showSummary(){
-    showBotMessage(`📊 Practice Complete, ${fullname}!`);
+  function showSummary() {
+    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
     showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
+
+    if (score < 50) {
+      showCustomCelebration("Motivation Time!", 
+        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+    } 
+    else if (score >= 50 && score <= 60) {
+      showCustomCelebration("शानदार! 🎉", 
+        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+    } 
+    else if (score >= 62 && score <= 68) {
+      showCustomCelebration("कमाल कर दिया! 🚀", 
+        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+    } 
+    else if (score === 70) {
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", 
+        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
+    }
+
+    showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
     document.getElementById("optionsArea").innerHTML="";
   }
 
   return { loadChatWindow, chooseAnswer };
 })();
 
-/* ---------------- Backend Init ---------------- */
 function initTest(){
-  if(!username){
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
-    return;
-  }
+  if(!username){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`; return; }
   fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
     if(!d.success){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`; return; }
@@ -282,7 +259,6 @@ function initTest(){
   })
 }
 
-/* ---------------- Close Test ---------------- */
 function closeTest(){
   const stored = localStorage.getItem('test_selection_url');
   if (stored) { window.location.href = stored; return; }
