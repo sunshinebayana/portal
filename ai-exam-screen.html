@@ -79,6 +79,19 @@
     .loading { text-align: center; font-size: 16px; padding: 40px; color: var(--primary); }
 
     @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+
+    /* Flower animation */
+    .flower {
+      position: fixed;
+      top: -20px;
+      font-size: 24px;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(110vh); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -103,7 +116,7 @@ const ChatBot = (() => {
     currentIndex = 0; score = 0; attempted = 0; correct = 0;
     renderChatWindow();
 
-    showBotMessage(`🙏 Radhe Radhe, ${fullname}!<br>🤖 Welcome to <b>Sunshine Bot</b> 🌸<br> Practice karo aur RS-CIT परीक्षा की शानदार तैयारी करो! 😉`);
+    showBotMessage(`🙏 Radhe Radhe, ${fullname}!<br>🤖 Welcome to <b>Sunshine Bot</b> 🌸<br> Practice karo aur RS-CIT परीक्षा की शानदार तैयारी karo! 😉`);
     setTimeout(loadQuestion,1500);
   }
 
@@ -168,6 +181,7 @@ const ChatBot = (() => {
     if(option===correctOption){
       score+=2; correct++;
       showBotMessage(`✅ सही जवाब (+2 Marks). Total: ${score}`,"correct");
+      triggerFlowerRain();
       checkMilestones();
     } else {
       showBotMessage(`❌ गलत जवाब. Total: ${score}`,"wrong");
@@ -234,6 +248,19 @@ const ChatBot = (() => {
 
     showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
     document.getElementById("optionsArea").innerHTML="";
+  }
+
+  function triggerFlowerRain(){
+    const flowers = ["🌸","🌺","🌼","💮"];
+    for(let i=0;i<20;i++){
+      const flower=document.createElement("div");
+      flower.className="flower";
+      flower.textContent=flowers[Math.floor(Math.random()*flowers.length)];
+      flower.style.left=Math.random()*100+"vw";
+      flower.style.fontSize=(20+Math.random()*15)+"px";
+      document.body.appendChild(flower);
+      setTimeout(()=>flower.remove(),3000);
+    }
   }
 
   return { loadChatWindow, chooseAnswer };
