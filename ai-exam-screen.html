@@ -9,10 +9,8 @@
       --primary: #e91e63;
       --primary-dark: #c2185b;
       --accent: #f8bbd0;
-      --user-msg: #fce4ec;
-      --bot-msg: #f8bbd0;
-      --wrong-msg: #ffcdd2;
-      --correct-highlight: #fffde7;
+      --user-msg: #fff8e1;
+      --bot-msg: #fff;
     }
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -30,12 +28,13 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .container {
-      max-width: 460px;
+      max-width: 560px;
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,.1);
       position: relative;
+      border: 2px solid var(--primary);
       overflow: hidden;
     }
     .close-btn {
@@ -65,7 +64,7 @@
     #chatWindow {
       display: flex;
       flex-direction: column;
-      height: 500px;
+      height: 520px;
     }
     #chatBody {
       flex: 1;
@@ -77,7 +76,7 @@
       margin: 8px 0;
       padding: 10px 14px;
       border-radius: 10px;
-      max-width: 80%;
+      max-width: 85%;
       line-height: 1.5;
       font-size: 15px;
       box-shadow: 0 1px 3px rgba(0,0,0,.08);
@@ -85,30 +84,30 @@
     }
     .user-msg {
       background: var(--user-msg);
-      color: var(--primary-dark);
-      margin-left: auto;
-      border-bottom-right-radius: 2px;
+      color: #333;
+      margin-right: auto;  /* left align */
+      border-left: 4px solid var(--primary);
     }
     .bot-msg {
       background: var(--bot-msg);
-      color: #4a0e34;
-      margin-right: auto;
-      border-bottom-left-radius: 2px;
+      margin-left: auto;   /* right align */
+      border-right: 4px solid #ccc;
+    }
+    .bot-msg.correct {
+      color: #2e7d32;  /* green */
+      border-right: 4px solid #2e7d32;
     }
     .bot-msg.wrong {
-      background: var(--wrong-msg);
-      color: #b71c1c;
+      color: #c62828;  /* red */
+      border-right: 4px solid #c62828;
     }
-    .correct-ans {
-      background: var(--correct-highlight);
-      color: #f57f17;
-      border: 1px dashed #fbc02d;
-    }
-
     .question {
       font-size: 16px;
       font-weight: 600;
       margin: 10px 0 6px;
+      background: #fce4ec;
+      padding: 10px;
+      border-radius: 6px;
     }
 
     /* Options fixed at bottom */
@@ -122,18 +121,17 @@
     }
     #optionsArea button {
       padding: 10px;
-      border: 1px solid var(--primary);
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      background: #fff0f6;
-      color: var(--primary);
+      background: var(--primary);
+      color: #fff;
       font-weight: bold;
       font-size: 14px;
       transition: all .2s;
     }
     #optionsArea button:hover {
-      background: var(--primary);
-      color: #fff;
+      background: var(--primary-dark);
     }
 
     .loading {
@@ -192,17 +190,9 @@ const ChatBot = (() => {
     scrollDown();
   }
 
-  function showBotMessage(msg,type="correct") {
+  function showBotMessage(msg,type="") {
     const div=document.createElement("div");
-    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"");
-    div.innerHTML=msg;
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
-  }
-
-  function showCorrectAnswer(msg){
-    const div=document.createElement("div");
-    div.className="chat-message bot-msg correct-ans";
+    div.className="chat-message bot-msg" + (type==="correct"?" correct": type==="wrong"?" wrong":"");
     div.innerHTML=msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
@@ -242,24 +232,15 @@ const ChatBot = (() => {
 
     if(option===correctOption){
       score+=2; correct++;
-      showBotMessage(`✅ Wah ${fullname}! सही जवाब (+2 Marks). Total: ${score}`,"correct");
-      checkMilestones();
+      showBotMessage(`✅ सही जवाब! (+2 Marks) | Total: ${score}`,"correct");
     } else {
-      showBotMessage(`❌ Oops ${fullname}! गलत जवाब. Total: ${score}`,"wrong");
-      showCorrectAnswer(`✔ सही जवाब: ${correctOption}. ${correctText}`);
+      showBotMessage(`❌ गलत जवाब. | Total: ${score}`,"wrong");
+      showBotMessage(`✔ सही जवाब: ${correctOption}. ${correctText}`,"correct");
     }
 
     currentIndex++;
     document.getElementById("optionsArea").innerHTML = "";
     setTimeout(loadQuestion,2000);
-  }
-
-  function checkMilestones(){
-    if(score===28) showBotMessage(`🎉 Great! 28 Marks reached!`);
-    else if(score===42) showBotMessage(`🚀 First Division हासिल!`);
-    else if(score===50) showBotMessage(`🔥 Excellent! 25 Questions Correct!`);
-    else if(score===60) showBotMessage(`🌟 Outstanding! 30 Correct – Almost Topper!`);
-    else if(score===70) showBotMessage(`🏆 Incredible! Perfect 35/35 – Record Tod Diya!`);
   }
 
   function showSummary(){
