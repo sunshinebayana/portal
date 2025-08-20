@@ -30,10 +30,11 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
     .container {
-      max-width: 460px;
+      max-width: 650px; /* width increased */
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
+      border: 2px solid var(--primary); /* thin pink border */
       box-shadow: 0 4px 12px rgba(0,0,0,.1);
       position: relative;
       overflow: hidden;
@@ -75,40 +76,35 @@
     }
     .chat-message {
       margin: 8px 0;
-      padding: 10px 14px;
-      border-radius: 10px;
-      max-width: 80%;
-      line-height: 1.5;
       font-size: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      line-height: 1.5;
       animation: fadeIn .3s ease-in;
     }
     .user-msg {
-      background: var(--user-msg);
       color: var(--primary-dark);
-      margin-left: auto;
-      border-bottom-right-radius: 2px;
+      text-align: left; /* left aligned user answer */
+      font-weight: bold;
     }
     .bot-msg {
-      background: var(--bot-msg);
       color: #4a0e34;
-      margin-right: auto;
-      border-bottom-left-radius: 2px;
+      text-align: right;
+    }
+    .bot-msg.correct {
+      color: green; /* correct answer green */
+      font-weight: bold;
     }
     .bot-msg.wrong {
-      background: var(--wrong-msg);
-      color: #b71c1c;
-    }
-    .correct-ans {
-      background: var(--correct-highlight);
-      color: #f57f17;
-      border: 1px dashed #fbc02d;
+      color: red; /* wrong answer red */
+      font-weight: bold;
     }
 
     .question {
       font-size: 16px;
       font-weight: 600;
       margin: 10px 0 6px;
+      padding: 10px;
+      background: #fce4ec; /* light pink question box */
+      border-radius: 8px;
     }
 
     /* Options fixed at bottom */
@@ -122,18 +118,17 @@
     }
     #optionsArea button {
       padding: 10px;
-      border: 1px solid var(--primary);
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      background: #fff0f6;
-      color: var(--primary);
+      background: var(--primary); /* solid pink fill */
+      color: #fff; /* white text */
       font-weight: bold;
       font-size: 14px;
       transition: all .2s;
     }
     #optionsArea button:hover {
-      background: var(--primary);
-      color: #fff;
+      background: var(--primary-dark);
     }
 
     .loading {
@@ -192,17 +187,9 @@ const ChatBot = (() => {
     scrollDown();
   }
 
-  function showBotMessage(msg,type="correct") {
+  function showBotMessage(msg,type="") {
     const div=document.createElement("div");
-    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"");
-    div.innerHTML=msg;
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
-  }
-
-  function showCorrectAnswer(msg){
-    const div=document.createElement("div");
-    div.className="chat-message bot-msg correct-ans";
+    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"") + (type==="correct"?" correct":"");
     div.innerHTML=msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
@@ -242,11 +229,11 @@ const ChatBot = (() => {
 
     if(option===correctOption){
       score+=2; correct++;
-      showBotMessage(`✅ Wah ${fullname}! सही जवाब (+2 Marks). Total: ${score}`,"correct");
+      showBotMessage(`✅ सही जवाब (+2 Marks). Total: ${score}`,"correct");
       checkMilestones();
     } else {
-      showBotMessage(`❌ Oops ${fullname}! गलत जवाब. Total: ${score}`,"wrong");
-      showCorrectAnswer(`✔ सही जवाब: ${correctOption}. ${correctText}`);
+      showBotMessage(`❌ गलत जवाब. Total: ${score}`,"wrong");
+      showBotMessage(`✔ सही जवाब: ${correctOption}. ${correctText}`,"correct");
     }
 
     currentIndex++;
