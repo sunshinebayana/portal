@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,10 +93,45 @@
     @keyframes fall {
       to { transform: translateY(110vh); opacity: 0; }
     }
+
+    /* Fixed Elements */
+    #fixedFullname {
+      position: fixed;
+      top: 5px;
+      left: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      z-index: 1000;
+    }
+    #fixedTimer {
+      position: fixed;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      z-index: 1000;
+    }
+    #fixedFooter {
+      position: fixed;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #555;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
 <header><span id="examNameLabel" class="exam-name"></span></header>
+
+<div id="fixedFullname"></div>
+<div id="fixedTimer">Time Left: 60:00</div>
+<div id="fixedFooter">@ 2025 AK Sharma (Online Test & Learning Web Portal)</div>
+
 <div class="container">
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
@@ -105,6 +141,22 @@
 const code=localStorage.getItem("test_code")||"",
       username=(localStorage.getItem("test_username")||"").trim(),
       fullname=localStorage.getItem("test_fullname")||"";
+
+document.getElementById("fixedFullname").textContent = fullname ? fullname : "";
+
+let totalSeconds = 60*60; // 60 minutes
+function startTimer(){
+  function updateTimer(){
+    let minutes = Math.floor(totalSeconds/60);
+    let seconds = totalSeconds%60;
+    document.getElementById("fixedTimer").textContent = 
+      "Time Left: " + String(minutes).padStart(2,'0') + ":" + String(seconds).padStart(2,'0');
+    if(totalSeconds>0){ totalSeconds--; } else { clearInterval(timerInterval); }
+  }
+  updateTimer();
+  var timerInterval = setInterval(updateTimer,1000);
+}
+startTimer();
 
 const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
@@ -297,3 +349,4 @@ initTest();
 </script>
 </body>
 </html>
+```
