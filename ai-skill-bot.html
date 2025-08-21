@@ -62,26 +62,6 @@
       margin-bottom: 15px;
       font-size: 24px;
     }
-    .mode-toggle {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-    .mode-toggle button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      background: #e0e0e0;
-      transition: all 0.3s ease;
-    }
-    .mode-toggle button.active-mode {
-      background: #1976d2;
-      color: white;
-      font-weight: bold;
-    }
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -137,22 +117,17 @@
   <main>
     <h2>Select a Chapter Test</h2>
 
-    <!-- Mode Toggle -->
-    <div class="mode-toggle">
-      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
-      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
-    </div>
-
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T91')">AI-Skill-Bot RS-CIT Test -1 <span>🔹T91</span></button>
       <button class="feature-btn" onclick="startTest('T92')">AI-Skill-Bot RS-CIT Test -2 <span>🔹T92</span></button>
       <button class="feature-btn" onclick="startTest('T93')">AI-Skill-Bot RS-CIT Test -3 <span>🔹T93</span></button>
       <button class="feature-btn" onclick="startTest('T94')">AI-Skill-Bot RS-CIT Test -4 <span>🔹T94</span></button>
-      <button class="feature-btn" onclick="startTest('T95')">AI-Skill-Bot RS-CIT Test -5 <span>s🔹T95</span></button>
+      <button class="feature-btn" onclick="startTest('T95')">AI-Skill-Bot RS-CIT Test -5 <span>🔹T95</span></button>
     </div>
   </main>
 
   <script>
+    // ✅ Default Mode (practice)
     let selectedMode = "practice";
 
     // ✅ Prevent Direct Access
@@ -167,38 +142,28 @@
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Switch Mode
-    function switchMode(mode) {
-      selectedMode = mode;
-      document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode === "practice");
-      document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
-    }
-
     // ✅ Back to RS-CIT Module
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
     // ✅ Start Test
-function startTest(code) {
-  const username = userData?.username || "guest";
-  const fullname = userData?.fullname || "Guest User";
-  startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
-}
+    function startTest(code) {
+      const username = userData?.username || "guest";
+      const fullname = userData?.fullname || "Guest User";
+      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
+    }
 
-// ✅ Actual Test Starter (Updated for new file)
-function startRscitTest(code, message, mode, username, fullname) {
-  // Save all arguments to localStorage for exam-modes-screen.html
-  localStorage.setItem("test_code", code);
-  localStorage.setItem("test_message", message);
-  localStorage.setItem("test_mode", mode);
-  localStorage.setItem("test_username", username);
-  localStorage.setItem("test_fullname", fullname);
+    // ✅ Actual Test Starter (Updated for new file)
+    function startRscitTest(code, message, mode, username, fullname) {
+      localStorage.setItem("test_code", code);
+      localStorage.setItem("test_message", message);
+      localStorage.setItem("test_mode", mode);
+      localStorage.setItem("test_username", username);
+      localStorage.setItem("test_fullname", fullname);
 
-  // Redirect to new test screen
-  location.href = "ai-exam-screen.html";
-}
-
+      location.href = "ai-exam-screen.html";
+    }
 
     // ✅ Logout User
     function logoutUser() {
