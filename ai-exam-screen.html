@@ -62,8 +62,8 @@
       border-color: var(--primary-dark);
     }
 
-    #chatWindow { display: flex; flex-direction: column; height: 500px; }
-    #chatBody { flex: 1; padding: 16px; overflow-y: auto; background: #fafafa; }
+    #chatWindow { display: flex; flex-direction: column; height: 500px; position: relative; }
+    #chatBody { flex: 1; padding: 60px 16px 16px; overflow-y: auto; background: #fafafa; } /* top padding for header */
     .chat-message { margin: 8px 0; font-size: 15px; line-height: 1.5; animation: fadeIn .3s ease-in; }
     .user-msg { color: var(--primary-dark); text-align: left; font-weight: bold; }
     .bot-msg { color: #4a0e34; text-align: right; }
@@ -92,6 +92,24 @@
     @keyframes fall {
       to { transform: translateY(110vh); opacity: 0; }
     }
+
+    /* Fixed header inside chat window */
+    .test-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      font-size: 13px;
+      font-weight: normal;
+    }
+    .test-header .center { position: absolute; left: 50%; transform: translateX(-50%); }
   </style>
 </head>
 <body>
@@ -123,9 +141,29 @@ const ChatBot = (() => {
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
       <div id="chatWindow">
+        <div class="test-header">
+          <div id="candidateName">${fullname}</div>
+          <div class="center" id="timer">Time Left: 60:00</div>
+          <div id="currentDate"></div>
+        </div>
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>`;
+    startTimer(60*60);
+    document.getElementById("currentDate").textContent = new Date().toLocaleDateString();
+  }
+
+  function startTimer(duration) {
+    let timer = duration, minutes, seconds;
+    const display = document.getElementById("timer");
+    setInterval(() => {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+      display.textContent = "Time Left: " + minutes + ":" + seconds;
+      if (--timer < 0) { timer = 0; }
+    }, 1000);
   }
 
   function showUserMessage(msg) {
