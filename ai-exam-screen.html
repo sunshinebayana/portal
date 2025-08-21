@@ -62,37 +62,8 @@
       border-color: var(--primary-dark);
     }
 
-    #chatWindow {
-      display: flex;
-      flex-direction: column;
-      height: 500px;
-    }
-    #chatHeader {
-      position: sticky;
-      top: 0;
-      background: #fce4ec;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      z-index: 10;
-      border-bottom: 1px solid #eee;
-    }
-    #chatBody {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      background: #fafafa;
-    }
-    #optionsArea {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 12px 16px;
-      border-top: 1px solid #eee;
-      background: #fff;
-    }
-
+    #chatWindow { display: flex; flex-direction: column; height: 500px; }
+    #chatBody { flex: 1; padding: 16px; overflow-y: auto; background: #fafafa; }
     .chat-message { margin: 8px 0; font-size: 15px; line-height: 1.5; animation: fadeIn .3s ease-in; }
     .user-msg { color: var(--primary-dark); text-align: left; font-weight: bold; }
     .bot-msg { color: #4a0e34; text-align: right; }
@@ -101,6 +72,7 @@
 
     .question { font-size: 16px; font-weight: 600; margin: 10px 0 6px; padding: 10px; background: #fce4ec; border-radius: 8px; }
 
+    #optionsArea { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px; border-top: 1px solid #eee; background: #fff; }
     #optionsArea button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; font-size: 14px; transition: all .2s; }
     #optionsArea button:hover { background: var(--primary-dark); }
 
@@ -116,7 +88,10 @@
       pointer-events: none;
       animation: fall 3s linear forwards;
     }
-    @keyframes fall { to { transform: translateY(110vh); opacity: 0; } }
+
+    @keyframes fall {
+      to { transform: translateY(110vh); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -127,11 +102,11 @@
 </div>
 
 <script>
-const code = localStorage.getItem("test_code") || "",
-      username = (localStorage.getItem("test_username") || "").trim(),
-      fullname = localStorage.getItem("test_fullname") || "";
+const code=localStorage.getItem("test_code")||"",
+      username=(localStorage.getItem("test_username")||"").trim(),
+      fullname=localStorage.getItem("test_fullname")||"";
 
-const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
 const ChatBot = (() => {
   let questions = [], currentIndex = 0, score = 0, attempted = 0, correct = 0;
@@ -142,61 +117,54 @@ const ChatBot = (() => {
     renderChatWindow();
 
     showBotMessage(`🙏 Radhe Radhe, ${fullname}!<br>🤖 Welcome to <b>Sunshine Bot</b> 🌸<br> Practice karo aur RS-CIT परीक्षा की शानदार तैयारी karo! 😉`);
-    setTimeout(loadQuestion, 1500);
+    setTimeout(loadQuestion,1500);
   }
 
   function renderChatWindow() {
-    const today = new Date();
-    const dateStr = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
     document.getElementById("quizArea").innerHTML = `
       <div id="chatWindow">
-        <div id="chatHeader">
-          <span>${fullname}</span>
-          <span id="timerLabel">Remaining Exam Time: 00:00</span>
-          <span>${dateStr}</span>
-        </div>
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>`;
   }
 
   function showUserMessage(msg) {
-    const div = document.createElement("div");
-    div.className = "chat-message user-msg";
-    div.innerHTML = msg;
+    const div=document.createElement("div");
+    div.className="chat-message user-msg";
+    div.innerHTML=msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
   }
 
-  function showBotMessage(msg, type = "") {
-    const div = document.createElement("div");
-    div.className = "chat-message bot-msg" + (type === "wrong" ? " wrong" : "") + (type === "correct" ? " correct" : "");
-    div.innerHTML = msg;
+  function showBotMessage(msg,type="") {
+    const div=document.createElement("div");
+    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"") + (type==="correct"?" correct":"");
+    div.innerHTML=msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
   }
 
-  function showCustomCelebration(title, msg, isSuspense=false) {
-    const div = document.createElement("div");
-    div.className = "chat-message bot-msg";
+  function showCustomCelebration(title,msg,isSuspense=false){
+    const div=document.createElement("div");
+    div.className="chat-message bot-msg";
     div.innerHTML = `<b>${title}</b><br>${msg}`;
     if(isSuspense){ div.style.color = "#d81b60"; }
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
   }
 
-  function scrollDown() { const chat = document.getElementById("chatBody"); chat.scrollTop = chat.scrollHeight; }
+  function scrollDown(){ const chat=document.getElementById("chatBody"); chat.scrollTop=chat.scrollHeight; }
 
   function loadQuestion() {
     if (currentIndex >= questions.length) { showSummary(); return; }
     const q = questions[currentIndex];
     let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
-    const box = document.createElement("div");
-    box.innerHTML = html;
+    const box=document.createElement("div");
+    box.innerHTML=html;
     document.getElementById("chatBody").appendChild(box);
 
     let opts = "";
-    q.options.forEach((opt,i) => { opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`; });
+    q.options.forEach((opt,i)=>{ opts += `<button onclick="ChatBot.chooseAnswer('${String.fromCharCode(65+i)}')">${String.fromCharCode(65+i)}. ${opt}</button>`; });
     document.getElementById("optionsArea").innerHTML = opts;
     scrollDown();
   }
@@ -210,8 +178,8 @@ const ChatBot = (() => {
     attempted++;
     showUserMessage(`👤 ${fullname}: ${option}. ${selectedText}`);
 
-    if(option === correctOption){
-      score += 2; correct++;
+    if(option===correctOption){
+      score+=2; correct++;
       showBotMessage(`✅ सही जवाब (+2 Marks). Total: ${score}`,"correct");
       triggerFlowerRain();
       checkMilestones();
@@ -222,7 +190,7 @@ const ChatBot = (() => {
 
     currentIndex++;
     document.getElementById("optionsArea").innerHTML = "";
-    setTimeout(loadQuestion, 2000);
+    setTimeout(loadQuestion,2000);
   }
 
   function checkMilestones() {
@@ -230,16 +198,20 @@ const ChatBot = (() => {
     const correctQs = correct;
 
     if (marks === 42) {
-      showCustomCelebration("🎉 Shabash Champion!", "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+      showCustomCelebration("🎉 Shabash Champion!",
+        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
     } 
     else if (marks === 50) {
-      showCustomCelebration("🔥 Excellent!", "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+      showCustomCelebration("🔥 Excellent!",
+        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
     } 
     else if (marks === 60) {
-      showCustomCelebration("🌟 Outstanding!", "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+      showCustomCelebration("🌟 Outstanding!",
+        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
     } 
     else if (marks === 70) {
-      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!", "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
+        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
     } 
     else if (correctQs >= 31 && correctQs <= 34) {
       const suspenseLines = [
@@ -258,16 +230,20 @@ const ChatBot = (() => {
     showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
 
     if (score < 50) {
-      showCustomCelebration("Motivation Time!", "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+      showCustomCelebration("Motivation Time!", 
+        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
     } 
     else if (score >= 50 && score <= 60) {
-      showCustomCelebration("शानदार! 🎉", "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+      showCustomCelebration("शानदार! 🎉", 
+        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
     } 
     else if (score >= 62 && score <= 68) {
-      showCustomCelebration("कमाल कर दिया! 🚀", "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+      showCustomCelebration("कमाल कर दिया! 🚀", 
+        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
     } 
     else if (score === 70) {
-      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", 
+        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
     }
 
     showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
@@ -277,11 +253,11 @@ const ChatBot = (() => {
   function triggerFlowerRain(){
     const flowers = ["🌸","🌺","🌼","💮"];
     for(let i=0;i<20;i++){
-      const flower = document.createElement("div");
-      flower.className = "flower";
-      flower.textContent = flowers[Math.floor(Math.random()*flowers.length)];
-      flower.style.left = Math.random()*100+"vw";
-      flower.style.fontSize = (20+Math.random()*15)+"px";
+      const flower=document.createElement("div");
+      flower.className="flower";
+      flower.textContent=flowers[Math.floor(Math.random()*flowers.length)];
+      flower.style.left=Math.random()*100+"vw";
+      flower.style.fontSize=(20+Math.random()*15)+"px";
       document.body.appendChild(flower);
       setTimeout(()=>flower.remove(),3000);
     }
