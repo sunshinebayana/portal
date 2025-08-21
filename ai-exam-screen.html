@@ -63,7 +63,8 @@
     }
 
     #chatWindow { display: flex; flex-direction: column; height: 500px; position: relative; }
-    #chatBody { flex: 1; padding: 60px 16px 16px; overflow-y: auto; background: #fafafa; } /* top padding for header */
+    #chatBody { flex: 1; padding: 60px 16px 16px; overflow-y: auto; background: #fafafa; }
+
     .chat-message { margin: 8px 0; font-size: 15px; line-height: 1.5; animation: fadeIn .3s ease-in; }
     .user-msg { color: var(--primary-dark); text-align: left; font-weight: bold; }
     .bot-msg { color: #4a0e34; text-align: right; }
@@ -88,28 +89,32 @@
       pointer-events: none;
       animation: fall 3s linear forwards;
     }
-
     @keyframes fall {
       to { transform: translateY(110vh); opacity: 0; }
     }
 
-    /* Fixed header inside chat window */
-    .test-header {
-      position: absolute;
+    /* Fixed candidate info header */
+    .candidate-info {
+      position: fixed;
       top: 0;
       left: 0;
-      right: 0;
-      height: 40px;
+      width: 100%;
+      background: #ffffff;
+      border-bottom: 1px solid #ccc;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      font-size: 13px;
-      font-weight: normal;
+      align-items: center;
+      font-size: 12px;
+      padding: 2px 10px;
+      margin: 0;
+      z-index: 1000;
     }
-    .test-header .center { position: absolute; left: 50%; transform: translateX(-50%); }
+    .candidate-info div {
+      flex: 1;
+      text-align: center;
+    }
+    .candidate-info .left { text-align: left; }
+    .candidate-info .right { text-align: right; }
   </style>
 </head>
 <body>
@@ -140,17 +145,17 @@ const ChatBot = (() => {
 
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
+      <div class="candidate-info">
+        <div class="left">${fullname}</div>
+        <div id="timer">Time Left: 60:00</div>
+        <div class="right" id="currentDate"></div>
+      </div>
       <div id="chatWindow">
-        <div class="test-header">
-          <div id="candidateName">${fullname}</div>
-          <div class="center" id="timer">Time Left: 60:00</div>
-          <div id="currentDate"></div>
-        </div>
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>`;
     startTimer(60*60);
-    document.getElementById("currentDate").textContent = new Date().toLocaleDateString();
+    setDate();
   }
 
   function startTimer(duration) {
@@ -164,6 +169,15 @@ const ChatBot = (() => {
       display.textContent = "Time Left: " + minutes + ":" + seconds;
       if (--timer < 0) { timer = 0; }
     }, 1000);
+  }
+
+  function setDate() {
+    const dateElement = document.getElementById("currentDate");
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const yyyy = today.getFullYear();
+    dateElement.textContent = dd + "/" + mm + "/" + yyyy;
   }
 
   function showUserMessage(msg) {
@@ -236,28 +250,19 @@ const ChatBot = (() => {
     const correctQs = correct;
 
     if (marks === 42) {
-      showCustomCelebration("🎉 Shabash Champion!",
-        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+      showCustomCelebration("🎉 Shabash Champion!","Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀"); 
     } 
     else if (marks === 50) {
-      showCustomCelebration("🔥 Excellent!",
-        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+      showCustomCelebration("🔥 Excellent!","Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
     } 
     else if (marks === 60) {
-      showCustomCelebration("🌟 Outstanding!",
-        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+      showCustomCelebration("🌟 Outstanding!","Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
     } 
     else if (marks === 70) {
-      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
-        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!","Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
     } 
     else if (correctQs >= 31 && correctQs <= 34) {
-      const suspenseLines = [
-        "⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?",
-        "🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?",
-        "🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!",
-        "🚀 Focus Rakho – Victory Pass Hi Hai!"
-      ];
+      const suspenseLines = ["⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?","🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?","🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!","🚀 Focus Rakho – Victory Pass Hi Hai!"];
       const randomLine = suspenseLines[Math.floor(Math.random() * suspenseLines.length)];
       showCustomCelebration("Suspense Mode", randomLine, true);
     }
@@ -268,20 +273,16 @@ const ChatBot = (() => {
     showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
 
     if (score < 50) {
-      showCustomCelebration("Motivation Time!", 
-        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+      showCustomCelebration("Motivation Time!", "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
     } 
     else if (score >= 50 && score <= 60) {
-      showCustomCelebration("शानदार! 🎉", 
-        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+      showCustomCelebration("शानदार! 🎉", "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
     } 
     else if (score >= 62 && score <= 68) {
-      showCustomCelebration("कमाल कर दिया! 🚀", 
-        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+      showCustomCelebration("कमाल कर दिया! 🚀", "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
     } 
     else if (score === 70) {
-      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", 
-        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
     }
 
     showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
