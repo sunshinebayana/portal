@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RS-CIT Test Screen</title>
   <style>
     :root {
@@ -14,12 +14,14 @@
       --wrong-msg: #ffcdd2;
       --correct-highlight: #fffde7;
     }
+
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       background: #f9fafb;
       margin: 0;
       padding: 0;
     }
+
     header {
       background: var(--primary);
       color: #fff;
@@ -29,16 +31,18 @@
       text-transform: uppercase;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
+
     .container {
       max-width: 650px;
       margin: 30px auto;
       background: #fff;
       border-radius: 12px;
       border: 2px solid var(--primary);
-      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       position: relative;
       overflow: hidden;
     }
+
     .close-btn {
       position: absolute;
       top: -14px;
@@ -53,35 +57,118 @@
       line-height: 32px;
       text-align: center;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);
-      transition: .2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: 0.2s;
     }
+
     .close-btn:hover {
       background: #f5f5f5;
       color: var(--primary-dark);
       border-color: var(--primary-dark);
     }
 
-    #chatWindow { display: flex; flex-direction: column; height: 500px; position: relative; }
-    #chatBody { flex: 1; padding: 60px 16px 16px; overflow-y: auto; background: #fafafa; }
+    #chatWindow { 
+      display: flex; 
+      flex-direction: column; 
+      height: 500px; 
+      position: relative; 
+    }
 
-    .chat-message { margin: 8px 0; font-size: 15px; line-height: 1.5; animation: fadeIn .3s ease-in; }
-    .user-msg { color: var(--primary-dark); text-align: left; font-weight: bold; }
-    .bot-msg { color: #4a0e34; text-align: right; }
-    .bot-msg.correct { color: green; font-weight: bold; }
-    .bot-msg.wrong { color: red; font-weight: bold; }
+    /* Top bar inside chat window */
+    #topBar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 10px;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-    .question { font-size: 16px; font-weight: 600; margin: 10px 0 6px; padding: 10px; background: #fce4ec; border-radius: 8px; }
+    #chatBody { 
+      flex: 1; 
+      padding: 10px; 
+      overflow-y: auto; 
+      background: #fafafa; 
+    }
 
-    #optionsArea { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px; border-top: 1px solid #eee; background: #fff; }
-    #optionsArea button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; background: var(--primary); color: #fff; font-weight: bold; font-size: 14px; transition: all .2s; }
-    #optionsArea button:hover { background: var(--primary-dark); }
+    .chat-message { 
+      margin: 8px 0; 
+      font-size: 15px; 
+      line-height: 1.5; 
+      animation: fadeIn 0.3s ease-in; 
+    }
 
-    .loading { text-align: center; font-size: 16px; padding: 40px; color: var(--primary); }
+    .user-msg { 
+      color: var(--primary-dark); 
+      text-align: left; 
+      font-weight: bold; 
+    }
 
-    @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+    .bot-msg { 
+      color: #4a0e34; 
+      text-align: right; 
+    }
 
-    /* Flower animation */
+    .bot-msg.correct { 
+      color: green; 
+      font-weight: bold; 
+    }
+
+    .bot-msg.wrong { 
+      color: red; 
+      font-weight: bold; 
+    }
+
+    .question { 
+      font-size: 16px; 
+      font-weight: 600; 
+      margin: 10px 0 6px; 
+      padding: 10px; 
+      background: #fce4ec; 
+      border-radius: 8px; 
+    }
+
+    #optionsArea { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px; 
+      padding: 12px 16px; 
+      border-top: 1px solid #eee; 
+      background: #fff; 
+    }
+
+    #optionsArea button { 
+      padding: 10px; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      background: var(--primary); 
+      color: #fff; 
+      font-weight: bold; 
+      font-size: 14px; 
+      transition: all 0.2s; 
+    }
+
+    #optionsArea button:hover { 
+      background: var(--primary-dark); 
+    }
+
+    .loading { 
+      text-align: center; 
+      font-size: 16px; 
+      padding: 40px; 
+      color: var(--primary); 
+    }
+
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(5px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+
     .flower {
       position: fixed;
       top: -20px;
@@ -89,32 +176,10 @@
       pointer-events: none;
       animation: fall 3s linear forwards;
     }
+
     @keyframes fall {
       to { transform: translateY(110vh); opacity: 0; }
     }
-
-    /* Fixed candidate info header */
-    .candidate-info {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #ffffff;
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      padding: 2px 10px;
-      margin: 0;
-      z-index: 1000;
-    }
-    .candidate-info div {
-      flex: 1;
-      text-align: center;
-    }
-    .candidate-info .left { text-align: left; }
-    .candidate-info .right { text-align: right; }
   </style>
 </head>
 <body>
@@ -125,11 +190,11 @@
 </div>
 
 <script>
-const code=localStorage.getItem("test_code")||"",
-      username=(localStorage.getItem("test_username")||"").trim(),
-      fullname=localStorage.getItem("test_fullname")||"";
+const code = localStorage.getItem("test_code") || "",
+      username = (localStorage.getItem("test_username") || "").trim(),
+      fullname = localStorage.getItem("test_fullname") || "";
 
-const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
+const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
 const ChatBot = (() => {
   let questions = [], currentIndex = 0, score = 0, attempted = 0, correct = 0;
@@ -140,17 +205,17 @@ const ChatBot = (() => {
     renderChatWindow();
 
     showBotMessage(`🙏 Radhe Radhe, ${fullname}!<br>🤖 Welcome to <b>Sunshine Bot</b> 🌸<br> Practice karo aur RS-CIT परीक्षा की शानदार तैयारी karo! 😉`);
-    setTimeout(loadQuestion,1500);
+    setTimeout(loadQuestion, 1500);
   }
 
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
-      <div class="candidate-info">
-        <div class="left">${fullname}</div>
-        <div id="timer">Time Left: 60:00</div>
-        <div class="right" id="currentDate"></div>
-      </div>
       <div id="chatWindow">
+        <div id="topBar">
+          <div class="left">${fullname}</div>
+          <div id="timer">Time Left: 60:00</div>
+          <div class="right" id="currentDate"></div>
+        </div>
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>`;
@@ -174,45 +239,40 @@ const ChatBot = (() => {
   function setDate() {
     const dateElement = document.getElementById("currentDate");
     const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2,"0");
+    const mm = String(today.getMonth()+1).padStart(2,"0");
     const yyyy = today.getFullYear();
     dateElement.textContent = dd + "/" + mm + "/" + yyyy;
   }
 
+  // Chat logic functions
   function showUserMessage(msg) {
-    const div=document.createElement("div");
-    div.className="chat-message user-msg";
-    div.innerHTML=msg;
+    const div = document.createElement("div");
+    div.className = "chat-message user-msg";
+    div.innerHTML = msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
   }
 
-  function showBotMessage(msg,type="") {
-    const div=document.createElement("div");
-    div.className="chat-message bot-msg" + (type==="wrong"?" wrong":"") + (type==="correct"?" correct":"");
-    div.innerHTML=msg;
+  function showBotMessage(msg, type="") {
+    const div = document.createElement("div");
+    div.className = "chat-message bot-msg" + (type==="wrong"?" wrong":"") + (type==="correct"?" correct":"");
+    div.innerHTML = msg;
     document.getElementById("chatBody").appendChild(div);
     scrollDown();
   }
 
-  function showCustomCelebration(title,msg,isSuspense=false){
-    const div=document.createElement("div");
-    div.className="chat-message bot-msg";
-    div.innerHTML = `<b>${title}</b><br>${msg}`;
-    if(isSuspense){ div.style.color = "#d81b60"; }
-    document.getElementById("chatBody").appendChild(div);
-    scrollDown();
+  function scrollDown() { 
+    const chat = document.getElementById("chatBody"); 
+    chat.scrollTop = chat.scrollHeight; 
   }
-
-  function scrollDown(){ const chat=document.getElementById("chatBody"); chat.scrollTop=chat.scrollHeight; }
 
   function loadQuestion() {
-    if (currentIndex >= questions.length) { showSummary(); return; }
+    if(currentIndex >= questions.length){ showSummary(); return; }
     const q = questions[currentIndex];
     let html = `<div class="question"><b>Q${currentIndex+1}:</b> ${q.question}</div>`;
-    const box=document.createElement("div");
-    box.innerHTML=html;
+    const box = document.createElement("div");
+    box.innerHTML = html;
     document.getElementById("chatBody").appendChild(box);
 
     let opts = "";
@@ -221,91 +281,24 @@ const ChatBot = (() => {
     scrollDown();
   }
 
-  function chooseAnswer(option){
+  function chooseAnswer(ans) {
     const q = questions[currentIndex];
-    const correctOption = (q.answer||"").trim().toUpperCase();
-    const correctText = q.options[correctOption.charCodeAt(0)-65] || "";
-    const selectedText = q.options[option.charCodeAt(0)-65] || "";
-
     attempted++;
-    showUserMessage(`👤 ${fullname}: ${option}. ${selectedText}`);
-
-    if(option===correctOption){
-      score+=2; correct++;
-      showBotMessage(`✅ सही जवाब (+2 Marks). Total: ${score}`,"correct");
-      triggerFlowerRain();
-      checkMilestones();
-    } else {
-      showBotMessage(`❌ गलत जवाब. Total: ${score}`,"wrong");
-      showBotMessage(`✔ सही जवाब: ${correctOption}. ${correctText}`,"correct");
-    }
-
+    if(ans === q.answer){ score+=1; correct++; showBotMessage(`✔ Correct!`, "correct"); }
+    else showBotMessage(`❌ Wrong! Correct answer: ${q.answer}`, "wrong");
     currentIndex++;
-    document.getElementById("optionsArea").innerHTML = "";
-    setTimeout(loadQuestion,2000);
-  }
-
-  function checkMilestones() {
-    const marks = score;
-    const correctQs = correct;
-
-    if (marks === 42) {
-      showCustomCelebration("🎉 Shabash Champion!","Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀"); 
-    } 
-    else if (marks === 50) {
-      showCustomCelebration("🔥 Excellent!","Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
-    } 
-    else if (marks === 60) {
-      showCustomCelebration("🌟 Outstanding!","Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
-    } 
-    else if (marks === 70) {
-      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!","Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
-    } 
-    else if (correctQs >= 31 && correctQs <= 34) {
-      const suspenseLines = ["⚡ Bas Thoda Sa Aur… Record Tootne Wala Hai?","🔥 Kya Aapka Naam Topper List Mein Aane Wala Hai?","🌟 Sirf 1 Question Ka Fark – Champion Ban Sakte Ho!","🚀 Focus Rakho – Victory Pass Hi Hai!"];
-      const randomLine = suspenseLines[Math.floor(Math.random() * suspenseLines.length)];
-      showCustomCelebration("Suspense Mode", randomLine, true);
-    }
+    setTimeout(loadQuestion, 500);
   }
 
   function showSummary() {
-    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
-    showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
-
-    if (score < 50) {
-      showCustomCelebration("Motivation Time!", "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
-    } 
-    else if (score >= 50 && score <= 60) {
-      showCustomCelebration("शानदार! 🎉", "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
-    } 
-    else if (score >= 62 && score <= 68) {
-      showCustomCelebration("कमाल कर दिया! 🚀", "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
-    } 
-    else if (score === 70) {
-      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
-    }
-
-    showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
-    document.getElementById("optionsArea").innerHTML="";
-  }
-
-  function triggerFlowerRain(){
-    const flowers = ["🌸","🌺","🌼","💮"];
-    for(let i=0;i<20;i++){
-      const flower=document.createElement("div");
-      flower.className="flower";
-      flower.textContent=flowers[Math.floor(Math.random()*flowers.length)];
-      flower.style.left=Math.random()*100+"vw";
-      flower.style.fontSize=(20+Math.random()*15)+"px";
-      document.body.appendChild(flower);
-      setTimeout(()=>flower.remove(),3000);
-    }
+    document.getElementById("chatBody").innerHTML += `<div class="chat-message bot-msg correct"><b>✅ Test Completed!</b><br>Score: ${score}/${questions.length}<br>Correct: ${correct}, Attempted: ${attempted}</div>`;
+    document.getElementById("optionsArea").innerHTML = "";
   }
 
   return { loadChatWindow, chooseAnswer };
 })();
 
-function initTest(){
+function initTest() {
   if(!username){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`; return; }
   fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
@@ -325,7 +318,7 @@ function initTest(){
   })
 }
 
-function closeTest(){
+function closeTest() {
   const stored = localStorage.getItem('test_selection_url');
   if (stored) { window.location.href = stored; return; }
   if (document.referrer && document.referrer !== location.href) { window.history.back(); return; }
