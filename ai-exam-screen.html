@@ -119,6 +119,8 @@ const code = localStorage.getItem("test_code")||"",
 
 const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
+let remainingSeconds = 60*60; // 60 minutes in seconds
+
 const ChatBot = (() => {
   let questions = [], currentIndex = 0, score = 0, attempted = 0, correct = 0;
   let timerInterval;
@@ -154,13 +156,21 @@ const ChatBot = (() => {
   }
 
   function startTimer(minutes){
-    let totalSeconds = minutes*60;
+    remainingSeconds = minutes*60;
     timerInterval = setInterval(()=>{
-      if(totalSeconds<=0){ clearInterval(timerInterval); updateTimerDisplay("Time Over"); return; }
-      let mins = Math.floor(totalSeconds/60);
-      let secs = totalSeconds%60;
+      if(remainingSeconds<=0){ 
+        clearInterval(timerInterval); 
+        updateTimerDisplay("Time Over"); 
+        if(confirm("Are you sure you want to close this test?")) {
+          sendTestResult();
+          closeTest();
+        }
+        return; 
+      }
+      let mins = Math.floor(remainingSeconds/60);
+      let secs = remainingSeconds%60;
       updateTimerDisplay(`Left Time: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`);
-      totalSeconds--;
+      remainingSeconds--;
     },1000);
   }
 
@@ -234,20 +244,16 @@ const ChatBot = (() => {
     const correctQs = correct;
 
     if (marks === 42) {
-      showCustomCelebration("🎉 Shabash Champion!",
-        "Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
+      showCustomCelebration("🎉 Shabash Champion!","Aapne First Division (42 Marks) hasil kar li hai – Hard Work ka Result!<br>Ab Agla Target – <b>Top Rank!</b> 🚀");
     } 
     else if (marks === 50) {
-      showCustomCelebration("🔥 Excellent!",
-        "Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
+      showCustomCelebration("🔥 Excellent!","Aapne 25 Questions Correct (50 Marks) ka milestone achieve kiya hai!<br>Next Goal – <b>30 Questions!</b> Keep Going, Winner! 🌟");
     } 
     else if (marks === 60) {
-      showCustomCelebration("🌟 Outstanding!",
-        "Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
+      showCustomCelebration("🌟 Outstanding!","Aapne 30 Questions Correct (60 Marks) se ek aur Level Cross kiya!<br>Ab <b>Topper List</b> ke liye Ready Raho – Keep the Speed! 🚀");
     } 
     else if (marks === 70) {
-      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!",
-        "Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
+      showCustomCelebration("🎊 Incredible! Sabhi 35 Questions Sahi!","Aapne Perfect Champion ban kar <b>Record Tod Diya!</b> 🏆<br>Sabse Bada Jashn – Claps & Cheers! 🎉");
     } 
     else if (correctQs >= 31 && correctQs <= 34) {
       const suspenseLines = [
@@ -266,25 +272,26 @@ const ChatBot = (() => {
     showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
 
     if (score < 50) {
-      showCustomCelebration("Motivation Time!", 
-        "हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
+      showCustomCelebration("Motivation Time!","हर कोशिश मायने रखती है! 💪<br>इस बार परिणाम 42 से कम आया, लेकिन यही से सीखकर अगली बार और मजबूत वापसी करो।<br>हार मत मानो – अगला टेस्ट तुम्हारी जीत की शुरुआत हो सकता है!");
     } 
     else if (score >= 50 && score <= 60) {
-      showCustomCelebration("शानदार! 🎉", 
-        "50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
+      showCustomCelebration("शानदार! 🎉","50+ Marks – यह साबित करता है कि आप सही राह पर हो।<br>अब बस थोड़ी और मेहनत से 60+ और फिर Top Scores तक पहुँच सकते हो!");
     } 
     else if (score >= 62 && score <= 68) {
-      showCustomCelebration("कमाल कर दिया! 🚀", 
-        "62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
+      showCustomCelebration("कमाल कर दिया! 🚀","62+ Marks – अब आप Top Performers की लिस्ट में हो।<br>बस थोड़ी और फोकस और मेहनत – अगली बार Perfect 70/70 आपका होगा!");
     } 
     else if (score === 70) {
-      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!", 
-        "आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
+      showCustomCelebration("🔥 अविश्वसनीय! 70/70 – आप हैं Sunshine Champion!","आपकी मेहनत, Focus और Dedication का यह शानदार नतीजा है।<br>अब आप दूसरों के लिए Inspiration बन चुके हैं – Keep Shining! 🌟");
     }
 
     showBotMessage(`🔥 Kal fir se naye questions ke sath wapas aaiye aur streak banaiye! 🌟`);
     document.getElementById("optionsArea").innerHTML="";
     clearInterval(timerInterval);
+
+    if(confirm("Are you sure you want to close this test?")) {
+      sendTestResult();
+      closeTest();
+    }
   }
 
   function triggerFlowerRain(){
@@ -300,9 +307,55 @@ const ChatBot = (() => {
     }
   }
 
-  return { loadChatWindow, chooseAnswer };
+  return { loadChatWindow, chooseAnswer, attempted, correct, score };
 })();
 
+// ✅ Send results function
+function sendTestResult() {
+  const currentDate = new Date().toLocaleString();
+  const totalQ = window.loadedQuestions.length;
+  const attemptedQ = ChatBot.attempted || 0;
+  const correctAns = ChatBot.correct || 0;
+  const obtained = ChatBot.score || 0;
+  const maxMarksCalc = totalQ * 2; 
+  const result = obtained >= maxMarksCalc / 2 ? "Pass" : "Fail";
+  const testDuration = 60; // minutes
+  const mins = Math.floor((60*60 - remainingSeconds)/60);
+  const secs = (60*60 - remainingSeconds)%60;
+
+  const resultPayload = new FormData();
+  resultPayload.append("action", "appendResult");
+  resultPayload.append("date", currentDate);
+  resultPayload.append("code", code);
+  resultPayload.append("username", username);
+  resultPayload.append("fullname", fullname);
+  resultPayload.append("result", result);
+  resultPayload.append("maxMarks", maxMarksCalc);
+  resultPayload.append("obtainedMarks", obtained);
+  resultPayload.append("totalQuestions", totalQ);
+  resultPayload.append("attempted", attemptedQ);
+  resultPayload.append("correctAnswers", correctAns);
+  resultPayload.append("examTime", testDuration);
+  resultPayload.append("timeTaken", `${mins}m ${secs}s`);
+
+  fetch(backendUrl, { method: "POST", body: resultPayload })
+    .then(res => res.text())
+    .then(data => console.log("✅ Result saved:", data))
+    .catch(err => console.error("❌ Error saving result:", err));
+}
+
+// ✅ Close test function
+function closeTest(){
+  if(confirm("Are you sure you want to close this test?")) {
+    sendTestResult();
+    const stored = localStorage.getItem('test_selection_url');
+    if (stored) { window.location.href = stored; return; }
+    if (document.referrer && document.referrer !== location.href) { window.history.back(); return; }
+    window.location.href = "/";
+  }
+}
+
+// ✅ Init test
 function initTest(){
   if(!username){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`; return; }
   fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
@@ -318,7 +371,8 @@ function initTest(){
       </div>`;
   }).catch(e=>{
     console.error("Error:",e);
-    document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ Error loading test.</h3>`;
+    document.getElementById("quizArea").innerHTML=`<
+h3 style="color:red;">⚠ Error loading test.</h3>`;
   })
 }
 
