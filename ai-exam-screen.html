@@ -123,6 +123,9 @@ const ChatBot = (() => {
   function renderChatWindow() {
     document.getElementById("quizArea").innerHTML = `
       <div id="chatWindow">
+      // ✅ examName को top header में set करना
+  document.getElementById("examNameLabel").textContent = d.examName || "RS-CIT Test";
+
         <div id="chatBody"></div>
         <div id="optionsArea"></div>
       </div>`;
