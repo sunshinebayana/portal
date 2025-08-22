@@ -25,7 +25,7 @@
       min-height: 100vh;
     }
 
-    /* ===== Header ===== */
+    /* ===== Header (Default PC View) ===== */
     header {
       background: var(--primary);
       color: #fff;
@@ -166,12 +166,40 @@
     }
 
     /* ===== Mobile Responsive ===== */
-    @media (max-width: 1024px) {
-      .logo-row img {
-        height: 34px;  /* ✅ Tablet Size */
-      }
-    }
     @media (max-width: 768px) {
+      /* ✅ Mobile Header Style */
+      header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+      }
+      .logo-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .logo-row img {
+        height: 60px;  /* ✅ Bigger Mobile Logo */
+        margin: 0 0 8px 0;
+      }
+      .logo-row span {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .tagline {
+        font-size: 13px;
+        margin-top: 5px;
+      }
+      .nav-controls {
+        margin-top: 12px;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn, select, .welcome {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* ✅ Sidebar Bottom Navigation */
       .dashboard {
         flex-direction: column;
       }
@@ -202,9 +230,6 @@
       h2 {
         font-size: 18px;
       }
-      .logo-row img {
-        height: 28px;   /* ✅ Mobile Size */
-      }
     }
   </style>
 </head>
@@ -216,7 +241,7 @@
       <div class="logo-row">
         <!-- ✅ Updated Logo Link -->
         <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-        Sunshine Computer Training & STENO Classes, Bayana
+        <span>Sunshine Computer Training & STENO Classes, Bayana</span>
       </div>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
