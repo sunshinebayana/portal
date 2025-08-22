@@ -1,5 +1,5 @@
 // protect.js
-
+const BASE_URL = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 // 1. Disable Right Click
 document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
