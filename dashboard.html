@@ -191,45 +191,44 @@
       }
       .nav-controls {
         flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
         margin-top: 10px;
         justify-content: center;
       }
-      .btn, .welcome {
-        flex: 1 1 45%;
-        text-align: center;
+
+      /* hide home button */
+      .nav-controls .btn:first-child {
+        display: none;
       }
-      /* hide select menu only on mobile */
+
+      /* make back button smaller */
+      .nav-controls .btn.back-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      /* add small menu button */
+      .menu-btn {
+        background: var(--secondary);
+        color: var(--primary);
+        border: none;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      /* hide select menu on mobile */
       select {
         display: none;
       }
 
-      /* Sidebar bottom */
-      .dashboard {
-        flex-direction: column;
-      }
+      /* Sidebar (bottom) - REMOVE on mobile */
       .sidebar {
-        width: 100%;
-        border-right: none;
-        border-top: 1px solid #eee;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
-        position: sticky;
-        bottom: 0;
-        background: #fff;
+        display: none;
       }
-      .sidebar h3 { display: none; }
-      .sidebar a {
-        flex: 1;
-        text-align: center;
-        padding: 12px 5px;
-        margin: 0;
-        font-size: 13px;
-      }
+
       main { padding: 15px; }
       h2 { font-size: 18px; }
     }
@@ -248,7 +247,8 @@
     </div>
     <div class="nav-controls">
       <button class="btn" onclick="goHome()">🏠 Home</button>
-      <button class="btn" onclick="goBack()">⬅ Back</button>
+      <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
       <span class="welcome" id="welcomeMsg">Welcome, User!</span>
       <select id="menu" onchange="menuAction(this.value)">
         <option value="">☰ Menu</option>
@@ -341,6 +341,10 @@
       }
       localStorage.clear();
       location.replace("login.html");
+    }
+
+    function toggleMenu() {
+      alert("☰ Menu clicked (you can expand this later)");
     }
   </script>
 </body>
