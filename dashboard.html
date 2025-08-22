@@ -49,7 +49,7 @@
       font-weight: 600;
     }
     .logo-row img {
-      height: 32px;
+      height: 40px;   /* ✅ Desktop Logo Size */
       margin-right: 8px;
     }
     .tagline {
@@ -166,6 +166,11 @@
     }
 
     /* ===== Mobile Responsive ===== */
+    @media (max-width: 1024px) {
+      .logo-row img {
+        height: 34px;  /* ✅ Tablet Size */
+      }
+    }
     @media (max-width: 768px) {
       .dashboard {
         flex-direction: column;
@@ -197,6 +202,9 @@
       h2 {
         font-size: 18px;
       }
+      .logo-row img {
+        height: 28px;   /* ✅ Mobile Size */
+      }
     }
   </style>
 </head>
@@ -206,7 +214,8 @@
   <header>
     <div class="logo-title">
       <div class="logo-row">
-        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png" alt="Logo">
+        <!-- ✅ Updated Logo Link -->
+        <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
         Sunshine Computer Training & STENO Classes, Bayana
       </div>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
