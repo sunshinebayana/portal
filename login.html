@@ -162,11 +162,9 @@
       <button type="button" class="alt-btn" onclick="showLogin()">Back to Login</button>
     </form>
   </div>
-
+<script src="protect.js"></script>
 <script>
-  const BASE_URL = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
-  // ✅ Auto-login check
+   // ✅ Auto-login check
   window.onload = function () {
     if (localStorage.getItem("isLoggedIn") === "true" && localStorage.getItem("userData")) {
       location.replace("dashboard.html");
@@ -362,3 +360,4 @@
     });
   }
 </script>
+
