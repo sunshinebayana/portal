@@ -167,101 +167,63 @@
     @media (max-width: 768px) {
       header {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 15px;
+        align-items: flex-start;
+        padding: 12px;
       }
       .logo-row {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
       }
       .logo-row img {
-        height: 55px;
-        margin: 0 0 8px 0;
+        height: 45px;
+        margin-right: 10px;
       }
       .logo-row span {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        line-height: 1.4;
+        line-height: 1.3;
       }
       .tagline {
-        font-size: 14px;
-        margin-top: 6px;
+        font-size: 13px;
+        margin: 6px 0;
       }
       .nav-controls {
         flex-direction: row;
-        gap: 6px;
-        margin-top: 10px;
-        justify-content: center;
         flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .btn, select, .welcome {
+        flex: 1 1 45%;
+        text-align: center;
       }
 
-      /* hide home button */
-      .nav-controls .btn:first-child {
-        display: none;
-      }
-
-      /* make back button smaller */
-      .nav-controls .btn.back-btn {
-        padding: 4px 8px;
-        font-size: 12px;
-      }
-
-      /* welcome + back together */
-      .welcome {
-        order: 1;
-      }
-      .btn.back-btn {
-        order: 2;
-      }
-
-      /* small menu button */
-      .menu-btn {
-        background: var(--secondary);
-        color: var(--primary);
-        border: none;
-        padding: 4px 8px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 6px;
-        cursor: pointer;
-        order: 3;
-      }
-
-      /* hide select dropdown on mobile */
-      select {
-        display: none;
-      }
-
-      /* mobile dropdown menu */
-      .mobile-dropdown {
-        display: none;
+      /* Sidebar bottom */
+      .dashboard {
         flex-direction: column;
-        background: var(--primary);
-        margin-top: 8px;
-        border-radius: 6px;
-        overflow: hidden;
       }
-      .mobile-dropdown a {
-        color: #fff;
-        padding: 8px;
-        text-decoration: none;
-        font-size: 13px;
-        border-top: 1px solid rgba(255,255,255,0.2);
-      }
-      .mobile-dropdown a:hover {
-        background: var(--accent);
-      }
-      .mobile-dropdown.show {
-        display: flex;
-      }
-
-      /* Sidebar (bottom) - REMOVE on mobile */
       .sidebar {
-        display: none;
+        width: 100%;
+        border-right: none;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+        position: sticky;
+        bottom: 0;
+        background: #fff;
       }
-
+      .sidebar h3 { display: none; }
+      .sidebar a {
+        flex: 1;
+        text-align: center;
+        padding: 12px 5px;
+        margin: 0;
+        font-size: 13px;
+      }
       main { padding: 15px; }
       h2 { font-size: 18px; }
     }
@@ -274,27 +236,20 @@
     <div class="logo-title">
       <div class="logo-row">
         <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-        <span>Sunshine Computer Training &<br> STENO Classes, Bayana</span>
+        <span>Sunshine Computer Training &<br>STENO Classes, Bayana</span>
       </div>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
     <div class="nav-controls">
       <button class="btn" onclick="goHome()">🏠 Home</button>
+      <button class="btn" onclick="goBack()">⬅ Back</button>
       <span class="welcome" id="welcomeMsg">Welcome, User!</span>
-      <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
       <select id="menu" onchange="menuAction(this.value)">
         <option value="">☰ Menu</option>
         <option value="profile">👤 Profile</option>
         <option value="settings">⚙ Settings</option>
         <option value="logout">🚪 Logout</option>
       </select>
-    </div>
-    <!-- Mobile dropdown menu -->
-    <div class="mobile-dropdown" id="mobileDropdown">
-      <a href="#" onclick="menuAction('profile')">👤 Profile</a>
-      <a href="#" onclick="menuAction('settings')">⚙ Settings</a>
-      <a href="#" onclick="menuAction('logout')">🚪 Logout</a>
     </div>
   </header>
 
@@ -370,8 +325,6 @@
       } else if (value === "settings") {
         alert("Settings page under construction.");
       }
-      // close dropdown after selection
-      document.getElementById("mobileDropdown").classList.remove("show");
       document.getElementById("menu").value = "";
     }
     function logoutUser() {
@@ -382,10 +335,6 @@
       }
       localStorage.clear();
       location.replace("login.html");
-    }
-
-    function toggleMenu() {
-      document.getElementById("mobileDropdown").classList.toggle("show");
     }
   </script>
 </body>
