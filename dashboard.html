@@ -29,8 +29,21 @@ header{
 .logo-row{
   display:flex;
   align-items:center;
+  gap:10px;
 }
-.logo-row img{height:40px;margin-right:8px;}
+.logo-row img{height:40px;}
+.home-btn{
+  background:var(--secondary);
+  color:var(--primary);
+  border:none;
+  padding:6px 12px;
+  font-size:14px;
+  font-weight:600;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+}
+.home-btn:hover{background:var(--accent);color:#fff;}
 .title-tagline{
   position:absolute;
   left:50%;
@@ -157,6 +170,7 @@ footer{
  }
  .title-tagline span{font-size:16px;}
  .title-tagline .tagline{font-size:14px;}
+ .home-btn{display:none;} /* Hide Home button on mobile */
  .nav-controls{
    width:100%;
    justify-content:flex-start;
@@ -186,6 +200,7 @@ footer{
 <header>
 <div class="logo-row">
 <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+<button class="home-btn" onclick="goHome()">🏠 Home</button>
 </div>
 <div class="title-tagline">
 <span>Sunshine Computer Training & STENO Classes, Bayana</span>
