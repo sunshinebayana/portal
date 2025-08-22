@@ -17,7 +17,7 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--primary)
 header{
   background:var(--primary);
   color:#fff;
-  padding:12px 20px;
+  padding:8px 20px; /* reduced padding */
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -25,12 +25,11 @@ header{
   position:sticky;
   top:0;
   z-index:1000;
-  flex-wrap:wrap;
 }
-.logo-title{display:flex;flex-direction:column;align-items:flex-start;}
+.logo-title{display:flex;flex-direction:column;}
 .logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;white-space:nowrap;}
 .logo-row img{height:40px;margin-right:8px;}
-.logo-row span{line-height:1;} /* Desktop single line */
+.logo-row span{line-height:1;}
 .tagline{
   font-size:13px;
   color:var(--secondary);
@@ -40,7 +39,6 @@ header{
   display:flex;
   align-items:center;
   gap:10px;
-  position:relative;
 }
 .btn{
   background:var(--secondary);
@@ -121,16 +119,41 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
   transition:.2s;
 }
 .mobile-menu button:hover{background:var(--secondary);color:var(--accent);}
+footer{
+  background:var(--primary);
+  color:#fff;
+  text-align:center;
+  padding:10px;
+  font-size:13px;
+  margin-top:auto;
+}
 
 /* MOBILE STYLES */
 @media(max-width:768px){
- header{flex-direction:column;align-items:center;text-align:center;padding:15px;}
- .logo-row{flex-direction:column;align-items:center;justify-content:center;white-space:normal;}
- .logo-row span{line-height:1.4;} /* Mobile 2 lines */
+ header{
+   flex-direction:column;
+   align-items:center;
+   text-align:center;
+ }
+ .logo-title{
+   align-items:center;
+ }
+ .logo-row{
+   flex-direction:column;
+   align-items:center;
+   justify-content:center;
+   white-space:normal;
+ }
  .logo-row img{height:55px;margin:0 0 8px 0;}
+ .logo-row span{line-height:1.4;text-align:center;} /* mobile 2 lines */
  .tagline{font-size:14px;margin-top:6px;text-align:center;}
- .nav-controls{gap:5px;margin-top:10px;justify-content:center;position:relative;}
- .btn{display:none;} /* hide desktop buttons */
+ .nav-controls{
+   gap:5px;
+   margin-top:5px;
+   justify-content:center;
+   position:relative;
+ }
+ .btn{display:none;}
  .back-btn-mobile{
    display:inline-block;
    font-size:12px;
@@ -193,6 +216,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 </div>
 </main>
 </div>
+<footer>@ 2025 AK Sharma (Online Test & Learning Web Portal)</footer>
 <script>
 if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
 const userData=JSON.parse(localStorage.getItem("userData"));
