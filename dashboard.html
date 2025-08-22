@@ -2,231 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sunshine Dashboard</title>
-
-  <!-- Google Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
   <style>
-    /* ===== Global ===== */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f9;
-      color: #333;
-      display: flex;
-      min-height: 100vh;
-      flex-direction: column;
+    :root {
+      --primary: #1976d2;
+      --accent: #ef5350;
+      --bg: #f4f6f9;
+      --text: #333;
+      --white: #fff;
     }
 
-    /* ===== Header ===== */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+    }
+
+    /* Header */
     header {
-      background: #1976d2;
-      color: white;
-      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .logo-title { display: flex; flex-direction: column; }
-    .logo-row { display: flex; align-items: center; font-size: 18px; font-weight: 600; }
-    .logo-row img { height: 32px; margin-right: 8px; }
-    .tagline { font-size: 12px; color: #e3f2fd; }
-    .nav-controls { display: flex; align-items: center; gap: 10px; }
-    .btn {
-      background: #fff; color: #1976d2; border: none;
-      padding: 6px 12px; font-size: 13px; font-weight: 600;
-      border-radius: 6px; cursor: pointer; transition: 0.3s;
-      display: flex; align-items: center; gap: 5px;
-    }
-    .btn:hover { background: #bbdefb; }
-    .welcome { font-size: 14px; font-weight: 500; }
-    select {
-      padding: 6px 10px; border-radius: 6px; border: none;
-      font-size: 13px; cursor: pointer;
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 20px;
     }
 
-    /* ===== Dashboard Layout ===== */
-    .dashboard { display: flex; flex: 1; min-height: calc(100vh - 60px); }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    /* ===== Sidebar ===== */
-    .sidebar {
-      width: 240px; background: #fff; border-right: 1px solid #ddd;
-      padding: 20px 10px; box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+    .logo img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
     }
-    .sidebar h3 {
-      font-size: 13px; margin-bottom: 15px;
-      color: #1976d2; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .sidebar a {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 15px; margin: 6px 0; color: #333;
-      text-decoration: none; border-radius: 8px; font-size: 14px;
-      transition: 0.3s;
-    }
-    .sidebar a .material-icons { font-size: 20px; color: #1976d2; }
-    .sidebar a:hover {
-      background: #e3f2fd; color: #1976d2;
-    }
-    .sidebar a.active {
-      background: #1976d2; color: #fff; font-weight: 600;
-    }
-    .sidebar a.active .material-icons { color: #fff; }
 
-    /* ===== Main Content ===== */
-    main { flex: 1; padding: 25px; }
-    h2 {
-      margin-bottom: 25px; font-size: 22px;
-      color: #1976d2; text-align: center;
+    .logo .title {
+      font-size: 18px;
+      font-weight: bold;
     }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+    .tagline {
+      font-size: 12px;
+      color: #e3f2fd;
+    }
+
+    /* Nav Bar */
+    nav {
+      background: var(--white);
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 20px;
     }
-    .card {
-      background: white; padding: 25px;
-      border-radius: 12px; text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      cursor: pointer; transition: 0.3s;
-    }
-    .card:hover { transform: translateY(-5px) scale(1.02); }
-    .card .material-icons {
-      font-size: 36px; color: #1976d2; margin-bottom: 12px;
-    }
-    .card h3 { font-size: 16px; color: #1976d2; margin-bottom: 8px; }
-    .card p { font-size: 13px; color: #555; }
 
-    /* ===== Responsive ===== */
+    nav ul li a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: var(--primary);
+    }
+
+    nav ul li:last-child {
+      margin-left: auto; /* Logout always at end */
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown button {
+      background: none;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--white);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      min-width: 150px;
+      z-index: 10;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background: #f0f0f0;
+      color: var(--primary);
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .dashboard { flex-direction: column; }
-      .sidebar {
-        width: 100%; border-right: none; border-bottom: 1px solid #ddd;
-        display: flex; overflow-x: auto; padding: 10px;
+      nav ul {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .sidebar h3 { display: none; }
-      .sidebar a { white-space: nowrap; margin: 0 5px; }
+      nav ul li:last-child {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
-
   <!-- Header -->
   <header>
-    <div class="logo-title">
-      <div class="logo-row">
-        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png" alt="Logo">
-        Sunshine Computer Training & STENO Classes, Bayana
+    <div class="logo">
+      <img src="https://via.placeholder.com/40" alt="Logo" />
+      <div>
+        <div class="title">Sunshine Computer Training & STENO Classes, Bayana</div>
+        <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
       </div>
-      <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
-    <div class="nav-controls">
-      <button class="btn" onclick="goHome()"><span class="material-icons">home</span> Home</button>
-      <button class="btn" onclick="goBack()"><span class="material-icons">arrow_back</span> Back</button>
-      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
-      <select id="menu" onchange="menuAction(this.value)">
-        <option value="">☰ Menu</option>
-        <option value="profile">👤 Profile</option>
-        <option value="settings">⚙ Settings</option>
-        <option value="logout">🚪 Logout</option>
-      </select>
-    </div>
+    <div class="welcome">Welcome, <strong>Student Name</strong></div>
   </header>
 
-  <!-- Dashboard -->
-  <div class="dashboard">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h3>Navigation</h3>
-      <a href="#" class="active"><span class="material-icons">school</span> RS-CIT</a>
-      <a href="#"><span class="material-icons">keyboard</span> Typing Tutor</a>
-      <a href="#"><span class="material-icons">mic</span> Stenographer</a>
-      <a href="#"><span class="material-icons">assignment</span> RSMSSB LDC</a>
-      <a href="#"><span class="material-icons">menu_book</span> REET (Main)</a>
-      <a href="#"><span class="material-icons">groups</span> चतुर्थ श्रेणी भर्ती</a>
-    </aside>
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="dashboard.html">📊 Dashboard</a></li>
+      <li><a href="courses.html">📘 Courses</a></li>
+      <li><a href="tests.html">📝 Tests</a></li>
+      <li class="dropdown">
+        <button>⚙️ Settings ▾</button>
+        <div class="dropdown-content">
+          <a href="profile.html">👤 Profile</a>
+          <a href="settings.html">⚙️ Account Settings</a>
+        </div>
+      </li>
+      <li><a href="logout.html" style="color:var(--accent);font-weight:bold;">🚪 Logout</a></li>
+    </ul>
+  </nav>
 
-    <!-- Main -->
-    <main>
-      <h2>Choose Your Preparation Module</h2>
-      <div class="card-grid">
-        <div class="card" onclick="location.href='rs-cit-module.html'">
-          <span class="material-icons">school</span>
-          <h3>RS-CIT Exam</h3>
-          <p>Start your RS-CIT practice test now!</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">computer</span>
-          <h3>Computer Efficiency</h3>
-          <p>Practice to improve your computer skills.</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">keyboard</span>
-          <h3>Typing Tutor</h3>
-          <p>Boost your typing speed and accuracy.</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">mic</span>
-          <h3>Stenographer</h3>
-          <p>Prepare with dictation & shorthand modules.</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">assignment</span>
-          <h3>RSMSSB LDC</h3>
-          <p>Get ready for Rajasthan LDC recruitment.</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">menu_book</span>
-          <h3>REET (Main)</h3>
-          <p>Test your knowledge for REET exams.</p>
-        </div>
-        <div class="card">
-          <span class="material-icons">groups</span>
-          <h3>चतुर्थ श्रेणी भर्ती</h3>
-          <p>Practice for Group-D job recruitment exams.</p>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    // ✅ Check Login
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
-
-    // ✅ Welcome Message
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData && userData.fullname) {
-      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
-    }
-
-    // ✅ Navigation
-    function goHome() { location.href = "dashboard.html"; }
-    function goBack() { window.history.back(); }
-    function menuAction(value) {
-      if (value === "logout") logoutUser();
-      else if (value === "profile") alert("Profile page under construction.");
-      else if (value === "settings") alert("Settings page under construction.");
-      document.getElementById("menu").value = "";
-    }
-
-    // ✅ Logout
-    function logoutUser() {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      if (userData && userData.username) {
-        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
-        fetch(logoutUrl).catch(err => console.error("❌ Logout error:", err));
-      }
-      localStorage.clear();
-      location.replace("login.html");
-    }
-  </script>
+  <main style="padding:20px;">
+    <h2>Dashboard Content Area</h2>
+    <p>This is where your main dashboard content will appear.</p>
+  </main>
 </body>
 </html>
