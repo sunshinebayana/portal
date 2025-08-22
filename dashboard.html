@@ -10,37 +10,69 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
     }
+    /* ===== Title Bar (Header) ===== */
     header {
       background-color: #1976d2;
       color: white;
-      padding: 20px 30px;
+      padding: 12px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 1px;
+      justify-content: space-between;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .welcome-msg {
-      font-size: 16px;
-      font-weight: 500;
-      color: #fff;
+    .logo-section {
+      display: flex;
+      flex-direction: column;
     }
-    .logout-btn {
-      background: #ef5350;
-      color: white;
-      padding: 8px 15px;
-      font-size: 14px;
+    .logo-title {
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .logo-title img {
+      height: 36px;
+      margin-right: 10px;
+    }
+    .tagline {
+      font-size: 13px;
+      font-weight: 500;
+      color: #bbdefb;
+      margin-left: 46px;
+    }
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .btn {
+      background: #fff;
+      color: #1976d2;
       border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s;
-      margin-left: 15px;
+      transition: 0.3s;
     }
-    .logout-btn:hover {
-      background: #d32f2f;
+    .btn:hover {
+      background: #bbdefb;
     }
+    .welcome {
+      font-size: 15px;
+      font-weight: 500;
+      margin-right: 5px;
+    }
+    select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    /* ===== Main Area ===== */
     main {
       padding: 40px 20px;
       max-width: 1000px;
@@ -74,39 +106,38 @@
       color: white;
       transform: translateY(-3px);
     }
-    .feature-btn::before {
-      content: "💡 ";
-    }
-    @media (max-width: 500px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .welcome-msg {
-        margin-top: 10px;
-        font-size: 14px;
-      }
-    }
   </style>
 </head>
 <body>
 
   <header>
-    <div>☀️ Sunshine Institute Dashboard</div>
-    <div>
-      <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
-      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    <!-- Left Section -->
+    <div class="logo-section">
+      <div class="logo-title">
+        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png" alt="Logo">
+        Sunshine Computer Training & STENO Classes, Bayana
+      </div>
+      <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="nav-controls">
+      <button class="btn" onclick="goHome()">🏠 Home</button>
+      <button class="btn" onclick="goBack()">⬅ Back</button>
+      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
+      <select id="menu" onchange="menuAction(this.value)">
+        <option value="">☰ Menu</option>
+        <option value="profile">👤 Profile</option>
+        <option value="settings">⚙ Settings</option>
+        <option value="logout">🚪 Logout</option>
+      </select>
     </div>
   </header>
 
   <main>
     <h2>Choose Your Preparation Module</h2>
     <div class="btn-grid">
-      
-      <button class="feature-btn" onclick="location.href='rs-cit-module.html'">
-  Start RS-CIT Exam तैयारी Now!
-</button>
-
+      <button class="feature-btn" onclick="location.href='rs-cit-module.html'">Start RS-CIT Exam तैयारी Now!</button>
       <button class="feature-btn">Computer Efficiency</button>
       <button class="feature-btn">Typing Tutor</button>
       <button class="feature-btn">Raj HighCourt Stenographer</button>
@@ -117,49 +148,51 @@
   </main>
 
   <script>
-    // ✅ Step 1: Prevent Direct Access
+    // ✅ Check Login
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
       location.replace("login.html");
     }
 
-    // ✅ Step 2: Get User Data
+    // ✅ Set Welcome Name
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
-    } else {
-      document.getElementById("welcomeMsg").textContent = "Welcome, User!";
     }
 
-   // ✅ Step 3: Logout
-function logoutUser() {
-  // Local storage me saved user data fetch kare
-  const userData = JSON.parse(localStorage.getItem("userData"));
+    // ✅ Home
+    function goHome() {
+      location.href = "dashboard.html";
+    }
 
-  if (userData && userData.username) {
-    // ✅ Apps Script logout API call kare
-    const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+    // ✅ Back
+    function goBack() {
+      window.history.back();
+    }
 
-    fetch(logoutUrl)
-      .then(res => res.json())
-      .then(data => {
-        console.log("🚪 Logout Response:", data);
-      })
-      .catch(err => {
-        console.error("❌ Logout error:", err);
-      });
-  }
+    // ✅ Dropdown Menu Actions
+    function menuAction(value) {
+      if (value === "logout") {
+        logoutUser();
+      } else if (value === "profile") {
+        alert("Profile page under construction.");
+      } else if (value === "settings") {
+        alert("Settings page under construction.");
+      }
+      document.getElementById("menu").value = ""; // reset
+    }
 
-  // ✅ Local storage clear kare
-  localStorage.clear();
-
-  // ✅ Login page par redirect kare
-  location.replace("login.html");
-}
-
+    // ✅ Logout
+    function logoutUser() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData && userData.username) {
+        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+        fetch(logoutUrl).catch(err => console.error("❌ Logout error:", err));
+      }
+      localStorage.clear();
+      location.replace("login.html");
+    }
   </script>
 
 </body>
 </html>
-
-
