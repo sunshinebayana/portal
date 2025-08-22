@@ -35,9 +35,10 @@ document.addEventListener("paste", function (e) {
     let allowedHost = "sunshinebayana.github.io";
     let loginURL = "https://sunshinebayana.github.io/portal/login.html";
 
-    // Agar file direct URL se access ho ya protect.js khola jaye
+    // Agar file direct URL se access ho ya protect.js open kiya jaye
     if (
         document.referrer === "" || 
+        document.referrer === null || 
         window.location.hostname !== allowedHost || 
         window.location.pathname.endsWith("protect.js")
     ) {
