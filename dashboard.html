@@ -28,8 +28,9 @@ header{
   flex-wrap:wrap;
 }
 .logo-title{display:flex;flex-direction:column;}
-.logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;}
+.logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;white-space:nowrap;}
 .logo-row img{height:40px;margin-right:8px;}
+.logo-row span{line-height:1;} /* Desktop single line */
 .tagline{font-size:12px;color:var(--secondary);}
 .nav-controls{
   display:flex;
@@ -120,9 +121,9 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 /* MOBILE STYLES */
 @media(max-width:768px){
  header{flex-direction:column;align-items:center;text-align:center;padding:15px;}
- .logo-row{flex-direction:column;align-items:center;justify-content:center;}
+ .logo-row{flex-direction:column;align-items:center;justify-content:center;white-space:normal;}
+ .logo-row span{line-height:1.4;} /* Mobile 2 lines */
  .logo-row img{height:55px;margin:0 0 8px 0;}
- .logo-row span{font-size:16px;font-weight:600;line-height:1.4;}
  .tagline{font-size:14px;margin-top:6px;}
  .nav-controls{gap:5px;margin-top:10px;justify-content:center;position:relative;}
  .btn{display:none;} /* hide desktop buttons */
@@ -135,7 +136,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
    border-radius:6px;
    cursor:pointer;
    transition:.3s;
-   margin-right:5px; /* space between back and menu */
+   margin-right:5px;
  }
  .back-btn-mobile:hover{background:var(--accent);color:#fff;}
  .menu-btn{display:inline-block;background:var(--secondary);color:var(--primary);border:none;padding:6px 10px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;}
@@ -150,7 +151,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <div class="logo-title">
 <div class="logo-row">
 <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-<span>Sunshine Computer Training &<br>STENO Classes, Bayana</span>
+<span>Sunshine Computer Training & STENO Classes, Bayana</span>
 </div>
 <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
 </div>
