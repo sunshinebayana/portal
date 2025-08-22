@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sunshine Dashboard</title>
+
+  <!-- Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <style>
     /* ===== Global ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f6f9;
@@ -20,7 +20,7 @@
       flex-direction: column;
     }
 
-    /* ===== Header (Title Bar) ===== */
+    /* ===== Header ===== */
     header {
       background: #1976d2;
       color: white;
@@ -33,102 +33,56 @@
       top: 0;
       z-index: 1000;
     }
-    .logo-title {
-      display: flex;
-      flex-direction: column;
-    }
-    .logo-row {
-      display: flex;
-      align-items: center;
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .logo-row img {
-      height: 32px;
-      margin-right: 8px;
-    }
-    .tagline {
-      font-size: 12px;
-      color: #e3f2fd;
-    }
-    .nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .logo-title { display: flex; flex-direction: column; }
+    .logo-row { display: flex; align-items: center; font-size: 18px; font-weight: 600; }
+    .logo-row img { height: 32px; margin-right: 8px; }
+    .tagline { font-size: 12px; color: #e3f2fd; }
+    .nav-controls { display: flex; align-items: center; gap: 10px; }
     .btn {
-      background: #fff;
-      color: #1976d2;
-      border: none;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
+      background: #fff; color: #1976d2; border: none;
+      padding: 6px 12px; font-size: 13px; font-weight: 600;
+      border-radius: 6px; cursor: pointer; transition: 0.3s;
+      display: flex; align-items: center; gap: 5px;
     }
-    .btn:hover {
-      background: #bbdefb;
-    }
-    .welcome {
-      font-size: 14px;
-      font-weight: 500;
-    }
+    .btn:hover { background: #bbdefb; }
+    .welcome { font-size: 14px; font-weight: 500; }
     select {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      font-size: 13px;
-      cursor: pointer;
+      padding: 6px 10px; border-radius: 6px; border: none;
+      font-size: 13px; cursor: pointer;
     }
 
     /* ===== Dashboard Layout ===== */
-    .dashboard {
-      display: flex;
-      flex: 1;
-      min-height: calc(100vh - 60px);
-    }
+    .dashboard { display: flex; flex: 1; min-height: calc(100vh - 60px); }
 
-    /* Sidebar */
+    /* ===== Sidebar ===== */
     .sidebar {
-      width: 220px;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+      width: 240px; background: #fff; border-right: 1px solid #ddd;
+      padding: 20px 10px; box-shadow: 2px 0 6px rgba(0,0,0,0.05);
     }
     .sidebar h3 {
-      font-size: 14px;
-      margin-bottom: 15px;
-      color: #1976d2;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 13px; margin-bottom: 15px;
+      color: #1976d2; text-transform: uppercase; letter-spacing: 0.5px;
     }
     .sidebar a {
-      display: block;
-      padding: 10px 15px;
-      margin: 5px 0;
-      color: #333;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 14px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 15px; margin: 6px 0; color: #333;
+      text-decoration: none; border-radius: 8px; font-size: 14px;
       transition: 0.3s;
     }
+    .sidebar a .material-icons { font-size: 20px; color: #1976d2; }
     .sidebar a:hover {
-      background: #e3f2fd;
-      color: #1976d2;
+      background: #e3f2fd; color: #1976d2;
     }
+    .sidebar a.active {
+      background: #1976d2; color: #fff; font-weight: 600;
+    }
+    .sidebar a.active .material-icons { color: #fff; }
 
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 25px;
-    }
+    /* ===== Main Content ===== */
+    main { flex: 1; padding: 25px; }
     h2 {
-      margin-bottom: 25px;
-      font-size: 22px;
-      color: #1976d2;
-      text-align: center;
+      margin-bottom: 25px; font-size: 22px;
+      color: #1976d2; text-align: center;
     }
     .card-grid {
       display: grid;
@@ -136,48 +90,27 @@
       gap: 20px;
     }
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      cursor: pointer;
-      border: 1px solid #eee;
-      transition: 0.3s;
+      background: white; padding: 25px;
+      border-radius: 12px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      cursor: pointer; transition: 0.3s;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    .card:hover { transform: translateY(-5px) scale(1.02); }
+    .card .material-icons {
+      font-size: 36px; color: #1976d2; margin-bottom: 12px;
     }
-    .card h3 {
-      font-size: 16px;
-      color: #1976d2;
-      margin-bottom: 10px;
-    }
-    .card p {
-      font-size: 13px;
-      color: #555;
-    }
+    .card h3 { font-size: 16px; color: #1976d2; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: #555; }
 
     /* ===== Responsive ===== */
     @media (max-width: 768px) {
-      .dashboard {
-        flex-direction: column;
-      }
+      .dashboard { flex-direction: column; }
       .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        display: flex;
-        overflow-x: auto;
+        width: 100%; border-right: none; border-bottom: 1px solid #ddd;
+        display: flex; overflow-x: auto; padding: 10px;
       }
-      .sidebar h3 {
-        display: none;
-      }
-      .sidebar a {
-        white-space: nowrap;
-        margin: 0 5px;
-      }
+      .sidebar h3 { display: none; }
+      .sidebar a { white-space: nowrap; margin: 0 5px; }
     }
   </style>
 </head>
@@ -193,8 +126,8 @@
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
     <div class="nav-controls">
-      <button class="btn" onclick="goHome()">🏠 Home</button>
-      <button class="btn" onclick="goBack()">⬅ Back</button>
+      <button class="btn" onclick="goHome()"><span class="material-icons">home</span> Home</button>
+      <button class="btn" onclick="goBack()"><span class="material-icons">arrow_back</span> Back</button>
       <span class="welcome" id="welcomeMsg">Welcome, User!</span>
       <select id="menu" onchange="menuAction(this.value)">
         <option value="">☰ Menu</option>
@@ -205,48 +138,55 @@
     </div>
   </header>
 
-  <!-- Dashboard Layout -->
+  <!-- Dashboard -->
   <div class="dashboard">
     <!-- Sidebar -->
     <aside class="sidebar">
       <h3>Navigation</h3>
-      <a href="#">📘 RS-CIT</a>
-      <a href="#">⌨ Typing Tutor</a>
-      <a href="#">🎤 Stenographer</a>
-      <a href="#">📝 RSMSSB LDC</a>
-      <a href="#">📖 REET (Main)</a>
-      <a href="#">👨‍🔧 Class IV Exams</a>
+      <a href="#" class="active"><span class="material-icons">school</span> RS-CIT</a>
+      <a href="#"><span class="material-icons">keyboard</span> Typing Tutor</a>
+      <a href="#"><span class="material-icons">mic</span> Stenographer</a>
+      <a href="#"><span class="material-icons">assignment</span> RSMSSB LDC</a>
+      <a href="#"><span class="material-icons">menu_book</span> REET (Main)</a>
+      <a href="#"><span class="material-icons">groups</span> चतुर्थ श्रेणी भर्ती</a>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main>
       <h2>Choose Your Preparation Module</h2>
       <div class="card-grid">
         <div class="card" onclick="location.href='rs-cit-module.html'">
+          <span class="material-icons">school</span>
           <h3>RS-CIT Exam</h3>
           <p>Start your RS-CIT practice test now!</p>
         </div>
         <div class="card">
+          <span class="material-icons">computer</span>
           <h3>Computer Efficiency</h3>
           <p>Practice to improve your computer skills.</p>
         </div>
         <div class="card">
+          <span class="material-icons">keyboard</span>
           <h3>Typing Tutor</h3>
           <p>Boost your typing speed and accuracy.</p>
         </div>
         <div class="card">
-          <h3>Raj HighCourt Stenographer</h3>
+          <span class="material-icons">mic</span>
+          <h3>Stenographer</h3>
           <p>Prepare with dictation & shorthand modules.</p>
         </div>
         <div class="card">
+          <span class="material-icons">assignment</span>
           <h3>RSMSSB LDC</h3>
           <p>Get ready for Rajasthan LDC recruitment.</p>
         </div>
         <div class="card">
-          <h3>REET (Main) Test</h3>
+          <span class="material-icons">menu_book</span>
+          <h3>REET (Main)</h3>
           <p>Test your knowledge for REET exams.</p>
         </div>
         <div class="card">
+          <span class="material-icons">groups</span>
           <h3>चतुर्थ श्रेणी भर्ती</h3>
           <p>Practice for Group-D job recruitment exams.</p>
         </div>
@@ -267,25 +207,13 @@
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Home Button
-    function goHome() {
-      location.href = "dashboard.html";
-    }
-
-    // ✅ Back Button
-    function goBack() {
-      window.history.back();
-    }
-
-    // ✅ Menu Actions
+    // ✅ Navigation
+    function goHome() { location.href = "dashboard.html"; }
+    function goBack() { window.history.back(); }
     function menuAction(value) {
-      if (value === "logout") {
-        logoutUser();
-      } else if (value === "profile") {
-        alert("Profile page under construction.");
-      } else if (value === "settings") {
-        alert("Settings page under construction.");
-      }
+      if (value === "logout") logoutUser();
+      else if (value === "profile") alert("Profile page under construction.");
+      else if (value === "settings") alert("Settings page under construction.");
       document.getElementById("menu").value = "";
     }
 
