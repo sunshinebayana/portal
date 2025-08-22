@@ -5,30 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sunshine Dashboard</title>
   <style>
-    /* ===== Global ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f9;
-      color: #333;
-      display: flex;
-      min-height: 100vh;
-      flex-direction: column;
+    /* ===== Global Colors ===== */
+    :root {
+      --primary: #0d1b4c;   /* Navy Blue */
+      --secondary: #f8bbd0; /* Light Pink */
+      --accent: #e91e63;    /* Dark Pink */
+      --bg: #ffffff;        /* White */
+      --muted: #6b7280;     /* Muted Gray */
     }
 
-    /* ===== Header (Title Bar) ===== */
+    /* ===== Reset & Base ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===== Header ===== */
     header {
-      background: #1976d2;
-      color: white;
+      background: var(--primary);
+      color: #fff;
       padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -49,7 +54,7 @@
     }
     .tagline {
       font-size: 12px;
-      color: #e3f2fd;
+      color: var(--secondary);
     }
     .nav-controls {
       display: flex;
@@ -57,18 +62,19 @@
       gap: 10px;
     }
     .btn {
-      background: #fff;
-      color: #1976d2;
+      background: var(--secondary);
+      color: var(--primary);
       border: none;
       padding: 6px 12px;
       font-size: 13px;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
     }
     .btn:hover {
-      background: #bbdefb;
+      background: var(--accent);
+      color: #fff;
     }
     .welcome {
       font-size: 14px;
@@ -77,7 +83,7 @@
     select {
       padding: 6px 10px;
       border-radius: 6px;
-      border: none;
+      border: 1px solid var(--secondary);
       font-size: 13px;
       cursor: pointer;
     }
@@ -89,18 +95,18 @@
       min-height: calc(100vh - 60px);
     }
 
-    /* Sidebar */
+    /* Sidebar (Desktop) */
     .sidebar {
       width: 220px;
       background: #fff;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #eee;
       padding: 20px 10px;
       box-shadow: 2px 0 6px rgba(0,0,0,0.05);
     }
     .sidebar h3 {
       font-size: 14px;
       margin-bottom: 15px;
-      color: #1976d2;
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -108,15 +114,15 @@
       display: block;
       padding: 10px 15px;
       margin: 5px 0;
-      color: #333;
+      color: var(--primary);
       text-decoration: none;
       border-radius: 6px;
       font-size: 14px;
       transition: 0.3s;
     }
     .sidebar a:hover {
-      background: #e3f2fd;
-      color: #1976d2;
+      background: var(--secondary);
+      color: var(--accent);
     }
 
     /* Main Content */
@@ -127,7 +133,7 @@
     h2 {
       margin-bottom: 25px;
       font-size: 22px;
-      color: #1976d2;
+      color: var(--accent);
       text-align: center;
     }
     .card-grid {
@@ -136,30 +142,30 @@
       gap: 20px;
     }
     .card {
-      background: white;
+      background: var(--bg);
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 16px;
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(233,30,99,0.15);
       cursor: pointer;
-      border: 1px solid #eee;
+      border: 1px solid #f1f1f1;
       transition: 0.3s;
     }
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(13,27,76,0.2);
     }
     .card h3 {
       font-size: 16px;
-      color: #1976d2;
+      color: var(--primary);
       margin-bottom: 10px;
     }
     .card p {
       font-size: 13px;
-      color: #555;
+      color: var(--muted);
     }
 
-    /* ===== Responsive ===== */
+    /* ===== Mobile Responsive ===== */
     @media (max-width: 768px) {
       .dashboard {
         flex-direction: column;
@@ -167,16 +173,29 @@
       .sidebar {
         width: 100%;
         border-right: none;
-        border-bottom: 1px solid #ddd;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
         display: flex;
-        overflow-x: auto;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+        position: sticky;
+        bottom: 0;
+        background: #fff;
       }
-      .sidebar h3 {
-        display: none;
-      }
+      .sidebar h3 { display: none; }
       .sidebar a {
-        white-space: nowrap;
-        margin: 0 5px;
+        flex: 1;
+        text-align: center;
+        padding: 12px 5px;
+        margin: 0;
+        font-size: 13px;
+      }
+      main {
+        padding: 15px;
+      }
+      h2 {
+        font-size: 18px;
       }
     }
   </style>
