@@ -33,14 +33,16 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 .mobile-menu button{display:block;width:100%;padding:10px 12px;border:none;background:none;text-align:left;cursor:pointer;font-size:14px;transition:.2s;}
 .mobile-menu button:hover{background:var(--secondary);color:var(--accent);}
 @media(max-width:768px){
- header{flex-direction:column;align-items:center;text-align:center;padding:15px;}
- .logo-row{flex-direction:column;align-items:center;justify-content:center;}
- .logo-row img{height:55px;margin:0 0 8px 0;}
+ header{flex-direction:column;align-items:flex-start;padding:10px 15px;position:relative;}
+ .logo-row{flex-direction:column;align-items:flex-start;justify-content:center;}
+ .logo-row img{height:55px;margin:0 0 6px 0;}
  .logo-row span{font-size:16px;font-weight:600;line-height:1.4;}
- .tagline{font-size:14px;margin-top:6px;}
- .nav-controls{gap:5px;margin-top:10px;justify-content:center;}
- .btn:first-child,.btn.back-btn{display:none;}
- .menu-btn{display:block;background:var(--secondary);color:var(--primary);border:none;padding:6px 10px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;}
+ .tagline{font-size:14px;margin-top:4px;}
+ .nav-controls{width:100%;justify-content:flex-start;gap:10px;margin-top:10px;}
+ .btn:first-child{display:none;}
+ .menu-btn{display:block;position:absolute;top:10px;right:10px;background:var(--secondary);color:var(--primary);border:none;padding:6px 10px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;}
+ .btn.back-btn{display:block;}
+ .welcome{margin-left:auto;}
  .sidebar{display:none;}
  main{padding:15px;}
  h2{font-size:18px;}
@@ -57,7 +59,6 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
 </div>
 <div class="nav-controls">
-<button class="btn" onclick="goHome()">🏠 Home</button>
 <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
 <span class="welcome" id="welcomeMsg">Welcome, User!</span>
 <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
@@ -95,22 +96,10 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
 const userData=JSON.parse(localStorage.getItem("userData"));
 if(userData?.fullname)document.getElementById("welcomeMsg").textContent=`Welcome, ${userData.fullname}!`;
-function goHome(){location.href="dashboard.html";}
 function goBack(){window.history.back();}
-function menuAction(v){
- if(v==="logout"){logoutUser();}
- else{alert(`${v.charAt(0).toUpperCase()+v.slice(1)} page under construction.`);}
- document.getElementById("mobileMenu").style.display="none";
-}
-function logoutUser(){
- const u=JSON.parse(localStorage.getItem("userData"));
- if(u?.username)fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(u.username)}`).catch(e=>console.error("❌ Logout error:",e));
- localStorage.clear();location.replace("login.html");
-}
-function toggleMenu(){
- const m=document.getElementById("mobileMenu");
- m.style.display=m.style.display==="block"?"none":"block";
-}
+function menuAction(v){if(v==="logout"){logoutUser();}else{alert(`${v.charAt(0).toUpperCase()+v.slice(1)} page under construction.`);}document.getElementById("mobileMenu").style.display="none";}
+function logoutUser(){const u=JSON.parse(localStorage.getItem("userData"));if(u?.username)fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(u.username)}`).catch(e=>console.error("❌ Logout error:",e));localStorage.clear();location.replace("login.html");}
+function toggleMenu(){const m=document.getElementById("mobileMenu");m.style.display=m.style.display==="block"?"none":"block";}
 </script>
 </body>
 </html>
