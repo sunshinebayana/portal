@@ -29,7 +29,7 @@ header{
 .logo-row{
   display:flex;
   align-items:center;
-  gap:70px; /* Increased distance between logo and Home button for desktop */
+  gap:70px;
 }
 .logo-row img{height:40px;}
 .home-btn{
@@ -159,13 +159,13 @@ footer{
 @media(max-width:768px){
  header{
    flex-direction:column;
-   align-items:center; /* Center logo for mobile */
+   align-items:center;
    text-align:center;
    position:relative;
  }
  .logo-row{
    gap:10px;
-   justify-content:center; /* Center logo and remove gap effect on mobile */
+   justify-content:center;
  }
  .title-tagline{
    position:static;
@@ -174,7 +174,7 @@ footer{
  }
  .title-tagline span{font-size:16px;}
  .title-tagline .tagline{font-size:14px;}
- .home-btn{display:none;} /* Hide Home button on mobile */
+ .home-btn{display:none;}
  .nav-controls{
    width:100%;
    justify-content:center;
@@ -230,6 +230,9 @@ footer{
 <a href="#">📝 RSMSSB LDC</a>
 <a href="#">📖 REET (Main)</a>
 <a href="#">👨‍🔧 Class IV Exams</a>
+<a href="advance-ms-excel.html">📊 Advance MS Excel</a>
+<a href="c-programming.html">💻 C Programming Language</a>
+<a href="admin-panel.html">⚙ Admin Control Panel</a>
 </aside>
 <main>
 <h2>Choose Your Preparation Module</h2>
@@ -241,6 +244,20 @@ footer{
 <div class="card"><h3>RSMSSB LDC</h3><p>Get ready for Rajasthan LDC recruitment.</p></div>
 <div class="card"><h3>REET (Main) Test</h3><p>Test your knowledge for REET exams.</p></div>
 <div class="card"><h3>चतुर्थ श्रेणी भर्ती</h3><p>Practice for Group-D job recruitment exams.</p></div>
+
+<!-- New Added Cards -->
+<div class="card" onclick="location.href='advance-ms-excel.html'">
+  <h3>Advance MS Excel</h3>
+  <p>Master Advanced MS Excel with AI in just 30 days through our crash course with premium support.</p>
+</div>
+<div class="card" onclick="location.href='c-programming.html'">
+  <h3>C Programming Language</h3>
+  <p>Learn the fundamentals of C Language programming in only 20 days with easy and practical methods.</p>
+</div>
+<div class="card" onclick="location.href='admin-panel.html'">
+  <h3>Admin Control Panel</h3>
+  <p>Access the secure admin dashboard for managing institute operations and settings.</p>
+</div>
 </div>
 </main>
 </div>
@@ -269,4 +286,3 @@ function toggleMenu(){
 </script>
 </body>
 </html>
-
