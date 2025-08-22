@@ -264,6 +264,7 @@ footer{
 </main>
 </div>
 <footer>@ 2025 AK Sharma (Online Test & Learning Web Portal)</footer>
+   <script src="protect.js"></script>
 <script>
 if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
 const userData=JSON.parse(localStorage.getItem("userData"));
@@ -276,18 +277,36 @@ function menuAction(v){
  else{alert(`${v.charAt(0).toUpperCase()+v.slice(1)} page under construction.`);}
  document.getElementById("mobileMenu").style.display="none";
 }
-function logoutUser(){
- const u=JSON.parse(localStorage.getItem("userData"));
- if(u?.username)fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(u.username)}`).catch(e=>console.error("❌ Logout error:",e));
- localStorage.clear();location.replace("login.html");
+function logoutUser() {
+  try {
+    const u = JSON.parse(localStorage.getItem("userData"));
+
+    if (u?.username) {
+      fetch(`${BASE_URL}?action=logout&username=${encodeURIComponent(u.username)}`)
+        .catch(err => console.error("❌ Logout error:", err));
+    }
+
+    // LocalStorage clear karein
+    localStorage.clear();
+
+    // Redirect to login page
+    location.replace("login.html");
+  } catch (error) {
+    console.error("❌ Unexpected error during logout:", error);
+    // Safe fallback
+    localStorage.clear();
+    location.replace("login.html");
+  }
 }
+
 function toggleMenu(){
  const m=document.getElementById("mobileMenu");
  m.style.display=m.style.display==="block"?"none":"block";
 }
 </script>
-    <script src="protect.js"></script>
+   
 </body>
 </html>
+
 
 
