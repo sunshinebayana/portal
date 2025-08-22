@@ -191,9 +191,10 @@
       }
       .nav-controls {
         flex-direction: row;
-        gap: 8px;
+        gap: 6px;
         margin-top: 10px;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       /* hide home button */
@@ -207,7 +208,15 @@
         font-size: 12px;
       }
 
-      /* add small menu button */
+      /* welcome + back together */
+      .welcome {
+        order: 1;
+      }
+      .btn.back-btn {
+        order: 2;
+      }
+
+      /* small menu button */
       .menu-btn {
         background: var(--secondary);
         color: var(--primary);
@@ -217,11 +226,35 @@
         font-weight: 600;
         border-radius: 6px;
         cursor: pointer;
+        order: 3;
       }
 
-      /* hide select menu on mobile */
+      /* hide select dropdown on mobile */
       select {
         display: none;
+      }
+
+      /* mobile dropdown menu */
+      .mobile-dropdown {
+        display: none;
+        flex-direction: column;
+        background: var(--primary);
+        margin-top: 8px;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .mobile-dropdown a {
+        color: #fff;
+        padding: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        border-top: 1px solid rgba(255,255,255,0.2);
+      }
+      .mobile-dropdown a:hover {
+        background: var(--accent);
+      }
+      .mobile-dropdown.show {
+        display: flex;
       }
 
       /* Sidebar (bottom) - REMOVE on mobile */
@@ -247,15 +280,21 @@
     </div>
     <div class="nav-controls">
       <button class="btn" onclick="goHome()">🏠 Home</button>
+      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
       <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
       <select id="menu" onchange="menuAction(this.value)">
         <option value="">☰ Menu</option>
         <option value="profile">👤 Profile</option>
         <option value="settings">⚙ Settings</option>
         <option value="logout">🚪 Logout</option>
       </select>
+    </div>
+    <!-- Mobile dropdown menu -->
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <a href="#" onclick="menuAction('profile')">👤 Profile</a>
+      <a href="#" onclick="menuAction('settings')">⚙ Settings</a>
+      <a href="#" onclick="menuAction('logout')">🚪 Logout</a>
     </div>
   </header>
 
@@ -331,6 +370,8 @@
       } else if (value === "settings") {
         alert("Settings page under construction.");
       }
+      // close dropdown after selection
+      document.getElementById("mobileDropdown").classList.remove("show");
       document.getElementById("menu").value = "";
     }
     function logoutUser() {
@@ -344,10 +385,8 @@
     }
 
     function toggleMenu() {
-      alert("☰ Menu clicked (you can expand this later)");
+      document.getElementById("mobileDropdown").classList.toggle("show");
     }
   </script>
 </body>
 </html>
-
-
