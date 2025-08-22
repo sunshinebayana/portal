@@ -2,174 +2,303 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sunshine Dashboard</title>
   <style>
-    :root {
-      --primary: #1976d2;
-      --accent: #ef5350;
-      --bg: #f4f6f9;
-      --text: #333;
-      --white: #fff;
-    }
-
-    body {
+    /* ===== Global ===== */
+    * {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: var(--bg);
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
     }
 
-    /* Header */
+    /* ===== Header (Title Bar) ===== */
     header {
+      background: #1976d2;
+      color: white;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--primary);
-      color: var(--white);
-      padding: 10px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
-
-    .logo {
+    .logo-title {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .logo img {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-    }
-
-    .logo .title {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 600;
     }
-
+    .logo-row img {
+      height: 32px;
+      margin-right: 8px;
+    }
     .tagline {
       font-size: 12px;
       color: #e3f2fd;
     }
-
-    /* Nav Bar */
-    nav {
-      background: var(--white);
-      padding: 10px 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    nav ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .nav-controls {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
+      gap: 10px;
     }
-
-    nav ul li a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 500;
+    .btn {
+      background: #fff;
+      color: #1976d2;
+      border: none;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
       transition: 0.3s;
     }
-
-    nav ul li a:hover {
-      color: var(--primary);
+    .btn:hover {
+      background: #bbdefb;
     }
-
-    nav ul li:last-child {
-      margin-left: auto; /* Logout always at end */
-    }
-
-    /* Dropdown */
-    .dropdown {
-      position: relative;
-    }
-
-    .dropdown button {
-      background: none;
-      border: none;
-      font-size: 15px;
-      cursor: pointer;
+    .welcome {
+      font-size: 14px;
       font-weight: 500;
     }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: var(--white);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      min-width: 150px;
-      z-index: 10;
+    select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
     }
 
-    .dropdown-content a {
-      display: block;
-      padding: 10px;
-      color: var(--text);
-      text-decoration: none;
+    /* ===== Dashboard Layout ===== */
+    .dashboard {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 20px 10px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+    }
+    .sidebar h3 {
       font-size: 14px;
+      margin-bottom: 15px;
+      color: #1976d2;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-
-    .dropdown-content a:hover {
-      background: #f0f0f0;
-      color: var(--primary);
-    }
-
-    .dropdown:hover .dropdown-content {
+    .sidebar a {
       display: block;
+      padding: 10px 15px;
+      margin: 5px 0;
+      color: #333;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background: #e3f2fd;
+      color: #1976d2;
     }
 
-    /* Responsive */
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 25px;
+    }
+    h2 {
+      margin-bottom: 25px;
+      font-size: 22px;
+      color: #1976d2;
+      text-align: center;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      cursor: pointer;
+      border: 1px solid #eee;
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      font-size: 16px;
+      color: #1976d2;
+      margin-bottom: 10px;
+    }
+    .card p {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* ===== Responsive ===== */
     @media (max-width: 768px) {
-      nav ul {
+      .dashboard {
         flex-direction: column;
-        align-items: flex-start;
       }
-      nav ul li:last-child {
-        margin-left: 0;
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        overflow-x: auto;
+      }
+      .sidebar h3 {
+        display: none;
+      }
+      .sidebar a {
+        white-space: nowrap;
+        margin: 0 5px;
       }
     }
   </style>
 </head>
 <body>
+
   <!-- Header -->
   <header>
-    <div class="logo">
-      <img src="https://via.placeholder.com/40" alt="Logo" />
-      <div>
-        <div class="title">Sunshine Computer Training & STENO Classes, Bayana</div>
-        <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+    <div class="logo-title">
+      <div class="logo-row">
+        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png" alt="Logo">
+        Sunshine Computer Training & STENO Classes, Bayana
       </div>
+      <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
-    <div class="welcome">Welcome, <strong>Student Name</strong></div>
+    <div class="nav-controls">
+      <button class="btn" onclick="goHome()">🏠 Home</button>
+      <button class="btn" onclick="goBack()">⬅ Back</button>
+      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
+      <select id="menu" onchange="menuAction(this.value)">
+        <option value="">☰ Menu</option>
+        <option value="profile">👤 Profile</option>
+        <option value="settings">⚙ Settings</option>
+        <option value="logout">🚪 Logout</option>
+      </select>
+    </div>
   </header>
 
-  <!-- Navigation -->
-  <nav>
-    <ul>
-      <li><a href="index.html">🏠 Home</a></li>
-      <li><a href="dashboard.html">📊 Dashboard</a></li>
-      <li><a href="courses.html">📘 Courses</a></li>
-      <li><a href="tests.html">📝 Tests</a></li>
-      <li class="dropdown">
-        <button>⚙️ Settings ▾</button>
-        <div class="dropdown-content">
-          <a href="profile.html">👤 Profile</a>
-          <a href="settings.html">⚙️ Account Settings</a>
-        </div>
-      </li>
-      <li><a href="logout.html" style="color:var(--accent);font-weight:bold;">🚪 Logout</a></li>
-    </ul>
-  </nav>
+  <!-- Dashboard Layout -->
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Navigation</h3>
+      <a href="#">📘 RS-CIT</a>
+      <a href="#">⌨ Typing Tutor</a>
+      <a href="#">🎤 Stenographer</a>
+      <a href="#">📝 RSMSSB LDC</a>
+      <a href="#">📖 REET (Main)</a>
+      <a href="#">👨‍🔧 Class IV Exams</a>
+    </aside>
 
-  <main style="padding:20px;">
-    <h2>Dashboard Content Area</h2>
-    <p>This is where your main dashboard content will appear.</p>
-  </main>
+    <!-- Main Content -->
+    <main>
+      <h2>Choose Your Preparation Module</h2>
+      <div class="card-grid">
+        <div class="card" onclick="location.href='rs-cit-module.html'">
+          <h3>RS-CIT Exam</h3>
+          <p>Start your RS-CIT practice test now!</p>
+        </div>
+        <div class="card">
+          <h3>Computer Efficiency</h3>
+          <p>Practice to improve your computer skills.</p>
+        </div>
+        <div class="card">
+          <h3>Typing Tutor</h3>
+          <p>Boost your typing speed and accuracy.</p>
+        </div>
+        <div class="card">
+          <h3>Raj HighCourt Stenographer</h3>
+          <p>Prepare with dictation & shorthand modules.</p>
+        </div>
+        <div class="card">
+          <h3>RSMSSB LDC</h3>
+          <p>Get ready for Rajasthan LDC recruitment.</p>
+        </div>
+        <div class="card">
+          <h3>REET (Main) Test</h3>
+          <p>Test your knowledge for REET exams.</p>
+        </div>
+        <div class="card">
+          <h3>चतुर्थ श्रेणी भर्ती</h3>
+          <p>Practice for Group-D job recruitment exams.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ✅ Check Login
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn !== "true") {
+      location.replace("login.html");
+    }
+
+    // ✅ Welcome Message
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.fullname) {
+      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    }
+
+    // ✅ Home Button
+    function goHome() {
+      location.href = "dashboard.html";
+    }
+
+    // ✅ Back Button
+    function goBack() {
+      window.history.back();
+    }
+
+    // ✅ Menu Actions
+    function menuAction(value) {
+      if (value === "logout") {
+        logoutUser();
+      } else if (value === "profile") {
+        alert("Profile page under construction.");
+      } else if (value === "settings") {
+        alert("Settings page under construction.");
+      }
+      document.getElementById("menu").value = "";
+    }
+
+    // ✅ Logout
+    function logoutUser() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      if (userData && userData.username) {
+        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+        fetch(logoutUrl).catch(err => console.error("❌ Logout error:", err));
+      }
+      localStorage.clear();
+      location.replace("login.html");
+    }
+  </script>
 </body>
 </html>
