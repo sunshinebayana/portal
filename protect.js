@@ -35,7 +35,12 @@ document.addEventListener("paste", function (e) {
     let allowedHost = "sunshinebayana.github.io";
     let loginURL = "https://sunshinebayana.github.io/portal/login.html";
 
-    if (document.referrer === "" || window.location.hostname !== allowedHost) {
+    // Agar file direct URL se access ho ya protect.js khola jaye
+    if (
+        document.referrer === "" || 
+        window.location.hostname !== allowedHost || 
+        window.location.pathname.endsWith("protect.js")
+    ) {
         window.location.href = loginURL;
     }
 })();
