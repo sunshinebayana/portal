@@ -1,351 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sunshine Dashboard</title>
-  <style>
-    /* ===== Global Colors ===== */
-    :root {
-      --primary: #0d1b4c;   /* Navy Blue */
-      --secondary: #f8bbd0; /* Light Pink */
-      --accent: #e91e63;    /* Dark Pink */
-      --bg: #ffffff;        /* White */
-      --muted: #6b7280;     /* Muted Gray */
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--primary);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* ===== Header (Default PC View) ===== */
-    header {
-      background: var(--primary);
-      color: #fff;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      flex-wrap: wrap;
-    }
-    .logo-title {
-      display: flex;
-      flex-direction: column;
-    }
-    .logo-row {
-      display: flex;
-      align-items: center;
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .logo-row img {
-      height: 40px;
-      margin-right: 8px;
-    }
-    .tagline {
-      font-size: 12px;
-      color: var(--secondary);
-    }
-    .nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .btn {
-      background: var(--secondary);
-      color: var(--primary);
-      border: none;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: var(--accent);
-      color: #fff;
-    }
-    .welcome {
-      font-size: 14px;
-      font-weight: 500;
-    }
-    select {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--secondary);
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    /* ===== Dashboard Layout ===== */
-    .dashboard {
-      display: flex;
-      flex: 1;
-      min-height: calc(100vh - 60px);
-    }
-
-    .sidebar {
-      width: 220px;
-      background: #fff;
-      border-right: 1px solid #eee;
-      padding: 20px 10px;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.05);
-    }
-    .sidebar h3 {
-      font-size: 14px;
-      margin-bottom: 15px;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 15px;
-      margin: 5px 0;
-      color: var(--primary);
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background: var(--secondary);
-      color: var(--accent);
-    }
-
-    main {
-      flex: 1;
-      padding: 25px;
-    }
-    h2 {
-      margin-bottom: 25px;
-      font-size: 22px;
-      color: var(--accent);
-      text-align: center;
-    }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: var(--bg);
-      padding: 20px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(233,30,99,0.15);
-      cursor: pointer;
-      border: 1px solid #f1f1f1;
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(13,27,76,0.2);
-    }
-    .card h3 {
-      font-size: 16px;
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-    .card p {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* ===== Mobile Responsive ===== */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 15px;
-      }
-      .logo-row {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .logo-row img {
-        height: 55px;
-        margin: 0 0 8px 0;
-      }
-      .logo-row span {
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 1.4;
-      }
-      .tagline {
-        font-size: 14px;
-        margin-top: 6px;
-      }
-      .nav-controls {
-        flex-direction: row;
-        gap: 8px;
-        margin-top: 10px;
-        justify-content: center;
-      }
-
-      /* hide home button */
-      .nav-controls .btn:first-child {
-        display: none;
-      }
-
-      /* make back button smaller */
-      .nav-controls .btn.back-btn {
-        padding: 4px 8px;
-        font-size: 12px;
-      }
-
-      /* add small menu button */
-      .menu-btn {
-        background: var(--secondary);
-        color: var(--primary);
-        border: none;
-        padding: 4px 8px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      /* hide select menu on mobile */
-      select {
-        display: none;
-      }
-
-      /* Sidebar (bottom) - REMOVE on mobile */
-      .sidebar {
-        display: none;
-      }
-
-      main { padding: 15px; }
-      h2 { font-size: 18px; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sunshine Dashboard</title>
+<style>
+:root{--primary:#0d1b4c;--secondary:#f8bbd0;--accent:#e91e63;--bg:#fff;--muted:#6b7280;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--primary);display:flex;flex-direction:column;min-height:100vh;}
+header{background:var(--primary);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.15);position:sticky;top:0;z-index:1000;flex-wrap:wrap;}
+.logo-title{display:flex;flex-direction:column;}
+.logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;}
+.logo-row img{height:40px;margin-right:8px;}
+.tagline{font-size:12px;color:var(--secondary);}
+.nav-controls{display:flex;align-items:center;gap:10px;position:relative;}
+.btn{background:var(--secondary);color:var(--primary);border:none;padding:6px 12px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;transition:.3s;}
+.btn:hover{background:var(--accent);color:#fff;}
+.welcome{font-size:14px;font-weight:500;}
+.dashboard{display:flex;flex:1;min-height:calc(100vh - 60px);}
+.sidebar{width:220px;background:#fff;border-right:1px solid #eee;padding:20px 10px;box-shadow:2px 0 6px rgba(0,0,0,0.05);}
+.sidebar h3{font-size:14px;margin-bottom:15px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;}
+.sidebar a{display:block;padding:10px 15px;margin:5px 0;color:var(--primary);text-decoration:none;border-radius:6px;font-size:14px;transition:.3s;}
+.sidebar a:hover{background:var(--secondary);color:var(--accent);}
+main{flex:1;padding:25px;}
+h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.card{background:var(--bg);padding:20px;border-radius:16px;text-align:center;box-shadow:0 4px 10px rgba(233,30,99,0.15);cursor:pointer;border:1px solid #f1f1f1;transition:.3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(13,27,76,0.2);}
+.card h3{font-size:16px;color:var(--primary);margin-bottom:10px;}
+.card p{font-size:13px;color:var(--muted);}
+.mobile-menu{display:none;position:absolute;top:40px;right:0;background:#fff;color:var(--primary);border:1px solid #eee;border-radius:8px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.mobile-menu button{display:block;width:100%;padding:10px 12px;border:none;background:none;text-align:left;cursor:pointer;font-size:14px;transition:.2s;}
+.mobile-menu button:hover{background:var(--secondary);color:var(--accent);}
+@media(max-width:768px){
+ header{flex-direction:column;align-items:center;text-align:center;padding:15px;}
+ .logo-row{flex-direction:column;align-items:center;justify-content:center;}
+ .logo-row img{height:55px;margin:0 0 8px 0;}
+ .logo-row span{font-size:16px;font-weight:600;line-height:1.4;}
+ .tagline{font-size:14px;margin-top:6px;}
+ .nav-controls{gap:5px;margin-top:10px;justify-content:center;}
+ .btn:first-child,.btn.back-btn{display:none;}
+ .menu-btn{display:block;background:var(--secondary);color:var(--primary);border:none;padding:6px 10px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;}
+ .sidebar{display:none;}
+ main{padding:15px;}
+ h2{font-size:18px;}
+}
+</style>
 </head>
 <body>
-
-  <!-- Header -->
-  <header>
-    <div class="logo-title">
-      <div class="logo-row">
-        <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-        <span>Sunshine Computer Training &<br>STENO Classes, Bayana</span>
-      </div>
-      <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
-    </div>
-    <div class="nav-controls">
-      <button class="btn" onclick="goHome()">🏠 Home</button>
-      <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
-      <select id="menu" onchange="menuAction(this.value)">
-        <option value="">☰ Menu</option>
-        <option value="profile">👤 Profile</option>
-        <option value="settings">⚙ Settings</option>
-        <option value="logout">🚪 Logout</option>
-      </select>
-    </div>
-  </header>
-
-  <!-- Dashboard Layout -->
-  <div class="dashboard">
-    <aside class="sidebar">
-      <h3>Navigation</h3>
-      <a href="#">📘 RS-CIT</a>
-      <a href="#">⌨ Typing Tutor</a>
-      <a href="#">🎤 Stenographer</a>
-      <a href="#">📝 RSMSSB LDC</a>
-      <a href="#">📖 REET (Main)</a>
-      <a href="#">👨‍🔧 Class IV Exams</a>
-    </aside>
-
-    <main>
-      <h2>Choose Your Preparation Module</h2>
-      <div class="card-grid">
-        <div class="card" onclick="location.href='rs-cit-module.html'">
-          <h3>RS-CIT Exam</h3>
-          <p>Start your RS-CIT practice test now!</p>
-        </div>
-        <div class="card">
-          <h3>Computer Efficiency</h3>
-          <p>Practice to improve your computer skills.</p>
-        </div>
-        <div class="card">
-          <h3>Typing Tutor</h3>
-          <p>Boost your typing speed and accuracy.</p>
-        </div>
-        <div class="card">
-          <h3>Raj HighCourt Stenographer</h3>
-          <p>Prepare with dictation & shorthand modules.</p>
-        </div>
-        <div class="card">
-          <h3>RSMSSB LDC</h3>
-          <p>Get ready for Rajasthan LDC recruitment.</p>
-        </div>
-        <div class="card">
-          <h3>REET (Main) Test</h3>
-          <p>Test your knowledge for REET exams.</p>
-        </div>
-        <div class="card">
-          <h3>चतुर्थ श्रेणी भर्ती</h3>
-          <p>Practice for Group-D job recruitment exams.</p>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
-
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData && userData.fullname) {
-      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
-    }
-
-    function goHome() {
-      location.href = "dashboard.html";
-    }
-    function goBack() {
-      window.history.back();
-    }
-    function menuAction(value) {
-      if (value === "logout") {
-        logoutUser();
-      } else if (value === "profile") {
-        alert("Profile page under construction.");
-      } else if (value === "settings") {
-        alert("Settings page under construction.");
-      }
-      document.getElementById("menu").value = "";
-    }
-    function logoutUser() {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      if (userData && userData.username) {
-        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
-        fetch(logoutUrl).catch(err => console.error("❌ Logout error:", err));
-      }
-      localStorage.clear();
-      location.replace("login.html");
-    }
-
-    function toggleMenu() {
-      alert("☰ Menu clicked (you can expand this later)");
-    }
-  </script>
+<header>
+<div class="logo-title">
+<div class="logo-row">
+<img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+<span>Sunshine Computer Training &<br>STENO Classes, Bayana</span>
+</div>
+<div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+</div>
+<div class="nav-controls">
+<button class="btn" onclick="goHome()">🏠 Home</button>
+<button class="btn back-btn" onclick="goBack()">⬅ Back</button>
+<span class="welcome" id="welcomeMsg">Welcome, User!</span>
+<button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+<div class="mobile-menu" id="mobileMenu">
+<button onclick="menuAction('profile')">👤 Profile</button>
+<button onclick="menuAction('settings')">⚙ Settings</button>
+<button onclick="menuAction('logout')">🚪 Logout</button>
+</div>
+</div>
+</header>
+<div class="dashboard">
+<aside class="sidebar">
+<h3>Navigation</h3>
+<a href="#">📘 RS-CIT</a>
+<a href="#">⌨ Typing Tutor</a>
+<a href="#">🎤 Stenographer</a>
+<a href="#">📝 RSMSSB LDC</a>
+<a href="#">📖 REET (Main)</a>
+<a href="#">👨‍🔧 Class IV Exams</a>
+</aside>
+<main>
+<h2>Choose Your Preparation Module</h2>
+<div class="card-grid">
+<div class="card" onclick="location.href='rs-cit-module.html'"><h3>RS-CIT Exam</h3><p>Start your RS-CIT practice test now!</p></div>
+<div class="card"><h3>Computer Efficiency</h3><p>Practice to improve your computer skills.</p></div>
+<div class="card"><h3>Typing Tutor</h3><p>Boost your typing speed and accuracy.</p></div>
+<div class="card"><h3>Raj HighCourt Stenographer</h3><p>Prepare with dictation & shorthand modules.</p></div>
+<div class="card"><h3>RSMSSB LDC</h3><p>Get ready for Rajasthan LDC recruitment.</p></div>
+<div class="card"><h3>REET (Main) Test</h3><p>Test your knowledge for REET exams.</p></div>
+<div class="card"><h3>चतुर्थ श्रेणी भर्ती</h3><p>Practice for Group-D job recruitment exams.</p></div>
+</div>
+</main>
+</div>
+<script>
+if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
+const userData=JSON.parse(localStorage.getItem("userData"));
+if(userData?.fullname)document.getElementById("welcomeMsg").textContent=`Welcome, ${userData.fullname}!`;
+function goHome(){location.href="dashboard.html";}
+function goBack(){window.history.back();}
+function menuAction(v){
+ if(v==="logout"){logoutUser();}
+ else{alert(`${v.charAt(0).toUpperCase()+v.slice(1)} page under construction.`);}
+ document.getElementById("mobileMenu").style.display="none";
+}
+function logoutUser(){
+ const u=JSON.parse(localStorage.getItem("userData"));
+ if(u?.username)fetch(`https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(u.username)}`).catch(e=>console.error("❌ Logout error:",e));
+ localStorage.clear();location.replace("login.html");
+}
+function toggleMenu(){
+ const m=document.getElementById("mobileMenu");
+ m.style.display=m.style.display==="block"?"none":"block";
+}
+</script>
 </body>
 </html>
