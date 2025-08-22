@@ -26,14 +26,27 @@ header{
   top:0;
   z-index:1000;
 }
-.logo-title{display:flex;flex-direction:column;}
-.logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;white-space:nowrap;}
+.logo-title{
+  display:flex;
+  flex-direction:column;
+  align-items:center; /* Center title & tagline */
+  flex:1; /* take full space to center horizontally */
+}
+.logo-row{
+  display:flex;
+  align-items:center;
+  font-size:18px;
+  font-weight:600;
+  white-space:nowrap;
+  justify-content:center; /* Center title only */
+}
 .logo-row img{height:40px;margin-right:8px;}
 .logo-row span{line-height:1;}
 .tagline{
   font-size:13px;
   color:var(--secondary);
   margin-top:4px;
+  text-align:center; /* Center tagline */
 }
 .nav-controls{
   display:flex;
