@@ -170,9 +170,14 @@
         align-items: flex-start;
         padding: 12px;
       }
+
+      .logo-title {
+        width: 100%;
+      }
+
       .logo-row {
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-start;
       }
       .logo-row img {
@@ -183,18 +188,26 @@
         font-size: 15px;
         font-weight: 600;
         line-height: 1.3;
+        display: block;
       }
+
       .tagline {
         font-size: 13px;
-        margin: 6px 0;
+        margin: 6px 0 2px 55px; /* align under title */
       }
+      .welcome {
+        font-size: 13px;
+        margin: 2px 0 0 55px; /* align under tagline */
+      }
+
       .nav-controls {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 6px;
+        margin-top: 8px;
+        width: 100%;
       }
-      .btn, select, .welcome {
+      .btn, select {
         flex: 1 1 45%;
         text-align: center;
       }
@@ -239,11 +252,11 @@
         <span>Sunshine Computer Training &<br>STENO Classes, Bayana</span>
       </div>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+      <div class="welcome" id="welcomeMsg">Welcome, User!</div>
     </div>
     <div class="nav-controls">
       <button class="btn" onclick="goHome()">🏠 Home</button>
       <button class="btn" onclick="goBack()">⬅ Back</button>
-      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
       <select id="menu" onchange="menuAction(this.value)">
         <option value="">☰ Menu</option>
         <option value="profile">👤 Profile</option>
