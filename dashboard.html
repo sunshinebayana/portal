@@ -17,7 +17,7 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--primary)
 header{
   background:var(--primary);
   color:#fff;
-  padding:8px 20px;
+  padding:8px 20px; /* reduced padding */
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -26,27 +26,10 @@ header{
   top:0;
   z-index:1000;
 }
-.logo-row{
-  display:flex;
-  align-items:center;
-  font-size:18px;
-  font-weight:600;
-}
-.logo-row img{
-  height:40px;
-  margin-right:8px;
-}
-.logo-title{
-  display:flex;
-  flex-direction:column;
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  text-align:center;
-}
-.logo-title span{
-  font-weight:600;
-}
+.logo-title{display:flex;flex-direction:column;}
+.logo-row{display:flex;align-items:center;font-size:18px;font-weight:600;white-space:nowrap;}
+.logo-row img{height:40px;margin-right:8px;}
+.logo-row span{line-height:1;}
 .tagline{
   font-size:13px;
   color:var(--secondary);
@@ -152,17 +135,18 @@ footer{
    align-items:center;
    text-align:center;
  }
- .logo-row{
-   position:static;
-   margin-bottom:5px;
- }
  .logo-title{
-   position:static;
-   transform:none;
-   text-align:center;
+   align-items:center;
  }
- .logo-row img{height:55px;margin:0 0 5px 0;}
- .tagline{font-size:14px;margin-top:4px;}
+ .logo-row{
+   flex-direction:column;
+   align-items:center;
+   justify-content:center;
+   white-space:normal;
+ }
+ .logo-row img{height:55px;margin:0 0 8px 0;}
+ .logo-row span{line-height:1.4;text-align:center;} /* mobile 2 lines */
+ .tagline{font-size:14px;margin-top:6px;text-align:center;}
  .nav-controls{
    gap:5px;
    margin-top:5px;
@@ -191,17 +175,16 @@ footer{
 </head>
 <body>
 <header>
+<div class="logo-title">
 <div class="logo-row">
 <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-</div>
-<div class="logo-title">
 <span>Sunshine Computer Training & STENO Classes, Bayana</span>
+</div>
 <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
 </div>
 <div class="nav-controls">
-<button class="btn" onclick="goBack()">⬅ Back</button>
-<button class="back-btn-mobile" onclick="goBack()">⬅ Back</button>
 <span class="welcome" id="welcomeMsg">Welcome, User!</span>
+<button class="back-btn-mobile" onclick="goBack()">⬅ Back</button>
 <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
 <div class="mobile-menu" id="mobileMenu">
 <button onclick="menuAction('profile')">👤 Profile</button>
