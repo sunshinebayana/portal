@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📘 RS-CIT Book Chapter Tests — Sunshine Institute</title>
+  <title>🧪 RS-CIT Internal Tests</title>
   <style>
-    :root{
-      --primary:#0d1b4c;
-      --secondary:#f8bbd0;
-      --accent:#e91e63;
-      --bg:#fff;
-      --muted:#6b7280;
-      --radius:12px;
+    /* ===== COLOR THEME ===== */
+    :root {
+      --primary: #1976d2;
+      --accent: #ef5350;
+      --success: #43a047;
+      --bg-gradient: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+      --radius: 12px;
     }
 
     body {
       margin: 0;
-      font-family:'Segoe UI',sans-serif;
-      background: linear-gradient(to bottom right, #f7f9fc, #ffffff);
-      display:flex;
-      flex-direction:column;
-      min-height:100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
       color: var(--primary);
     }
 
@@ -39,16 +39,19 @@
       flex-wrap: wrap;
       gap: 10px;
     }
+
     .header-right {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .welcome-msg {
       font-size: 15px;
       font-weight: 500;
       color: #fff;
     }
+
     .btn {
       padding: 8px 14px;
       font-size: 14px;
@@ -57,30 +60,34 @@
       cursor: pointer;
       transition: background 0.3s;
       font-weight: 600;
-    }
-    .btn:hover {
-      background: var(--accent);
       color: white;
+      background: var(--accent);
     }
+
+    .btn:hover {
+      background: #d32f2f;
+    }
+
     .back-btn {
-      background: #43a047;
-      color: #fff;
+      background: var(--success);
     }
+
     .back-btn:hover {
       background: #2e7d32;
     }
 
+    /* ===== MAIN CONTENT ===== */
     main {
       padding: 40px 20px;
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
       flex: 1;
     }
 
     h2 {
       text-align: center;
-      color: var(--accent);
-      margin-bottom: 20px;
+      color: var(--primary);
+      margin-bottom: 15px;
       font-size: 24px;
     }
 
@@ -91,6 +98,7 @@
       margin-bottom: 30px;
       flex-wrap: wrap;
     }
+
     .mode-toggle button {
       padding: 8px 14px;
       border: none;
@@ -100,8 +108,9 @@
       background: #e0e0e0;
       transition: all 0.3s ease;
     }
+
     .mode-toggle button.active-mode {
-      background: var(--accent);
+      background: var(--primary);
       color: white;
       font-weight: bold;
     }
@@ -111,6 +120,7 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 20px;
     }
+
     .feature-btn {
       background: white;
       border: 2px solid var(--primary);
@@ -124,11 +134,13 @@
       transition: all 0.3s ease;
       text-align: left;
     }
+
     .feature-btn:hover {
-      background-color: var(--accent);
+      background-color: var(--primary);
       color: white;
       transform: translateY(-3px);
     }
+
     .feature-btn span {
       float: right;
       font-weight: bold;
@@ -136,8 +148,8 @@
 
     /* ===== FOOTER ===== */
     footer {
-      background: var(--primary);
-      color: #fff;
+      background-color: var(--primary);
+      color: white;
       text-align: center;
       padding: 15px;
       font-size: 13px;
@@ -149,9 +161,11 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
       .header-right {
         margin-top: 8px;
       }
+
       .welcome-msg {
         font-size: 14px;
       }
@@ -161,7 +175,7 @@
 <body>
 
   <header>
-    <div>📘 RS-CIT Book Chapter Tests — Sunshine Institute</div>
+    <div>🧪 RS-CIT Internal Tests</div>
     <div class="header-right">
       <span class="welcome-msg" id="welcomeMsg">Welcome, User!</span>
       <button class="btn back-btn" onclick="goBack()">⬅ Back</button>
@@ -170,7 +184,7 @@
   </header>
 
   <main>
-    <h2>📘 RS-CIT Book Chapter Tests</h2>
+    <h2>Select an Internal Test</h2>
 
     <!-- Mode Toggle -->
     <div class="mode-toggle">
@@ -179,52 +193,63 @@
     </div>
 
     <div class="btn-grid">
-      <button class="feature-btn" onclick="startTest('T11')">1. Introduction to Computer <span>🔹T11</span></button>
-      <button class="feature-btn" onclick="startTest('T12')">2. Internet and Services <span>🔹T12</span></button>
-      <button class="feature-btn" onclick="startTest('T13')">3. MS Office & Other Office Tools <span>🔹T13</span></button>
-      <button class="feature-btn" onclick="startTest('T14')">4. Cyber Security & Application of IT <span>🔹T14</span></button>
-      <button class="feature-btn" onclick="startTest('T15')">5. IT Based Services <span>🔹T15</span></button>
+      <button class="feature-btn" onclick="startTest('T21')">1. Introduction to Computer <span>🔹T21</span></button>
+      <button class="feature-btn" onclick="startTest('T22')">2. Computer System <span>🔹T22</span></button>
+      <button class="feature-btn" onclick="startTest('T23')">3. Exploring Your Computer <span>🔹T23</span></button>
+      <button class="feature-btn" onclick="startTest('T24')">4. Introduction of Internet <span>🔹T24</span></button>
+      <button class="feature-btn" onclick="startTest('T25')">5. Financial Literacy & Digital Payment Applications <span>🔹T25</span></button>
+      <button class="feature-btn" onclick="startTest('T26')">6. Internet Applications <span>🔹T26</span></button>
+      <button class="feature-btn" onclick="startTest('T27')">7. Working with Mobile Devices/Smartphone <span>🔹T27</span></button>
+      <button class="feature-btn" onclick="startTest('T28')">8. Microsoft Word <span>🔹T28</span></button>
+      <button class="feature-btn" onclick="startTest('T29')">9. Microsoft Excel <span>🔹T29</span></button>
+      <button class="feature-btn" onclick="startTest('T30')">10. MS PowerPoint <span>🔹T30</span></button>
+      <button class="feature-btn" onclick="startTest('T31')">11. Cyber Security & Awareness <span>🔹T31</span></button>
+      <button class="feature-btn" onclick="startTest('T32')">12. Other Office Tools <span>🔹T32</span></button>
+      <button class="feature-btn" onclick="startTest('T33')">13. Useful Application of IT <span>🔹T33</span></button>
+      <button class="feature-btn" onclick="startTest('T34')">14. Exploring Common Citizen Centric Services <span>🔹T34</span></button>
+      <button class="feature-btn" onclick="startTest('T35')">15. Major eGovernance Services and Schemes for Citizens of Raj. <span>🔹T35</span></button>
     </div>
   </main>
 
-  <footer>@ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal</footer>
+  <footer>
+    &copy; 2025 Sunshine Institute · RS-CIT Internal Tests
+  </footer>
 
-  <script src="protect.js"></script>
   <script>
     let selectedMode = "practice";
 
-    // ✅ Prevent Direct Access
+    // Prevent Direct Access
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn !== "true") {
       location.replace("login.html");
     }
 
-    // ✅ Set Welcome Message
+    // Set Welcome Message
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.fullname) {
       document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
     }
 
-    // ✅ Switch Mode
+    // Switch Mode
     function switchMode(mode) {
       selectedMode = mode;
       document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode === "practice");
       document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
     }
 
-    // ✅ Back to RS-CIT Module
+    // Back to RS-CIT Module
     function goBack() {
       location.href = "rs-cit-module.html";
     }
 
-    // ✅ Start Test
+    // Start Test
     function startTest(code) {
       const username = userData?.username || "guest";
       const fullname = userData?.fullname || "Guest User";
       startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
     }
 
-    // ✅ Actual Test Starter
+    // Actual Test Starter
     function startRscitTest(code, message, mode, username, fullname) {
       localStorage.setItem("test_code", code);
       localStorage.setItem("test_message", message);
@@ -234,7 +259,7 @@
       location.href = "exam-modes-screen.html";
     }
 
-    // ✅ Logout User
+    // Logout User
     function logoutUser() {
       const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.username) {
