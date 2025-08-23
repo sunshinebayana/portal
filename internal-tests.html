@@ -227,7 +227,7 @@
   <footer>
     &copy; 2025 Sunshine Institute · RS-CIT Internal Tests
   </footer>
-
+  <script src="protect.js"></script>
   <script>
     let selectedMode = "practice";
 
@@ -265,15 +265,17 @@
       location.href = "exam-modes-screen.html";
     }
 
+   // ✅ Logout User
     function logoutUser() {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      if (userData && userData.username) {
-        const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
-        fetch(logoutUrl).catch(err => console.error("Logout error:", err));
-      }
-      localStorage.clear();
-      location.replace("login.html");
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.username) {
+      const logoutUrl = `${BASE_URL}?action=logout&username=${encodeURIComponent(userData.username)}`;
+      fetch(logoutUrl).catch(err => console.error("Logout error:", err));
     }
+    localStorage.clear();
+    location.replace("login.html");
+  }
   </script>
 </body>
 </html>
+
