@@ -208,6 +208,11 @@ footer{
         <div class="emoji">🟢</div>
         <div class="meta"><div class="title">स्पेशल कॉमन TEST</div><div class="desc">Combined mock test for full syllabus.</div></div>
       </div>
+      <!-- ✅ New Added Button -->
+      <div class="module-btn" onclick="openModule('result-rank')">
+        <div class="emoji">📢</div>
+        <div class="meta"><div class="title">View Result & Rank</div><div class="desc">Check your score, ranking & performance report.</div></div>
+      </div>
     </div>
 
     <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
@@ -259,6 +264,7 @@ function renderModule(key){
     case 'digital-zone':location.href='digital-learning.html';return'';
     case 'ai-skill-bot':location.href='ai-skill-bot.html';return'';
     case 'common-test':return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test before final exam.</p>`;
+    case 'result-rank': return '';  // ✅ New case
     case 'schedule':return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests.</p>`;
     case 'contact':return `<h2>📞 Contact</h2><p class="lead">Director: Atendra Sharma — 9929856121</p>`;
     default:return `<p>Module not found.</p>`;
