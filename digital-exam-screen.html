@@ -14,52 +14,44 @@
     header {
       background: #1976d2;
       color: #fff;
-      padding: 10px 20px;
-      font-size: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      padding: 12px;
+      text-align: center;
     }
     .exam-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       text-transform: uppercase;
     }
     .container {
-      max-width: 700px;
-      margin: 30px auto;
+      max-width: 95%;
+      margin: 15px auto;
       background: #fff;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 15px;
+      border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       position: relative;
     }
     .close-btn {
       position: absolute;
-      top: -14px;
-      right: -14px;
+      top: -12px;
+      right: -12px;
       background: #fff;
       color: #1976d2;
       font-size: 18px;
       border: 1px solid #ccc;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      line-height: 28px;
+      width: 28px;
+      height: 28px;
+      line-height: 26px;
       text-align: center;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      transition: all 0.2s ease;
-    }
-    .close-btn:hover {
-      background: #f5f5f5;
-      color: #d32f2f;
-      border-color: #d32f2f;
     }
     .top-info-row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: center;
+      gap: 8px;
       margin-bottom: 10px;
       font-size: 14px;
       color: #555;
@@ -67,35 +59,34 @@
     }
     #timerDisplay {
       font-weight: bold;
-      background: rgba(255,255,255,0.8);
+      background: rgba(25,118,210,0.1);
       padding: 5px 10px;
-      border-radius: 4px;
+      border-radius: 6px;
       color: #1976d2;
-      font-size: 16px;
+      font-size: 15px;
     }
     .quiz-indicator-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       font-size: 14px;
       color: #555;
-      margin-top: 10px;
       margin-bottom: 10px;
+      gap: 4px;
     }
     .question {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 10px;
-      text-align: left;
     }
     .options label {
       display: block;
       background: #f1f1f1;
-      padding: 8px;
+      padding: 10px;
       margin: 6px 0;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      text-align: left;
+      font-size: 15px;
     }
     .options label.correct {
       background: #c8e6c9 !important;
@@ -105,17 +96,25 @@
     }
     .button-row {
       display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+      justify-content: center;
     }
     button {
-      padding: 8px 16px;
+      flex: 1 1 45%;
+      min-width: 120px;
+      padding: 10px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       background: #1976d2;
       color: white;
       font-size: 14px;
       cursor: pointer;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
     }
     button:hover {
       background: #125aa0;
@@ -129,7 +128,7 @@
     .question-nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 6px;
       margin-top: 15px;
       justify-content: center;
     }
@@ -144,12 +143,21 @@
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.2s ease;
     }
     .question-btn.attempted {
       background: #4caf50;
       color: #fff;
       border-color: #4caf50;
+    }
+    @media (max-width: 480px) {
+      header {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .exam-name { font-size: 16px; }
+      .question { font-size: 15px; }
+      .options label { font-size: 14px; padding: 8px; }
+      button { font-size: 13px; min-width: 100px; }
     }
   </style>
 </head>
@@ -161,7 +169,7 @@
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div class="top-info-row">
     <div id="fullnameLabel"></div>
-    <div id="timerDisplay">⏳ Time Left: --:--</div>
+    <div id="timerDisplay">⏳ --:--</div>
     <div><strong>Exam Time:</strong> <span id="examTimeInTest"></span> mins</div>
   </div>
   <div class="quiz-indicator-row">
@@ -303,7 +311,6 @@
     timerInterval = setInterval(updateTimer, 1000);
   }
 
-  // 🔊 Speak Question function
   function speakQuestion() {
     if (!questions || !questions[currentQ]) return;
 
