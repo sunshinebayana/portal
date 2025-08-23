@@ -204,7 +204,7 @@
 <footer>
   &copy; 2025 Sunshine Institute · RS-CIT Old Papers
 </footer>
-
+<script src="protect.js"></script>
 <script>
   let selectedMode = "practice";
 
@@ -272,10 +272,11 @@
   function goHome(){ location.href="dashboard.html"; }
   function goBack(){ location.href="rs-cit-module.html"; }
 
-  function logoutUser() {
+  // ✅ Logout User
+    function logoutUser() {
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.username) {
-      const logoutUrl = `https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec?action=logout&username=${encodeURIComponent(userData.username)}`;
+      const logoutUrl = `${BASE_URL}?action=logout&username=${encodeURIComponent(userData.username)}`;
       fetch(logoutUrl).catch(err => console.error("Logout error:", err));
     }
     localStorage.clear();
@@ -285,3 +286,4 @@
 
 </body>
 </html>
+
