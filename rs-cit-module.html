@@ -1,251 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RS-CIT Preparation — Sunshine Institute</title>
-  <style>
-    :root{
-      --primary:#1976d2;
-      --accent:#ef5350;
-      --card-bg:#fff;
-      --muted:#6b7280;
-      --radius:12px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: linear-gradient(180deg,#f3f9ff 0%, #ffffff 60%);
-      color:#111827;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding-bottom:40px;
-    }
-    header{
-      background:var(--primary);
-      color:white;
-      padding:18px 20px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      box-shadow:0 6px 18px rgba(25,118,210,0.12);
-    }
-    header .title{font-weight:700; font-size:18px}
-    header .sub{font-size:13px; opacity:0.95}
-    main{max-width:1000px;margin:28px auto;padding:0 18px}
-    .card{
-      background:var(--card-bg);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:0 8px 20px rgba(15,23,42,0.06);
-      margin-bottom:18px;
-    }
-    h1{font-size:22px;margin:0 0 8px}
-    p.lead{color:var(--muted);margin:0 0 12px}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RS-CIT Preparation — Sunshine Institute</title>
+<style>
+:root{
+  --primary:#0d1b4c;
+  --secondary:#f8bbd0;
+  --accent:#e91e63;
+  --bg:#fff;
+  --muted:#6b7280;
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(180deg,#f7f9fc 0%,#ffffff 70%);
+  color:var(--primary);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px;
-      margin-top:8px;
-    }
-    .module-btn{
-      display:flex;align-items:flex-start;gap:12px;
-      padding:14px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);
-      cursor:pointer;background:linear-gradient(180deg,#fff,#fbfcff);
-      transition:transform .18s ease, box-shadow .18s ease;
-    }
-    .module-btn:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(20,40,80,0.06)}
-    .module-btn .emoji{font-size:20px}
-    .module-btn .meta{flex:1}
-    .module-btn .meta .title{font-weight:700}
-    .module-btn .meta .desc{font-size:13px;color:var(--muted);margin-top:6px}
+/* ===== HEADER ===== */
+header{
+  background:var(--primary);
+  color:#fff;
+  padding:8px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+.logo-row{
+  display:flex;
+  align-items:center;
+  gap:70px;
+}
+.logo-row img{height:40px;}
+.home-btn{
+  background:var(--secondary);
+  color:var(--primary);
+  border:none;
+  padding:6px 12px;
+  font-size:14px;
+  font-weight:600;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+}
+.home-btn:hover{background:var(--accent);color:#fff;}
+.title-tagline{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+}
+.title-tagline span{
+  display:block;
+  font-weight:600;
+  font-size:18px;
+}
+.title-tagline .tagline{
+  font-size:13px;
+  color:var(--secondary);
+  margin-top:4px;
+}
+.nav-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.btn{
+  background:var(--secondary);
+  color:var(--primary);
+  border:none;
+  padding:6px 12px;
+  font-size:13px;
+  font-weight:600;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+}
+.btn:hover{background:var(--accent);color:#fff;}
+.welcome{font-size:14px;font-weight:500;}
 
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
-    .btn.primary{background:var(--primary);color:white}
-    .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06)}
-    .badge{display:inline-block;background:#e6f3ff;color:var(--primary);padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+/* ===== MAIN CONTENT ===== */
+main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
+.card{
+  background:var(--bg);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:0 8px 20px rgba(15,23,42,0.06);
+  margin-bottom:18px;
+  border:1px solid #f1f1f1;
+}
+h1{font-size:22px;margin:0 0 8px;color:var(--accent);text-align:center}
+p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
 
-    .important-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .important-item{padding:10px;border-radius:8px;border:1px dashed rgba(25,118,210,0.12);background:#fbfcff;display:flex;justify-content:space-between;align-items:center}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  margin-top:8px;
+}
+.module-btn{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px;border-radius:10px;
+  border:1px solid rgba(15,23,42,0.06);
+  cursor:pointer;background:linear-gradient(180deg,#fff,#fbfcff);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.module-btn:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 30px rgba(20,40,80,0.12);
+}
+.module-btn .emoji{font-size:20px}
+.module-btn .meta{flex:1}
+.module-btn .meta .title{font-weight:700;color:var(--primary)}
+.module-btn .meta .desc{font-size:13px;color:var(--muted);margin-top:6px}
 
-    footer{max-width:1000px;margin:20px auto 40px;padding:0 18px;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn.primary{background:var(--accent);color:white}
+.btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.1)}
 
-    @media (max-width:520px){
-      header{flex-direction:column;align-items:flex-start;gap:8px}
-      .module-btn{padding:12px}
-    }
-  </style>
+.badge{display:inline-block;background:#fde7f0;color:var(--accent);
+  padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+
+.important-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.important-item{
+  padding:10px;border-radius:8px;border:1px dashed rgba(25,118,210,0.12);
+  background:#fbfcff;display:flex;justify-content:space-between;align-items:center
+}
+
+/* ===== FOOTER ===== */
+footer{
+  background:var(--primary);
+  color:#fff;
+  text-align:center;
+  padding:10px;
+  font-size:13px;
+  margin-top:auto;
+}
+
+/* Responsive */
+@media(max-width:768px){
+ header{flex-direction:column;align-items:center;position:relative;text-align:center}
+ .title-tagline{position:static;transform:none;margin:8px 0}
+ .home-btn{display:none;}
+ .nav-controls{width:100%;justify-content:center;margin-top:5px}
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div>
-      <div class="title">☀️ Sunshine Institute — RS-CIT Zone</div>
-      <div class="sub">Focused practice, old papers & quick tests</div>
-    </div>
-    <div style="text-align:right">
-      <div id="welcomeSmall" style="font-weight:700">Welcome, User</div>
-      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn ghost" onclick="goBack()">← Back</button>
-        <button class="btn primary" onclick="openResult()">📢 View Result & Rank</button>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <section class="card">
-      <h1>RS-CIT Preparation — Modules</h1>
-      <p class="lead">Select a module to start practice. Mix of Hindi/English labels for your students.</p>
-
-      <div class="grid">
-        <div class="module-btn" onclick="openModule('book-chapters')">
-          <div class="emoji">📘</div>
-          <div class="meta"><div class="title">RS-CIT Book Chapter Tests</div><div class="desc">Topicwise chapter tests based on the official book.</div></div>
-        </div>
-
-        <div class="module-btn" onclick="openModule('internal-test')">
-          <div class="emoji">🧪</div>
-          <div class="meta"><div class="title">RS-CIT Internal Test (Topicwise)</div><div class="desc">Short quizzes to check concept clarity — timed mode available.</div></div>
-        </div>
-
-        <div class="module-btn" onclick="openModule('old-papers')">
-          <div class="emoji">📄</div>
-          <div class="meta"><div class="title">Old Papers — RS-CIT Exam</div><div class="desc">Solve previous years' papers with answer review.</div></div>
-        </div>
-
-        <div class="module-btn" onclick="openModule('important-tests')">
-          <div class="emoji">💡</div>
-          <div class="meta"><div class="title">RS-CIT Important Tests</div><div class="desc">High-yield tests curated from trending exam patterns.</div></div>
-        </div>
-
-        <div class="module-btn" onclick="openModule('digital-zone')">
-          <div class="emoji">📖</div>
-          <div class="meta"><div class="title">Digital Learning Zone</div><div class="desc">Interactive lessons, videos and quick practice activities.</div></div>
-        </div>
-
-        <div class="module-btn" onclick="openModule('ai-skill-bot')">
-  <div class="emoji">💬</div>
-  <div class="meta">
-    <div class="title">AI Skill Bot! for RS-CIT</div>
-    <div class="desc">Your smart assistant for RS-CIT preparation and doubt solving.</div>
+<header>
+  <div class="logo-row">
+    <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
   </div>
-</div>
+  <div class="title-tagline">
+    <span>Sunshine Computer Training & STENO Classes, Bayana</span>
+    <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+  </div>
+  <div class="nav-controls">
+    <span class="welcome" id="welcomeSmall">Welcome, User</span>
+    <button class="btn ghost" onclick="goBack()">⬅ Back</button>
+    <button class="btn primary" onclick="openResult()">📢 View Result</button>
+  </div>
+</header>
 
-        <div class="module-btn" onclick="openModule('common-test')">
-          <div class="emoji">🟢</div>
-          <div class="meta"><div class="title">स्पेशल कॉमन TEST START</div><div class="desc">Combined mock test for full syllabus practice.</div></div>
-        </div>
+<main>
+  <section class="card">
+    <h1>RS-CIT Preparation — Modules</h1>
+    <p class="lead">Select a module to start practice. Mix of Hindi/English labels for your students.</p>
 
+    <div class="grid">
+      <div class="module-btn" onclick="openModule('book-chapters')">
+        <div class="emoji">📘</div>
+        <div class="meta"><div class="title">RS-CIT Book Chapter Tests</div><div class="desc">Topicwise chapter tests based on the official book.</div></div>
       </div>
+      <div class="module-btn" onclick="openModule('internal-test')">
+        <div class="emoji">🧪</div>
+        <div class="meta"><div class="title">RS-CIT Internal Test</div><div class="desc">Short quizzes to check concept clarity.</div></div>
+      </div>
+      <div class="module-btn" onclick="openModule('old-papers')">
+        <div class="emoji">📄</div>
+        <div class="meta"><div class="title">Old Papers — RS-CIT</div><div class="desc">Solve previous years' papers with answer review.</div></div>
+      </div>
+      <div class="module-btn" onclick="openModule('important-tests')">
+        <div class="emoji">💡</div>
+        <div class="meta"><div class="title">RS-CIT Important Tests</div><div class="desc">High-yield tests curated from exam patterns.</div></div>
+      </div>
+      <div class="module-btn" onclick="openModule('digital-zone')">
+        <div class="emoji">📖</div>
+        <div class="meta"><div class="title">Digital Learning Zone</div><div class="desc">Interactive lessons, videos and activities.</div></div>
+      </div>
+      <div class="module-btn" onclick="openModule('ai-skill-bot')">
+        <div class="emoji">💬</div>
+        <div class="meta"><div class="title">AI Skill Bot</div><div class="desc">Your smart assistant for RS-CIT preparation.</div></div>
+      </div>
+      <div class="module-btn" onclick="openModule('common-test')">
+        <div class="emoji">🟢</div>
+        <div class="meta"><div class="title">स्पेशल कॉमन TEST</div><div class="desc">Combined mock test for full syllabus.</div></div>
+      </div>
+    </div>
 
-      <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <div class="important-list" style="flex:1;min-width:220px">
-          <div class="important-item">
-            <div>📢 Announcements / Alerts</div>
-            <div style="font-size:13px;color:var(--muted)">No new alerts</div>
-          </div>
-          <div class="important-item">
-            <div>🔔 Quick Links</div>
-            <div style="display:flex;gap:8px">
-              <button class="btn ghost" onclick="openModule('schedule')">Schedule</button>
-              <button class="btn ghost" onclick="openModule('contact')">Contact</button>
-            </div>
-          </div>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="important-list" style="flex:1;min-width:220px">
+        <div class="important-item">
+          <div>📢 Announcements</div>
+          <div style="font-size:13px;color:var(--muted)">No new alerts</div>
         </div>
-
-        <div style="min-width:240px;text-align:right">
-          <div class="badge">Student Mode</div>
-          <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: Use timed tests to simulate real exam conditions.</div>
+        <div class="important-item">
+          <div>🔔 Quick Links</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn ghost" onclick="openModule('schedule')">Schedule</button>
+            <button class="btn ghost" onclick="openModule('contact')">Contact</button>
+          </div>
         </div>
       </div>
+      <div style="min-width:240px;text-align:right">
+        <div class="badge">Student Mode</div>
+        <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: Use timed tests to simulate exam.</div>
+      </div>
+    </div>
+  </section>
+  <section id="contentArea" class="card" style="display:none"></section>
+</main>
 
-    </section>
+<footer>@ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal</footer>
 
-    <section id="contentArea" class="card" style="display:none"></section>
+<script>
+if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
+const userData=JSON.parse(localStorage.getItem("userData")||"null");
+if(userData?.fullname){document.getElementById("welcomeSmall").textContent=`Welcome, ${userData.fullname}`;}
 
-  </main>
+function goHome(){location.href="dashboard.html";}
+function goBack(){location.replace('dashboard.html');}
+function openResult(){location.href='results.html';}
 
-  <footer>Sunshine Institute — RS-CIT Practice Portal · Designed for quick classroom use</footer>
-
-  <script>
-    // ✅ Prevent Direct Access Without Login
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
-
-    // Prefill welcome name if present
-    const userData = JSON.parse(localStorage.getItem('userData') || 'null');
-    if(userData && userData.fullname){
-      document.getElementById('welcomeSmall').textContent = `Welcome, ${userData.fullname}`;
-    }
-
-    function goBack(){
-      location.replace('dashboard.html');
-    }
-
-    function openResult(){
-      location.href = 'results.html';
-    }
-
-    function openModule(key){
-      const area = document.getElementById('contentArea');
-      area.style.display = 'block';
-      area.innerHTML = renderModule(key);
-      window.scrollTo({top: area.offsetTop - 20, behavior:'smooth'});
-    }
-
-   function renderModule(key){
+function openModule(key){
+  const area=document.getElementById('contentArea');
+  area.style.display='block';
+  area.innerHTML=renderModule(key);
+  window.scrollTo({top:area.offsetTop-20,behavior:'smooth'});
+}
+function renderModule(key){
   switch(key){
-    case 'book-chapters':
-      location.href = 'book-chapters.html';
-      return ''; // ✅ return empty string so no innerHTML error
-
-    case 'internal-test':
-      location.href = 'internal-tests.html';
-      return '';
-
-    case 'old-papers':
-      location.href = 'old-papers.html';
-      return '';
-
-    case 'important-tests':
-      return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">High-yield quick tests to strengthen weak areas.</p>`;
-
-    case 'digital-zone':
-      location.href = 'digital-learning.html';
-      return '';
-
-    case 'ai-skill-bot':
-      location.href = 'ai-skill-bot.html'; // ✅ now it will work fine
-      return '';
-
-    case 'common-test':
-      return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test. Recommended before final exam.</p>`;
-
-    case 'schedule':
-      return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests schedule.</p>`;
-
-    case 'contact':
-      return `<h2>📞 Contact & Support</h2><p class="lead">Contact your trainer or admin for help.</p><p>Director: Atendra Sharma — 9929856121</p>`;
-
-    default:
-      return `<p>Module not found.</p>`;
+    case 'book-chapters':location.href='book-chapters.html';return'';
+    case 'internal-test':location.href='internal-tests.html';return'';
+    case 'old-papers':location.href='old-papers.html';return'';
+    case 'important-tests':return `<h2>💡 RS-CIT Important Tests</h2><p class="lead">Quick tests to strengthen weak areas.</p>`;
+    case 'digital-zone':location.href='digital-learning.html';return'';
+    case 'ai-skill-bot':location.href='ai-skill-bot.html';return'';
+    case 'common-test':return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test before final exam.</p>`;
+    case 'schedule':return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests.</p>`;
+    case 'contact':return `<h2>📞 Contact</h2><p class="lead">Director: Atendra Sharma — 9929856121</p>`;
+    default:return `<p>Module not found.</p>`;
   }
 }
-
-  </script>
-
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
