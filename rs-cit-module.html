@@ -277,9 +277,9 @@ footer{
   </section>
   <section id="contentArea" class="card" style="display:none"></section>
 </main>
-
 <footer>@ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal</footer>
-
+  
+<script src="protect.js"></script>
 <script>
 if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
 const userData=JSON.parse(localStorage.getItem("userData")||"null");
@@ -320,3 +320,4 @@ function renderModule(key){
 </script>
 </body>
 </html>
+
