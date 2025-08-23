@@ -161,14 +161,14 @@
 </header>
 
 <main>
-  <h2>Learning Topics</h2>
+  <h2>Digital Learning Zone Topics</h2>
   <div class="btn-grid" id="topicList"></div>
 </main>
 
 <footer>
   &copy; 2025 Sunshine Institute · Digital Learning Zone
 </footer>
-
+<script src="protect.js"></script>
 <script>
   // ✅ Login Check
   const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -217,10 +217,17 @@
     location.href = "digital-exam-screen.html";
   }
 
-  function logoutUser() {
+   // ✅ Logout User
+    function logoutUser() {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData && userData.username) {
+      const logoutUrl = `${BASE_URL}?action=logout&username=${encodeURIComponent(userData.username)}`;
+      fetch(logoutUrl).catch(err => console.error("Logout error:", err));
+    }
     localStorage.clear();
     location.replace("login.html");
   }
 </script>
 </body>
 </html>
+
