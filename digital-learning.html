@@ -3,70 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Learning Zone</title>
+  <title>Digital Learning Zone — Sunshine Institute</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #f0f4ff, #ffffff);
+    :root{
+      --primary:#0d1b4c;
+      --secondary:#f8bbd0;
+      --accent:#e91e63;
+      --bg:#fff;
+      --muted:#6b7280;
+      --radius:12px;
     }
-    header {
-      background-color: #1976d2;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',sans-serif;
+      background:linear-gradient(180deg,#f7f9fc 0%,#ffffff 70%);
+      color:var(--primary);
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
     }
-    .back-btn {
-      background: #ef5350;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      font-size: 14px;
-      border-radius: 5px;
-      cursor: pointer;
+
+    /* ===== HEADER ===== */
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      position:sticky;
+      top:0;
+      z-index:1000;
+      flex-wrap:wrap;
+      gap:10px;
     }
-    main {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
+    .logo-row{
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 25px;
+    .logo-row img{height:38px;}
+    .home-btn, .back-btn, .logout-btn{
+      background:var(--secondary);
+      color:var(--primary);
+      border:none;
+      padding:6px 12px;
+      font-size:14px;
+      font-weight:600;
+      border-radius:8px;
+      cursor:pointer;
+      transition:.3s;
     }
+    .home-btn:hover, .back-btn:hover, .logout-btn:hover{
+      background:var(--accent);
+      color:#fff;
+    }
+
+    .title-tagline{
+      flex:1;
+      text-align:center;
+    }
+    .title-tagline span{
+      display:block;
+      font-weight:600;
+      font-size:18px;
+    }
+    .title-tagline .tagline{
+      font-size:13px;
+      color:var(--secondary);
+      margin-top:2px;
+    }
+
+    .nav-controls{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .welcome{font-size:14px;font-weight:500;}
+
+    /* ===== MAIN CONTENT ===== */
+    main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1}
+    h2{font-size:22px;margin:0 0 18px;color:var(--accent);text-align:center}
+
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 15px;
     }
     .module-btn {
-      background: white;
-      border: 2px solid #1976d2;
+      background: var(--bg);
+      border: 2px solid var(--primary);
       padding: 12px;
       font-size: 14px;
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: var(--radius);
       cursor: pointer;
       transition: all 0.3s;
       text-align: left;
     }
     .module-btn:hover {
-      background: #1976d2;
+      background: var(--accent);
       color: white;
+    }
+
+    /* ===== FOOTER ===== */
+    footer{
+      background:var(--primary);
+      color:#fff;
+      text-align:center;
+      padding:10px;
+      font-size:13px;
+      margin-top:auto;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      header{
+        flex-direction: column;
+        align-items: center;
+        text-align:center;
+      }
+      .logo-row{
+        justify-content:center;
+      }
+      .title-tagline span{
+        font-size:16px;
+      }
+      .title-tagline .tagline{
+        font-size:12px;
+      }
+      .nav-controls{
+        justify-content:center;
+      }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div>📖 Digital Learning Zone</div>
-  <div>
-    <span id="username"></span>
+  <div class="logo-row">
+    <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+  <div class="title-tagline">
+    <span>Sunshine Computer Training & STENO Classes, Bayana</span>
+    <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+  </div>
+  <div class="nav-controls">
+    <span class="welcome" id="username"></span>
     <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="logout-btn" onclick="logoutUser()">🚪 Logout</button>
   </div>
 </header>
 
@@ -75,23 +165,21 @@
   <div class="btn-grid" id="topicList"></div>
 </main>
 
+<footer>
+  &copy; 2025 Sunshine Institute · Digital Learning Zone
+</footer>
+
 <script>
   // ✅ Login Check
   const isLoggedIn = localStorage.getItem("isLoggedIn");
-  if (isLoggedIn !== "true") {
-    location.replace("login.html");
-  }
+  if (isLoggedIn !== "true") location.replace("login.html");
 
-  // ✅ Username & Fullname from userData
   const userData = JSON.parse(localStorage.getItem("userData"));
   const username = userData?.username || "guest";
   const fullname = userData?.fullname || "";
 
-  if (fullname) {
-    document.getElementById("username").textContent = `Welcome, ${fullname}`;
-  }
+  if (fullname) document.getElementById("username").textContent = `Welcome, ${fullname}!`;
 
-  // ✅ Topic List
   const topics = [
     { title: "1. Introduction to Computer", code: "T21" },
     { title: "2. Computer System", code: "T22" },
@@ -119,17 +207,19 @@
     topicList.appendChild(btn);
   });
 
-  // ✅ Back Button
-  function goBack() {
-    location.href = "rs-cit-module.html";
+  function goHome(){ location.href="dashboard.html"; }
+  function goBack(){ location.href="rs-cit-module.html"; }
+
+  function startRscitTest(testCode, loadingMessage, mode, username, fullname){
+    localStorage.setItem("test_code", testCode);
+    localStorage.setItem("test_username", username);
+    localStorage.setItem("test_fullname", fullname);
+    location.href = "digital-exam-screen.html";
   }
 
-  // ✅ Start Test Function (final fixed)
-  function startRscitTest(testCode, loadingMessage, mode, username, fullname) {
-    localStorage.setItem("test_code", testCode);       // test code save
-    localStorage.setItem("test_username", username);   // username save
-    localStorage.setItem("test_fullname", fullname);   // fullname save
-    location.href = "digital-exam-screen.html";        // open test screen
+  function logoutUser() {
+    localStorage.clear();
+    location.replace("login.html");
   }
 </script>
 </body>
