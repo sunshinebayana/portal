@@ -7,12 +7,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      background: linear-gradient(135deg, #f9f9f9, #f3e7ff);
       margin: 0;
       padding: 0;
     }
     header {
-      background: #1976d2;
+      background: linear-gradient(90deg, #7b2ff7, #f107a3);
       color: #fff;
       padding: 10px 20px;
       font-size: 18px;
@@ -30,8 +30,8 @@
       margin: 30px auto;
       background: #fff;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(123, 47, 247, 0.2);
       position: relative;
     }
     .close-btn {
@@ -39,7 +39,7 @@
       top: -14px;
       right: -14px;
       background: #fff;
-      color: #1976d2;
+      color: #7b2ff7;
       font-size: 18px;
       border: 1px solid #ccc;
       border-radius: 50%;
@@ -52,9 +52,9 @@
       transition: all 0.2s ease;
     }
     .close-btn:hover {
-      background: #f5f5f5;
-      color: #d32f2f;
-      border-color: #d32f2f;
+      background: #fce4ec;
+      color: #f107a3;
+      border-color: #f107a3;
     }
     .top-info-row {
       display: flex;
@@ -62,15 +62,15 @@
       align-items: center;
       margin-bottom: 10px;
       font-size: 14px;
-      color: #555;
+      color: #444;
       font-weight: bold;
     }
     #timerDisplay {
       font-weight: bold;
       background: rgba(255,255,255,0.8);
       padding: 5px 10px;
-      border-radius: 4px;
-      color: #1976d2;
+      border-radius: 6px;
+      color: #7b2ff7;
       font-size: 16px;
     }
     .quiz-indicator-row {
@@ -78,7 +78,7 @@
       justify-content: space-between;
       align-items: center;
       font-size: 14px;
-      color: #555;
+      color: #666;
       margin-top: 10px;
       margin-bottom: 10px;
     }
@@ -90,12 +90,16 @@
     }
     .options label {
       display: block;
-      background: #f1f1f1;
+      background: #f3e5f5;
       padding: 8px;
       margin: 6px 0;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       text-align: left;
+      transition: background 0.2s ease;
+    }
+    .options label:hover {
+      background: #e1bee7;
     }
     .options label.correct {
       background: #c8e6c9 !important;
@@ -111,20 +115,21 @@
     button {
       padding: 8px 16px;
       border: none;
-      border-radius: 4px;
-      background: #1976d2;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #7b2ff7, #f107a3);
       color: white;
       font-size: 14px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
     button:hover {
-      background: #125aa0;
+      background: linear-gradient(90deg, #6a11cb, #b91372);
     }
     .loading {
       text-align: center;
       font-size: 16px;
       padding: 20px;
-      color: #1976d2;
+      color: #7b2ff7;
     }
     .question-nav {
       display: flex;
@@ -136,15 +141,18 @@
     .question-btn {
       width: 32px;
       height: 32px;
-      border: 1px solid #1976d2;
-      background: #f1f1f1;
-      color: #1976d2;
+      border: 1px solid #7b2ff7;
+      background: #f3e5f5;
+      color: #7b2ff7;
       text-align: center;
       line-height: 30px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.2s ease;
+      transition: all 0.2s ease;
+    }
+    .question-btn:hover {
+      background: #e1bee7;
     }
     .question-btn.attempted {
       background: #4caf50;
