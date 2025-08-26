@@ -172,6 +172,8 @@
   <div id="quizArea" class="loading">⏳ Please wait...</div>
   <div id="questionNav" class="question-nav"></div>
 </div>
+  <!-- ✅ Protect file include -->
+<script src="protect.js"></script>
 <script>
   const code = localStorage.getItem("test_code") || "";
   const username = (localStorage.getItem("test_username") || "").trim();
@@ -341,15 +343,13 @@
     }
   }
 
-  const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
-  function initTest() {
+   function initTest() {
     if (!username) {
       document.getElementById("quizArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
       return;
     }
 
-    fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+     fetch(`${BASE_URL}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
