@@ -5,42 +5,220 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>RS-CIT Test Screen</title>
   <style>
-    body{font-family:Arial,sans-serif;background:#f9f9f9;margin:0;padding:0}
-    header{background:#1976d2;color:#fff;padding:10px 20px;font-size:18px;display:flex;flex-direction:column;gap:5px}
-    .exam-name{font-size:20px;font-weight:bold;text-transform:uppercase}
-    .container{max-width:700px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1);position:relative}
-    .close-btn{position:absolute;top:-14px;right:-14px;background:#fff;color:#1976d2;font-size:18px;border:1px solid #ccc;border-radius:50%;width:30px;height:30px;line-height:28px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:.2s}
-    .close-btn:hover{background:#f5f5f5;color:#d32f2f;border-color:#d32f2f}
-    .top-info-row,.quiz-indicator-row{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#555;margin:10px 0;font-weight:bold}
-    #timerDisplay{font-weight:bold;background:rgba(255,255,255,.8);padding:5px 10px;border-radius:4px;color:#1976d2;font-size:16px}
-    .question{font-size:16px;font-weight:bold;margin-bottom:10px;text-align:left}
-    .options label{display:block;background:#f1f1f1;padding:8px;margin:6px 0;border-radius:4px;cursor:pointer;text-align:left}
-    .button-row{display:flex;justify-content:space-between;margin-top:10px}
-    button{padding:8px 16px;border:none;border-radius:4px;background:#1976d2;color:#fff;font-size:14px;cursor:pointer}
-    button:hover{background:#125aa0}
-    .message{text-align:center;color:red;margin-top:10px;font-weight:bold}
-    .loading{text-align:center;font-size:16px;padding:20px;color:#1976d2}
-    .question-nav{display:flex;flex-wrap:wrap;gap:5px;margin-top:15px;justify-content:center}
-    .question-btn{width:32px;height:32px;border:1px solid #1976d2;background:#f1f1f1;color:#1976d2;text-align:center;line-height:30px;border-radius:4px;cursor:pointer;font-weight:bold;transition:.2s}
-    .question-btn:hover{background:#e0e0e0}
-    .question-btn.attempted{background:#4caf50;color:#fff;border-color:#4caf50}
-    .confirm-box{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:1000}
-    .confirm-content{background:#fff;padding:20px;border-radius:8px;text-align:center;width:300px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-    .confirm-content p{margin-bottom:15px;font-size:16px;font-weight:bold}
-    .confirm-buttons{display:flex;justify-content:space-around}
-    .confirm-buttons button{flex:1;margin:0 5px}
-    .scoreboard{max-width:600px;margin:10px auto;background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);text-align:left;animation:fadeIn .5s ease}
-    .scoreboard h2{text-align:center;margin-bottom:20px;color:#1976d2}
-    .score-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
-    .score-item:last-child{border-bottom:none}
-    .score-label{font-weight:bold;color:#444}
-    .score-value{color:#1976d2}
-    .score-result.pass{color:#4caf50;font-weight:bold}
-    .score-result.fail{color:#d32f2f;font-weight:bold}
-    .score-close{text-align:center;margin-top:20px}
-    .score-close button{background:#d32f2f}
-    .score-close button:hover{background:#b71c1c}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdeff4; /* light pink background */
+      margin: 0;
+      padding: 0;
+      color: #1a1a2e;
+    }
+    header {
+      background: #112d4e; /* navy blue */
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .exam-name {
+      font-size: 22px;
+      text-transform: uppercase;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      background: #fff;
+      color: #112d4e;
+      font-size: 18px;
+      border: 2px solid #112d4e;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      line-height: 28px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      transition: 0.2s;
+    }
+    .close-btn:hover {
+      background: #fdeff4;
+      color: #d63484;
+      border-color: #d63484;
+    }
+    .top-info-row, .quiz-indicator-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #333;
+      margin: 12px 0;
+      font-weight: bold;
+    }
+    #timerDisplay {
+      font-weight: bold;
+      background: #fdeff4;
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: #112d4e;
+      font-size: 16px;
+    }
+    .question {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .options label {
+      display: block;
+      background: #fce4ec;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      border: 1px solid #f8bbd0;
+      transition: 0.3s;
+    }
+    .options label:hover {
+      background: #f8bbd0;
+      color: #fff;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      background: #112d4e;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #3f72af;
+    }
+    .message {
+      text-align: center;
+      color: #d63484;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .loading {
+      text-align: center;
+      font-size: 16px;
+      padding: 20px;
+      color: #112d4e;
+    }
+    .question-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 15px;
+      justify-content: center;
+    }
+    .question-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #112d4e;
+      background: #fff;
+      color: #112d4e;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .question-btn:hover {
+      background: #fdeff4;
+    }
+    .question-btn.attempted {
+      background: #4caf50;
+      color: #fff;
+      border-color: #4caf50;
+    }
+    .confirm-box {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .confirm-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.3);
+    }
+    .confirm-content p {
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .confirm-buttons {
+      display: flex;
+      justify-content: space-around;
+    }
+    .confirm-buttons button {
+      flex: 1;
+      margin: 0 6px;
+    }
+    .scoreboard {
+      max-width: 600px;
+      margin: 12px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: left;
+      animation: fadeIn 0.5s ease;
+    }
+    .scoreboard h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #112d4e;
+    }
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .score-item:last-child { border-bottom: none; }
+    .score-label { font-weight: bold; color: #444; }
+    .score-value { color: #112d4e; }
+    .score-result.pass { color: #4caf50; font-weight: bold; }
+    .score-result.fail { color: #d63484; font-weight: bold; }
+    .score-close { text-align: center; margin-top: 20px; }
+    .score-close button { background: #d63484; }
+    .score-close button:hover { background: #a3124a; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -69,6 +247,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- ✅ Protect.js include -->
 <script src="protect.js"></script>
@@ -284,3 +463,4 @@ initTest();
 </script>
 </body>
 </html>
+
