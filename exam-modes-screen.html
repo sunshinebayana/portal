@@ -70,6 +70,9 @@
   </div>
 </div>
 
+<!-- ✅ Protect.js include -->
+<script src="protect.js"></script>
+
 <script>
 const code=localStorage.getItem("test_code")||"",
       mode=(localStorage.getItem("test_mode")||"").toLowerCase(),
@@ -175,11 +178,9 @@ function submitExam(){
   const mins=Math.floor(timeTakenMs/60000);
   const secs=Math.floor((timeTakenMs%60000)/1000);
 
-  // ✅ Current Date dd-mm-yyyy
   const today=new Date();
   const currentDate=`${String(today.getDate()).padStart(2,'0')}-${String(today.getMonth()+1).padStart(2,'0')}-${today.getFullYear()}`;
 
-  // ✅ Scoreboard UI
   document.getElementById("quizArea").innerHTML=`
     <div class="scoreboard">
       <h2>📊 Scoreboard</h2>
@@ -195,29 +196,27 @@ function submitExam(){
     </div>
   `;
 
-  // ✅ Append result to Google Sheet (exam mode only)
   if(mode === "exam") {
-  const resultPayload = new FormData();
-  resultPayload.append("action", "appendResult");
-  resultPayload.append("date", currentDate);
-  resultPayload.append("code", code);
-  resultPayload.append("username", username);
-  resultPayload.append("fullname", fullname);
-  resultPayload.append("result", result);
-  resultPayload.append("maxMarks", maxMarksCalc);
-  resultPayload.append("obtainedMarks", obtained);
-  resultPayload.append("totalQuestions", totalQ);
-  resultPayload.append("attempted", attemptedQ);
-  resultPayload.append("correctAnswers", correctAns);
-  resultPayload.append("examTime", testDuration);         // ✅ Added examTime
-  resultPayload.append("timeTaken", `${mins}m ${secs}s`);
+    const resultPayload = new FormData();
+    resultPayload.append("action", "appendResult");
+    resultPayload.append("date", currentDate);
+    resultPayload.append("code", code);
+    resultPayload.append("username", username);
+    resultPayload.append("fullname", fullname);
+    resultPayload.append("result", result);
+    resultPayload.append("maxMarks", maxMarksCalc);
+    resultPayload.append("obtainedMarks", obtained);
+    resultPayload.append("totalQuestions", totalQ);
+    resultPayload.append("attempted", attemptedQ);
+    resultPayload.append("correctAnswers", correctAns);
+    resultPayload.append("examTime", testDuration);
+    resultPayload.append("timeTaken", `${mins}m ${secs}s`);
 
-  fetch(backendUrl, { method: "POST", body: resultPayload })
-    .then(res => res.text())
-    .then(data => console.log("✅ Result saved:", data))
-    .catch(err => console.error("❌ Error saving result:", err));
-}
-
+    fetch(BASE_URL, { method: "POST", body: resultPayload })
+      .then(res => res.text())
+      .then(data => console.log("✅ Result saved:", data))
+      .catch(err => console.error("❌ Error saving result:", err));
+  }
 
   document.getElementById("quizIndicator").textContent="";
   document.getElementById("questionNav").innerHTML="";
@@ -249,14 +248,12 @@ function startTimer(mins){
 }
 
 /* ---------------- Backend Init ---------------- */
-const backendUrl="https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
-
 function initTest(){
   if(!username){
     document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
     return;
   }
-  fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+  fetch(`${BASE_URL}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
     if(!d.success){
       document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`;
@@ -287,5 +284,3 @@ initTest();
 </script>
 </body>
 </html>
-
-
