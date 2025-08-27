@@ -7,27 +7,29 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #ffeef5, #ffffff); /* light pink to white gradient */
       padding: 20px;
     }
 
     h2 {
       text-align: center;
+      color: #001f4d; /* navy blue */
     }
 
     form {
       max-width: 400px;
       margin: auto;
-      background: #fff;
+      background: #ffffff; /* white */
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 2px solid #001f4d15; /* subtle navy border */
     }
 
     input, select {
       padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+      margin-bottom: 12px;
+      border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 16px;
       width: 100%;
@@ -49,25 +51,36 @@
       transform: translateY(-50%);
       cursor: pointer;
       font-size: 18px;
+      color: #001f4d;
     }
 
     button {
       padding: 10px;
-      margin-top: 5px;
+      margin-top: 6px;
       font-size: 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
 
     button[type="submit"] {
-      background: #007BFF;
+      background: #001f4d; /* navy blue */
       color: white;
     }
 
+    button[type="submit"]:hover {
+      background: #003377;
+    }
+
     .alt-btn {
-      background: #6c757d;
-      color: white;
+      background: #ffb6c1; /* light pink button */
+      color: #001f4d;
+      font-weight: bold;
+    }
+
+    .alt-btn:hover {
+      background: #ff99ad;
     }
 
     .message {
@@ -97,8 +110,9 @@
     }
 
     .terms a {
-      color: blue;
+      color: #001f4d;
       text-decoration: underline;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -146,15 +160,13 @@
         <span onclick="toggleConfirmPassword()">👁️</span>
       </div>
 
-     <!-- Terms & Conditions - Single Line Display -->
-<div style="margin-top: 15px; display: flex; align-items: center; font-size: 15px; flex-wrap: nowrap;">
-  <input type="checkbox" id="agreeTerms" style="transform: scale(1.2); margin-right: 8px;">
-  <label for="agreeTerms" style="white-space: nowrap;">
-    I have read and agree to&nbsp;
-    <a href="#" style="color: blue; text-decoration: underline;">Terms</a>
-  </label>
-</div>
-
+      <div style="margin-top: 15px; display: flex; align-items: center; font-size: 15px; flex-wrap: nowrap;">
+        <input type="checkbox" id="agreeTerms" style="transform: scale(1.2); margin-right: 8px;">
+        <label for="agreeTerms" style="white-space: nowrap;">
+          I have read and agree to&nbsp;
+          <a href="#">Terms</a>
+        </label>
+      </div>
 
       <div id="signupMessage" class="message"></div>
 
@@ -162,6 +174,7 @@
       <button type="button" class="alt-btn" onclick="showLogin()">Back to Login</button>
     </form>
   </div>
+
 <script src="protect.js"></script>
 <script>
    // ✅ Auto-login check
@@ -360,4 +373,5 @@
     });
   }
 </script>
+
 
