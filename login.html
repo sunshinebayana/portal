@@ -22,10 +22,11 @@
       display:flex;
       flex-direction:column;
       min-height:100vh;
+      padding-top: 70px;   /* 🔹 Yeh line add karo */
     }
 
     /* ✅ Header Styles */
-  header {
+header {
   background: var(--primary);
   color: #fff;
   padding: 10px 16px;
@@ -33,13 +34,16 @@
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  position: sticky;
-  top: 0;
+  position: fixed;   /* 🔹 fixed kar diya */
+  top: 0;            /* 🔹 top se chipak gaya */
+  left: 0;
+  right: 0;
   z-index: 1000;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 0;   /* 🔹 Top margin removed */
+  margin-top: 0;     /* 🔹 koi gap nahi */
 }
+
 
 .logo-row img {
   height: 38px;
@@ -468,4 +472,5 @@
 </script>
 </body>
 </html>
+
 
