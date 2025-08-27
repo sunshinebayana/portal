@@ -111,13 +111,11 @@
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
 </div>
-
+<script src="protect.js"></script>
 <script>
 const code = localStorage.getItem("test_code")||"",
       username = (localStorage.getItem("test_username")||"").trim(),
       fullname = localStorage.getItem("test_fullname")||"";
-
-const backendUrl = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
 
 const ChatBot = (() => {
   let questions = [], currentIndex = 0, score = 0, attempted = 0, correct = 0;
@@ -305,7 +303,7 @@ const ChatBot = (() => {
 
 function initTest(){
   if(!username){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">❌ User not found. Please login again.</h3>`; return; }
-  fetch(`${backendUrl}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
+  fetch(`${BASE_URL}?action=starttestwithpaymentcheck&username=${encodeURIComponent(username)}&testCode=${encodeURIComponent(code)}`)
   .then(r=>r.json()).then(d=>{
     if(!d.success){ document.getElementById("quizArea").innerHTML=`<h3 style="color:red;">⚠ ${d.message||"Error starting test."}</h3>`; return; }
 
