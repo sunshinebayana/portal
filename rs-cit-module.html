@@ -23,106 +23,6 @@ body{
   min-height:100vh;
 }
 
-
-
-/* ===== HEADER ===== */
-header{
-  background:var(--primary);
-  color:#fff;
-  padding:8px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-.logo-row{
-  display:flex;
-  align-items:center;
-  gap:70px;
-}
-.logo-row img{height:40px;}
-.home-btn{
-  background:var(--secondary);
-  color:var(--primary);
-  border:none;
-  padding:6px 12px;
-  font-size:14px;
-  font-weight:600;
-  border-radius:8px;
-  cursor:pointer;
-  transition:.3s;
-}
-.home-btn:hover{background:var(--accent);color:#fff;}
-.title-tagline{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  text-align:center;
-}
-.title-tagline span{
-  display:block;
-  font-weight:600;
-  font-size:18px;
-}
-.title-tagline .tagline{
-  font-size:13px;
-  color:var(--secondary);
-  margin-top:4px;
-}
-.nav-controls{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.btn{
-  background:var(--secondary);
-  color:var(--primary);
-  border:none;
-  padding:6px 12px;
-  font-size:13px;
-  font-weight:600;
-  border-radius:8px;
-  cursor:pointer;
-  transition:.3s;
-}
-.btn:hover{background:var(--accent);color:#fff;}
-.welcome{font-size:14px;font-weight:500;}
-
-/* ===== Dropdown Menu Styling ===== */
-.menu-dropdown {
-  position: relative;
-  display: inline-block;
-}
-.menu-dropdown .dropdown-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  background: #fff;
-  min-width: 140px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  z-index: 1001;
-}
-.menu-dropdown .dropdown-content a {
-  display: block;
-  padding: 10px 14px;
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 14px;
-  transition: background .2s;
-}
-.menu-dropdown .dropdown-content a:hover {
-  background: var(--secondary);
-  color: var(--primary);
-}
-.menu-dropdown:hover .dropdown-content {
-  display: block;
-}
-
 /* ===== MAIN CONTENT ===== */
 main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
 .card{
@@ -170,52 +70,11 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
   padding:10px;border-radius:8px;border:1px dashed rgba(25,118,210,0.12);
   background:#fbfcff;display:flex;justify-content:space-between;align-items:center
 }
-
-/* ===== FOOTER ===== */
-footer{
-  background:var(--primary);
-  color:#fff;
-  text-align:center;
-  padding:10px;
-  font-size:13px;
-  margin-top:auto;
-}
-
-/* Responsive */
-@media(max-width:768px){
- header{flex-direction:column;align-items:center;position:relative;text-align:center}
- .title-tagline{position:static;transform:none;margin:8px 0}
- .home-btn{display:none;}
- .nav-controls{width:100%;justify-content:center;margin-top:5px}
-}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-row">
-    <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-    <button class="home-btn" onclick="goHome()">🏠 Home</button>
-  </div>
-  <div class="title-tagline">
-    <span>Sunshine Computer Training & STENO Classes, Bayana</span>
-    <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
-  </div>
-  <div class="nav-controls">
-    <span class="welcome" id="welcomeSmall">Welcome, User</span>
-    <!-- Back Button -->
-    <button class="btn ghost" onclick="goBack()">⬅ Back</button>
-    <!-- Menu Button -->
-    <div class="menu-dropdown">
-      <button class="btn primary">☰ Menu</button>
-      <div class="dropdown-content">
-        <a href="#" onclick="openProfile()">👤 Profile</a>
-        <a href="#" onclick="openSettings()">⚙ Settings</a>
-        <a href="#" onclick="logout()">🚪 Logout</a>
-      </div>
-    </div>
-  </div>
-</header>
+<header id="header"></header>
 
 <main>
   <section class="card">
@@ -279,24 +138,19 @@ footer{
   </section>
   <section id="contentArea" class="card" style="display:none"></section>
 </main>
-<footer>@ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal</footer>
+
+<footer id="footer"></footer>
   
 <script src="protect.js"></script>
 <script>
 if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
-const userData=JSON.parse(localStorage.getItem("userData")||"null");
-if(userData?.fullname){document.getElementById("welcomeSmall").textContent=`Welcome, ${userData.fullname}`;}
 
-function goHome(){location.href="dashboard.html";}
-function goBack(){location.replace('dashboard.html');}
+function goBack(){location.href="rs-cit-module.html";}
+
 function openResult(){location.href='results.html';}
 
 function openProfile(){alert("Profile Page Open होगा");}
 function openSettings(){alert("Settings Page Open होगा");}
-function logout(){
-  localStorage.clear();
-  location.replace("login.html");
-}
 
 function openModule(key){
   const area=document.getElementById('contentArea');
@@ -320,8 +174,6 @@ function renderModule(key){
   }
 }
 </script>
+<script src="header-footer.js"></script>
 </body>
 </html>
-
-
-
