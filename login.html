@@ -25,37 +25,45 @@
     }
 
     /* ✅ Header Styles */
-    header{
-      background:var(--primary);
-      color:#fff;
-      padding:10px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      box-shadow:0 2px 6px rgba(0,0,0,0.15);
-      position:sticky;
-      top:0;
-      z-index:1000;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-    .logo-row{display:flex;align-items:center;gap:12px;}
-    .logo-row img{height:38px;}
-    .home-btn{
-      background:var(--secondary);
-      color:var(--primary);
-      border:none;
-      padding:6px 12px;
-      font-size:14px;
-      font-weight:600;
-      border-radius:8px;
-      cursor:pointer;
-      transition:.3s;
-    }
-    .home-btn:hover{background:var(--accent);color:#fff;}
-    .title-tagline{flex:1;text-align:center;}
-    .title-tagline span{display:block;font-weight:600;font-size:18px;}
-    .title-tagline .tagline{font-size:13px;color:var(--secondary);margin-top:2px;}
+  header {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0;   /* 🔹 Top margin removed */
+}
+
+.logo-row img {
+  height: 38px;
+}
+
+.title-tagline {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* Title center me rahega */
+  gap: 15px;
+}
+
+.title-tagline span {
+  display: block;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.title-tagline .tagline {
+  font-size: 13px;
+  color: var(--secondary);
+  margin-top: 2px;
+}
 
     /* ✅ Footer Styles */
     footer{
@@ -182,17 +190,19 @@
 </head>
 <body>
 
-  <!-- ✅ Header -->
-  <header>
-    <div class="logo-row">
-      <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-      <button class="home-btn" onclick="goHome()">🏠 Home</button>
-    </div>
-    <div class="title-tagline">
+<header>
+  <div class="logo-row">
+    <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+  </div>
+  <div class="title-tagline">
+    <div>
       <span>Sunshine Computer Training & STENO Classes, Bayana</span>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
-  </header>
+    <button class="home-btn" onclick="goHome()">🏠 Home</button>
+  </div>
+</header>
+
 
   <div id="loginMessage" class="message" style="display: none;"></div>
 
@@ -458,3 +468,4 @@
 </script>
 </body>
 </html>
+
