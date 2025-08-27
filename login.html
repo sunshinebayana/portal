@@ -5,25 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Login / Signup</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ffeef5, #ffffff); /* light pink to white gradient */
-      padding: 20px;
+    :root{
+      --primary:#0d1b4c;
+      --secondary:#f8bbd0;
+      --accent:#e91e63;
+      --bg:#fff;
+      --muted:#6b7280;
+      --radius:12px;
     }
 
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffeef5, #ffffff);
+      padding: 20px;
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+    }
+
+    /* ✅ Header Styles */
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      position:sticky;
+      top:0;
+      z-index:1000;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .logo-row{display:flex;align-items:center;gap:12px;}
+    .logo-row img{height:38px;}
+    .home-btn{
+      background:var(--secondary);
+      color:var(--primary);
+      border:none;
+      padding:6px 12px;
+      font-size:14px;
+      font-weight:600;
+      border-radius:8px;
+      cursor:pointer;
+      transition:.3s;
+    }
+    .home-btn:hover{background:var(--accent);color:#fff;}
+    .title-tagline{flex:1;text-align:center;}
+    .title-tagline span{display:block;font-weight:600;font-size:18px;}
+    .title-tagline .tagline{font-size:13px;color:var(--secondary);margin-top:2px;}
+
+    /* ✅ Footer Styles */
+    footer{
+      background:var(--primary);
+      color:#fff;
+      text-align:center;
+      padding:10px;
+      font-size:13px;
+      margin-top:auto;
+    }
+
+    @media (max-width: 600px) {
+      header{flex-direction: column;align-items: center;text-align:center;}
+      .logo-row{justify-content:center;}
+      .title-tagline span{font-size:16px;}
+      .title-tagline .tagline{font-size:12px;}
+    }
+
+    /* ✅ Form Styles */
     h2 {
       text-align: center;
-      color: #001f4d; /* navy blue */
+      color: #001f4d;
     }
 
     form {
       max-width: 400px;
       margin: auto;
-      background: #ffffff; /* white */
+      background: #ffffff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border: 2px solid #001f4d15; /* subtle navy border */
+      border: 2px solid #001f4d15;
     }
 
     input, select {
@@ -65,7 +129,7 @@
     }
 
     button[type="submit"] {
-      background: #001f4d; /* navy blue */
+      background: #001f4d;
       color: white;
     }
 
@@ -74,7 +138,7 @@
     }
 
     .alt-btn {
-      background: #ffb6c1; /* light pink button */
+      background: #ffb6c1;
       color: #001f4d;
       font-weight: bold;
     }
@@ -117,6 +181,18 @@
   </style>
 </head>
 <body>
+
+  <!-- ✅ Header -->
+  <header>
+    <div class="logo-row">
+      <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+    <div class="title-tagline">
+      <span>Sunshine Computer Training & STENO Classes, Bayana</span>
+      <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
+    </div>
+  </header>
 
   <div id="loginMessage" class="message" style="display: none;"></div>
 
@@ -175,9 +251,16 @@
     </form>
   </div>
 
+  <!-- ✅ Footer -->
+  <footer>
+    @ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal
+  </footer>
+
 <script src="protect.js"></script>
 <script>
-   // ✅ Auto-login check
+  function goHome(){ location.href = "dashboard.html"; }
+
+  // ✅ Auto-login check
   window.onload = function () {
     if (localStorage.getItem("isLoggedIn") === "true" && localStorage.getItem("userData")) {
       location.replace("dashboard.html");
@@ -373,5 +456,5 @@
     });
   }
 </script>
-
-
+</body>
+</html>
