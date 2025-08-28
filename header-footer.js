@@ -98,7 +98,13 @@ function loadFooter() {
 
 // ✅ Common Functions
 function goHome() { location.href = "dashboard.html"; }
-function goBack() { history.back(); }
+function goBack() {
+    history.back();
+    setTimeout(function() {
+        window.scrollTo(0, 0);
+    }, 100);
+}
+
 function logoutUser() {
   const userData = JSON.parse(localStorage.getItem("userData"));
   if (userData && userData.username) {
