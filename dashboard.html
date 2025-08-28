@@ -22,23 +22,8 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--primary)
   padding:20px 10px;
   box-shadow:2px 0 6px rgba(0,0,0,0.05);
 }
-.sidebar h3{
-  font-size:14px;
-  margin-bottom:15px;
-  color:var(--accent);
-  text-transform:uppercase;
-  letter-spacing:.5px;
-}
-.sidebar a{
-  display:block;
-  padding:10px 15px;
-  margin:5px 0;
-  color:var(--primary);
-  text-decoration:none;
-  border-radius:6px;
-  font-size:14px;
-  transition:.3s;
-}
+.sidebar h3{font-size:14px;margin-bottom:15px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;}
+.sidebar a{display:block;padding:10px 15px;margin:5px 0;color:var(--primary);text-decoration:none;border-radius:6px;font-size:14px;transition:.3s;}
 .sidebar a:hover{background:var(--secondary);color:var(--accent);}
 main{flex:1;padding:25px;}
 h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
@@ -60,7 +45,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 /* Message Box */
 #messageBox{
   position:fixed;
-  bottom:20px;
+  bottom:80px;
   left:50%;
   transform:translateX(-50%);
   background:var(--accent);
@@ -75,16 +60,65 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 
 /* MOBILE STYLES */
 @media(max-width:768px){
- .sidebar{display:none;}
- main{padding:15px;}
- h2{font-size:18px;}
+  .sidebar{display:none;}
+  main{padding:15px;}
+  h2{font-size:18px;}
+  
+  /* Mobile App Title Bar */
+  .mobile-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--primary);
+    color:#fff;
+    padding:12px 16px;
+    font-size:16px;
+    font-weight:600;
+  }
+  .mobile-header .menu-btn{
+    font-size:20px;
+    cursor:pointer;
+  }
+
+  /* Mobile Bottom Navigation */
+  .bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#fff;
+    border-top:1px solid #eee;
+    display:flex;
+    justify-content:space-around;
+    padding:8px 0;
+    box-shadow:0 -2px 6px rgba(0,0,0,0.1);
+    z-index:1000;
+  }
+  .bottom-nav a{
+    text-decoration:none;
+    color:var(--muted);
+    font-size:12px;
+    text-align:center;
+    flex:1;
+  }
+  .bottom-nav a i{
+    display:block;
+    font-size:20px;
+    margin-bottom:3px;
+  }
+  .bottom-nav a.active{color:var(--accent);}
 }
 </style>
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
-<!-- Header placeholder -->
-<header id="header"></header>
+<!-- Mobile Header -->
+<div class="mobile-header" style="display:none;">
+  <span>☀ Sunshine</span>
+  <span class="menu-btn"><i class="fas fa-bars"></i></span>
+</div>
 
 <div class="dashboard">
 <aside class="sidebar">
@@ -109,22 +143,9 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <div class="card"><h3>RSMSSB LDC</h3><p>Get ready for Rajasthan LDC recruitment.</p></div>
 <div class="card"><h3>REET (Main) Test</h3><p>Test your knowledge for REET exams.</p></div>
 <div class="card"><h3>चतुर्थ श्रेणी भर्ती</h3><p>Practice for Group-D job recruitment exams.</p></div>
-
-<!-- New Added Cards -->
-<div class="card">
-  <h3>Advance MS Excel</h3>
-  <p>Master Advanced MS Excel with AI in just 30 days through our crash course with premium support.</p>
-</div>
-
-<div class="card">
-  <h3>C Programming Language</h3>
-  <p>Learn the fundamentals of C Language programming in only 20 days with easy and practical methods.</p>
-</div>
-
-<div class="card">
-  <h3>Admin Control Panel</h3>
-  <p>Access the secure admin dashboard for managing institute operations and settings.</p>
-</div>
+<div class="card"><h3>Advance MS Excel</h3><p>Master Advanced MS Excel with AI in just 30 days.</p></div>
+<div class="card"><h3>C Programming Language</h3><p>Learn fundamentals of C in only 20 days.</p></div>
+<div class="card"><h3>Admin Control Panel</h3><p>Manage institute operations and settings.</p></div>
 </div>
 </main>
 </div>
@@ -132,8 +153,13 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <!-- Message Box -->
 <div id="messageBox">Ye feature abhi aapke liye available nahi hai. Isse use karne ke liye please apna plan upgrade karein. ✨</div>
 
-<!-- Footer placeholder -->
-<footer id="footer"></footer>
+<!-- Mobile Bottom Navigation -->
+<div class="bottom-nav" style="display:none;">
+  <a href="#" class="active"><i class="fas fa-home"></i>Home</a>
+  <a href="#"><i class="fas fa-keyboard"></i>Typing</a>
+  <a href="#"><i class="fas fa-microphone"></i>Steno</a>
+  <a href="#"><i class="fas fa-user"></i>Profile</a>
+</div>
 
 <script src="protect.js"></script>
 <script>
@@ -156,11 +182,13 @@ document.querySelectorAll(".card").forEach(card=>{
     card.addEventListener("click",showMessage);
   }
 });
-</script>
 
-<!-- Common Header/Footer Script -->
-<script src="header-footer.js"></script>
+// Detect Mobile and show app-like UI
+if(window.innerWidth<=768){
+  document.querySelector(".mobile-header").style.display="flex";
+  document.querySelector(".bottom-nav").style.display="flex";
+}
+</script>
 
 </body>
 </html>
-
