@@ -15,6 +15,18 @@
   --accent:#e91e63;
   --bg:#fff;
   --muted:#6b7280;
+
+  /* Icon Colors */
+  --icon1:#3f51b5;
+  --icon2:#009688;
+  --icon3:#ff5722;
+  --icon4:#9c27b0;
+  --icon5:#4caf50;
+  --icon6:#f44336;
+  --icon7:#2196f3;
+  --icon8:#ff9800;
+  --icon9:#673ab7;
+  --icon10:#607d8b;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--primary);display:flex;flex-direction:column;min-height:100vh;}
@@ -58,9 +70,21 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
   transition:.3s;
 }
 .card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(13,27,76,0.2);}
-.card h3{font-size:16px;color:var(--primary);margin-top:8px;}
+.card h3{font-size:16px;color:var(--primary);margin-top:10px;}
 .card p{font-size:13px;color:var(--muted);}
-.card .material-icons{font-size:36px;color:var(--accent);}
+
+/* Icon Circle Style */
+.icon-circle{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto;
+  color:#fff;
+}
+.icon-circle .material-icons{font-size:28px;}
 
 /* Message Box */
 #messageBox{
@@ -88,7 +112,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
  .card-grid{
    display:grid;
    grid-template-columns:repeat(3,1fr);
-   gap:12px;
+   gap:15px;
  }
  .card{
    border-radius:20px;
@@ -106,7 +130,11 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
    text-align:center;
  }
  .card p{display:none;} /* hide description on mobile */
- .card .material-icons{font-size:40px;}
+ .icon-circle{
+   width:65px;
+   height:65px;
+ }
+ .icon-circle .material-icons{font-size:30px;}
 }
 </style>
 </head>
@@ -133,61 +161,81 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <div class="card-grid">
 
 <div class="card" onclick="location.href='rs-cit-module.html'">
-  <span class="material-icons">menu_book</span>
+  <div class="icon-circle" style="background:var(--icon1);">
+    <span class="material-icons">menu_book</span>
+  </div>
   <h3>RS-CIT</h3>
   <p>Start your RS-CIT practice test now!</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">computer</span>
+  <div class="icon-circle" style="background:var(--icon2);">
+    <span class="material-icons">computer</span>
+  </div>
   <h3>Computer Efficiency</h3>
   <p>Practice to improve your computer skills.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">keyboard</span>
+  <div class="icon-circle" style="background:var(--icon3);">
+    <span class="material-icons">keyboard</span>
+  </div>
   <h3>Typing Tutor</h3>
   <p>Boost your typing speed and accuracy.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">mic</span>
+  <div class="icon-circle" style="background:var(--icon4);">
+    <span class="material-icons">mic</span>
+  </div>
   <h3>Stenographer</h3>
   <p>Prepare with dictation & shorthand modules.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">assignment</span>
+  <div class="icon-circle" style="background:var(--icon5);">
+    <span class="material-icons">assignment</span>
+  </div>
   <h3>RSMSSB LDC</h3>
   <p>Get ready for Rajasthan LDC recruitment.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">menu_book</span>
+  <div class="icon-circle" style="background:var(--icon6);">
+    <span class="material-icons">menu_book</span>
+  </div>
   <h3>REET (Main)</h3>
   <p>Test your knowledge for REET exams.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">build</span>
+  <div class="icon-circle" style="background:var(--icon7);">
+    <span class="material-icons">build</span>
+  </div>
   <h3>Class IV</h3>
   <p>Practice for Group-D job recruitment exams.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">table_chart</span>
+  <div class="icon-circle" style="background:var(--icon8);">
+    <span class="material-icons">table_chart</span>
+  </div>
   <h3>MS Excel</h3>
   <p>Master Advanced MS Excel in 30 days.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">code</span>
+  <div class="icon-circle" style="background:var(--icon9);">
+    <span class="material-icons">code</span>
+  </div>
   <h3>C Language</h3>
   <p>Learn the fundamentals of C Language programming.</p>
 </div>
 
 <div class="card">
-  <span class="material-icons">settings</span>
+  <div class="icon-circle" style="background:var(--icon10);">
+    <span class="material-icons">settings</span>
+  </div>
   <h3>Admin Panel</h3>
   <p>Access the secure admin dashboard.</p>
 </div>
