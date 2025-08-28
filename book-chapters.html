@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📘 RS-CIT Book Chapter Tests — Sunshine Institute</title>
+
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
   <style>
     :root{
       --primary:#0d1b4c;
@@ -80,6 +84,10 @@
     .feature-btn .icon {
       font-size: 34px;
       margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .feature-btn:hover .icon {
+      color: #fff;
     }
     .feature-btn span {
       font-size: 13px;
@@ -101,38 +109,38 @@
 
     <!-- Mode Toggle -->
     <div class="mode-toggle">
-      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
-      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
+      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')"><i class="fa-solid fa-pen"></i> Practice Mode</button>
+      <button id="examModeBtn" onclick="switchMode('exam')"><i class="fa-solid fa-flask"></i> Exam Mode</button>
     </div>
 
     <!-- Mobile App Style Buttons -->
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">
-        <div class="icon">💻</div>
+        <div class="icon"><i class="fa-solid fa-computer"></i></div>
         Introduction to Computer
         <span>🔹T11</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T12')">
-        <div class="icon">🌐</div>
+        <div class="icon"><i class="fa-solid fa-globe"></i></div>
         Internet and Services
         <span>🔹T12</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T13')">
-        <div class="icon">📑</div>
+        <div class="icon"><i class="fa-solid fa-file-word"></i></div>
         MS Office & Tools
         <span>🔹T13</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T14')">
-        <div class="icon">🔒</div>
+        <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
         Cyber Security
         <span>🔹T14</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T15')">
-        <div class="icon">⚙️</div>
+        <div class="icon"><i class="fa-solid fa-gears"></i></div>
         IT Based Services
         <span>🔹T15</span>
       </button>
