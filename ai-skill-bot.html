@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📘 ai-skill-bot Tests</title>
+  <title>📘 AI-Skill-Bot Tests</title>
   <style>
     :root{
-      --primary:#0d1b4c;
-      --secondary:#f8bbd0;
-      --accent:#e91e63;
-      --bg:#fff;
-      --muted:#6b7280;
-      --radius:12px;
+      --primary:#14213d;       /* Deep Navy */
+      --accent:#e91e63;        /* Lovely Pink */
+      --secondary:#ffdde1;     /* Soft Peach/Pink */
+      --bg-gradient:linear-gradient(135deg,#fff0f5 0%, #ffe4ec 50%, #ffffff 100%);
+      --radius:16px;
+      --shadow:0 6px 18px rgba(0,0,0,0.12);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
       font-family:'Segoe UI',sans-serif;
-      background:linear-gradient(180deg,#f7f9fc 0%,#ffffff 70%);
+      background:var(--bg-gradient);
       color:var(--primary);
       display:flex;
       flex-direction:column;
@@ -27,31 +27,31 @@
     header{
       background:var(--primary);
       color:#fff;
-      padding:10px 16px;
+      padding:12px 16px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      flex-wrap:wrap;
+      gap:10px;
       position:sticky;
       top:0;
       z-index:1000;
-      flex-wrap:wrap;
-      gap:10px;
+      box-shadow:0 3px 8px rgba(0,0,0,0.2);
     }
     .logo-row{
       display:flex;
       align-items:center;
       gap:12px;
     }
-    .logo-row img{height:38px;}
+    .logo-row img{height:40px;}
     .home-btn{
-      background:var(--secondary);
+      background:#fff;
       color:var(--primary);
       border:none;
-      padding:6px 12px;
+      padding:6px 14px;
       font-size:14px;
       font-weight:600;
-      border-radius:8px;
+      border-radius:var(--radius);
       cursor:pointer;
       transition:.3s;
     }
@@ -63,13 +63,13 @@
     }
     .title-tagline span{
       display:block;
-      font-weight:600;
+      font-weight:700;
       font-size:18px;
     }
     .title-tagline .tagline{
       font-size:13px;
       color:var(--secondary);
-      margin-top:2px;
+      margin-top:3px;
     }
 
     .nav-controls{
@@ -80,13 +80,13 @@
       justify-content:center;
     }
     .btn{
-      background:var(--secondary);
+      background:#fff;
       color:var(--primary);
       border:none;
-      padding:6px 12px;
+      padding:6px 14px;
       font-size:13px;
       font-weight:600;
-      border-radius:8px;
+      border-radius:var(--radius);
       cursor:pointer;
       transition:.3s;
     }
@@ -94,31 +94,33 @@
     .welcome{font-size:14px;font-weight:500;}
 
     /* ===== MAIN CONTENT ===== */
-    main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1}
-    h2{font-size:22px;margin:0 0 18px;color:var(--accent);text-align:center}
+    main{max-width:1000px;margin:28px auto;padding:0 16px;flex:1;text-align:center;}
+    h2{font-size:24px;margin:0 0 24px;color:var(--accent);}
 
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      gap: 20px;
     }
     .feature-btn {
-      background: white;
-      border: 2px solid var(--primary);
+      background: rgba(255,255,255,0.85);
+      border: 2px solid #fff;
       color: var(--primary);
-      padding: 18px 15px;
+      padding: 20px 18px;
       font-size: 15px;
       font-weight: 600;
-      border-radius: 12px;
+      border-radius: var(--radius);
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      transition: all 0.35s ease;
       text-align: left;
     }
     .feature-btn:hover {
-      background-color: var(--accent);
+      background: var(--accent);
       color: white;
-      transform: translateY(-3px);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow:0 10px 25px rgba(233,30,99,0.35);
     }
     .feature-btn span {
       float: right;
@@ -130,30 +132,17 @@
       background:var(--primary);
       color:#fff;
       text-align:center;
-      padding:10px;
+      padding:12px;
       font-size:13px;
       margin-top:auto;
     }
 
-    /* ===== MOBILE RESPONSIVE ===== */
+    /* ===== MOBILE ===== */
     @media (max-width: 600px) {
-      header{
-        flex-direction: column;
-        align-items: center;
-        text-align:center;
-      }
-      .logo-row{
-        justify-content:center;
-      }
-      .title-tagline span{
-        font-size:16px;
-      }
-      .title-tagline .tagline{
-        font-size:12px;
-      }
-      .nav-controls{
-        justify-content:center;
-      }
+      header{flex-direction:column;text-align:center;}
+      .logo-row{justify-content:center;}
+      .title-tagline span{font-size:16px;}
+      .title-tagline .tagline{font-size:12px;}
     }
   </style>
 </head>
@@ -176,7 +165,7 @@
   </header>
 
   <main>
-    <h2>📘 Choose Your AI-Powered RS-CIT Test</h2>
+    <h2>💖 Choose Your AI-Powered RS-CIT Test</h2>
 
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T91')">AI-Skill-Bot RS-CIT Test -1 <span>🔹T91</span></button>
@@ -190,46 +179,45 @@
   <footer>
     &copy; 2025 Sunshine Institute · AI-Skill-Bot RS-CIT Tests
   </footer>
+
 <script src="protect.js"></script>
-  <script>
-    // ✅ Default Mode (practice)
-    let selectedMode = "practice";
+<script>
+  // ✅ Default Mode
+  let selectedMode = "practice";
 
-    // ✅ Prevent Direct Access
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
+  // ✅ Prevent Direct Access
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  if (isLoggedIn !== "true") {
+    location.replace("login.html");
+  }
 
-    // ✅ Set Welcome Message
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData && userData.fullname) {
-      document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
-    }
+  // ✅ Welcome Message
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  if (userData && userData.fullname) {
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+  }
 
-    function goHome(){ location.href="dashboard.html"; }
-    function goBack(){ location.href="rs-cit-module.html"; }
+  function goHome(){ location.href="dashboard.html"; }
+  function goBack(){ location.href="rs-cit-module.html"; }
 
-    // ✅ Start Test
-    function startTest(code) {
-      const username = userData?.username || "guest";
-      const fullname = userData?.fullname || "Guest User";
-      startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
-    }
+  // ✅ Start Test
+  function startTest(code) {
+    const username = userData?.username || "guest";
+    const fullname = userData?.fullname || "Guest User";
+    startRscitTest(code, `Loading ${code}_RSCIT...`, selectedMode, username, fullname);
+  }
 
-    // ✅ Actual Test Starter (Updated for new file)
-    function startRscitTest(code, message, mode, username, fullname) {
-      localStorage.setItem("test_code", code);
-      localStorage.setItem("test_message", message);
-      localStorage.setItem("test_mode", mode);
-      localStorage.setItem("test_username", username);
-      localStorage.setItem("test_fullname", fullname);
+  function startRscitTest(code, message, mode, username, fullname) {
+    localStorage.setItem("test_code", code);
+    localStorage.setItem("test_message", message);
+    localStorage.setItem("test_mode", mode);
+    localStorage.setItem("test_username", username);
+    localStorage.setItem("test_fullname", fullname);
+    location.href = "ai-exam-screen.html";
+  }
 
-      location.href = "ai-exam-screen.html";
-    }
-
-     // ✅ Logout User
-    function logoutUser() {
+  // ✅ Logout
+  function logoutUser() {
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData && userData.username) {
       const logoutUrl = `${BASE_URL}?action=logout&username=${encodeURIComponent(userData.username)}`;
@@ -238,7 +226,6 @@
     localStorage.clear();
     location.replace("login.html");
   }
-  </script>
-
+</script>
 </body>
 </html>
