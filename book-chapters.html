@@ -108,10 +108,14 @@
     .c4 { background: var(--c4); }
     .c5 { background: var(--c5); }
 
+    /* text + code same row */
     .btn-text {
       display:flex;
-      flex-direction:column;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
       font-size:15px;
+      font-weight:600;
     }
     .btn-text span {
       font-size:13px;
@@ -141,40 +145,35 @@
       <button class="feature-btn" onclick="startTest('T11')">
         <div class="icon c1"><i class="fa-solid fa-computer"></i></div>
         <div class="btn-text">
-          Introduction to Computer
-          <span>🔹T11</span>
+          📘 Introduction to Computer <span>🔹T11</span>
         </div>
       </button>
 
       <button class="feature-btn" onclick="startTest('T12')">
         <div class="icon c2"><i class="fa-solid fa-globe"></i></div>
         <div class="btn-text">
-          Internet and Services
-          <span>🔹T12</span>
+          🌐 Internet and Services <span>🔹T12</span>
         </div>
       </button>
 
       <button class="feature-btn" onclick="startTest('T13')">
         <div class="icon c3"><i class="fa-solid fa-file-word"></i></div>
         <div class="btn-text">
-          MS Office & Tools
-          <span>🔹T13</span>
+          📄 MS Office & Tools <span>🔹T13</span>
         </div>
       </button>
 
       <button class="feature-btn" onclick="startTest('T14')">
         <div class="icon c4"><i class="fa-solid fa-shield-halved"></i></div>
         <div class="btn-text">
-          Cyber Security
-          <span>🔹T14</span>
+          🛡 Cyber Security <span>🔹T14</span>
         </div>
       </button>
 
       <button class="feature-btn" onclick="startTest('T15')">
         <div class="icon c5"><i class="fa-solid fa-gears"></i></div>
         <div class="btn-text">
-          IT Based Services
-          <span>🔹T15</span>
+          ⚙️ IT Based Services <span>🔹T15</span>
         </div>
       </button>
     </div>
