@@ -11,7 +11,7 @@
       --accent:#e91e63;
       --bg:#fff;
       --muted:#6b7280;
-      --radius:12px;
+      --radius:18px;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
@@ -24,9 +24,10 @@
     }
 
     /* ===== MAIN CONTENT ===== */
-    main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1}
-    h2{font-size:22px;margin:0 0 18px;color:var(--accent);text-align:center}
+    main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1;text-align:center}
+    h2{font-size:22px;margin:0 0 18px;color:var(--accent);}
 
+    /* Mode Toggle */
     .mode-toggle {
       display: flex;
       justify-content: center;
@@ -48,32 +49,45 @@
       color: white;
       font-weight: bold;
     }
+
+    /* ===== Mobile App Style Grid ===== */
     .btn-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 20px;
+      padding: 10px;
     }
     .feature-btn {
       background: white;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      padding: 18px 15px;
+      border: none;
+      padding: 20px 10px;
       font-size: 15px;
-      font-weight: 600;
-      border-radius: 12px;
+      border-radius: var(--radius);
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
       transition: all 0.3s ease;
-      text-align: left;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .feature-btn:hover {
-      background-color: var(--accent);
-      color: white;
-      transform: translateY(-3px);
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      background: var(--accent);
+      color: #fff;
+    }
+    .feature-btn .icon {
+      font-size: 34px;
+      margin-bottom: 8px;
     }
     .feature-btn span {
-      float: right;
+      font-size: 13px;
       font-weight: bold;
+      color: var(--muted);
+    }
+    .feature-btn:hover span {
+      color: #fff;
     }
   </style>
 </head>
@@ -91,12 +105,37 @@
       <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
     </div>
 
+    <!-- Mobile App Style Buttons -->
     <div class="btn-grid">
-      <button class="feature-btn" onclick="startTest('T11')">1. Introduction to Computer <span>🔹T11</span></button>
-      <button class="feature-btn" onclick="startTest('T12')">2. Internet and Services <span>🔹T12</span></button>
-      <button class="feature-btn" onclick="startTest('T13')">3. MS Office & Other Office Tools <span>🔹T13</span></button>
-      <button class="feature-btn" onclick="startTest('T14')">4. Cyber Security & Application of IT <span>🔹T14</span></button>
-      <button class="feature-btn" onclick="startTest('T15')">5. IT Based Services <span>🔹T15</span></button>
+      <button class="feature-btn" onclick="startTest('T11')">
+        <div class="icon">💻</div>
+        Introduction to Computer
+        <span>🔹T11</span>
+      </button>
+
+      <button class="feature-btn" onclick="startTest('T12')">
+        <div class="icon">🌐</div>
+        Internet and Services
+        <span>🔹T12</span>
+      </button>
+
+      <button class="feature-btn" onclick="startTest('T13')">
+        <div class="icon">📑</div>
+        MS Office & Tools
+        <span>🔹T13</span>
+      </button>
+
+      <button class="feature-btn" onclick="startTest('T14')">
+        <div class="icon">🔒</div>
+        Cyber Security
+        <span>🔹T14</span>
+      </button>
+
+      <button class="feature-btn" onclick="startTest('T15')">
+        <div class="icon">⚙️</div>
+        IT Based Services
+        <span>🔹T15</span>
+      </button>
     </div>
   </main>
 
@@ -120,7 +159,7 @@
       document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
     }
 
-    // ✅ Back to RS-CIT Module (must remain in this file)
+    // ✅ Back to RS-CIT Module
     function goBack() {
       location.href = "rs-cit-module.html";
     }
