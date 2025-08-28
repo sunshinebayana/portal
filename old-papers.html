@@ -6,69 +6,88 @@
   <title>📄 RS-CIT Old Papers — Sunshine Institute</title>
   <style>
     :root{
-      --primary:#0d1b4c;
-      --secondary:#f8bbd0;
-      --accent:#e91e63;
-      --bg:#fff;
-      --muted:#6b7280;
-      --radius:12px;
+      --primary:#2c2c54;      /* गहरा Blue-Purple */
+      --secondary:#f7a1c4;    /* Soft Pink */
+      --accent:#5f27cd;       /* Modern Violet Accent */
+      --bg:#ffffff;           /* White cards */
+      --muted:#747d8c;        /* Muted text */
+      --radius:14px;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
       font-family:'Segoe UI',sans-serif;
-      background:linear-gradient(180deg,#f7f9fc 0%,#ffffff 70%);
+      background:linear-gradient(135deg, #dfe9f3 0%, #f9f9f9 40%, #fce2f1 100%);
       color:var(--primary);
       display:flex;
       flex-direction:column;
       min-height:100vh;
+      line-height:1.6;
     }
 
     /* ===== MAIN CONTENT ===== */
-    main{max-width:900px;margin:24px auto;padding:0 16px;flex:1}
-    h2{font-size:22px;margin:0 0 18px;color:var(--accent);text-align:center}
+    main{
+      max-width:900px;
+      margin:32px auto;
+      padding:0 18px;
+      flex:1;
+    }
+    h2{
+      font-size:24px;
+      margin:0 0 22px;
+      color:var(--accent);
+      text-align:center;
+      font-weight:700;
+      letter-spacing:0.5px;
+    }
 
     .mode-toggle {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 26px;
       flex-wrap: wrap;
     }
     .mode-toggle button {
-      padding: 8px 14px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
       cursor: pointer;
-      background: #e0e0e0;
+      background: #ececec;
       transition: all 0.3s ease;
+      font-weight: 500;
     }
     .mode-toggle button.active-mode {
       background: var(--accent);
       color: white;
-      font-weight: bold;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(95,39,205,0.3);
     }
+
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
+      gap: 18px;
     }
     .paper-btn {
       background: var(--bg);
-      border: 2px solid var(--primary);
-      padding: 12px 14px;
+      border: 2px solid transparent;
+      padding: 14px 16px;
       font-size: 14px;
       font-weight: 600;
       border-radius: var(--radius);
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.35s;
       display: flex;
-      justify-content: space-between; /* ✅ Title left, Code right */
+      justify-content: space-between;
       align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     .paper-btn:hover {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
       color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
     }
     .paper-btn .title {
       flex: 1;
@@ -77,16 +96,16 @@
       font-weight: bold;
       margin-left: 12px;
       white-space: nowrap;
+      color: var(--accent);
+    }
+    .paper-btn:hover .code {
+      color: #fff;
     }
 
     /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 600px) {
-      .title-tagline span{
-        font-size:16px;
-      }
-      .title-tagline .tagline{
-        font-size:12px;
-      }
+      h2{font-size:20px;}
+      .mode-toggle button {font-size:13px;}
     }
   </style>
 </head>
