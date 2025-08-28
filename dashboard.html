@@ -57,6 +57,22 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 .card h3{font-size:16px;color:var(--primary);margin-bottom:10px;}
 .card p{font-size:13px;color:var(--muted);}
 
+/* Message Box */
+#messageBox{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--accent);
+  color:#fff;
+  padding:12px 20px;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  display:none;
+  font-size:14px;
+  z-index:999;
+}
+
 /* MOBILE STYLES */
 @media(max-width:768px){
  .sidebar{display:none;}
@@ -113,6 +129,9 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 </main>
 </div>
 
+<!-- Message Box -->
+<div id="messageBox">Ye feature abhi aapke liye available nahi hai. Isse use karne ke liye please apna plan upgrade karein. ✨</div>
+
 <!-- Footer placeholder -->
 <footer id="footer"></footer>
 
@@ -123,6 +142,20 @@ if(localStorage.getItem("isLoggedIn")!=="true")location.replace("login.html");
 
 // Page-specific function
 function goBack(){location.href="rs-cit-module.html";}
+
+// Message display function
+function showMessage(){
+  const msg=document.getElementById("messageBox");
+  msg.style.display="block";
+  setTimeout(()=>{msg.style.display="none";},3000);
+}
+
+// Apply click event on all cards except RS-CIT
+document.querySelectorAll(".card").forEach(card=>{
+  if(!card.innerText.includes("RS-CIT")){
+    card.addEventListener("click",showMessage);
+  }
+});
 </script>
 
 <!-- Common Header/Footer Script -->
