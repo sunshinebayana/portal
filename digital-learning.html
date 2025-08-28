@@ -36,17 +36,27 @@
     .module-btn {
       background: var(--bg);
       border: 2px solid var(--primary);
-      padding: 12px;
+      padding: 12px 14px;
       font-size: 14px;
       font-weight: 600;
       border-radius: var(--radius);
       cursor: pointer;
       transition: all 0.3s;
-      text-align: left;
+      display: flex;
+      justify-content: space-between; /* 👈 Title left, Code right */
+      align-items: center;
     }
     .module-btn:hover {
       background: var(--accent);
       color: white;
+    }
+    .module-btn .title {
+      flex: 1;
+      text-align: left;
+    }
+    .module-btn .code {
+      margin-left: 10px;
+      white-space: nowrap;
     }
 
     /* ===== MOBILE RESPONSIVE ===== */
@@ -103,7 +113,7 @@
   topics.forEach(topic => {
     const btn = document.createElement("button");
     btn.className = "module-btn";
-    btn.textContent = `${topic.title} 🔹${topic.code}`;
+    btn.innerHTML = `<span class="title">${topic.title}</span><span class="code">🔹${topic.code}</span>`;
     btn.onclick = () => startRscitTest(topic.code, `Loading ${topic.code}...`, "Dlearn", username, fullname);
     topicList.appendChild(btn);
   });
