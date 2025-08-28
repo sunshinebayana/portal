@@ -78,6 +78,29 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
  .sidebar{display:none;}
  main{padding:15px;}
  h2{font-size:18px;}
+
+ /* Mobile app like grid buttons */
+ .card-grid{
+   display:grid;
+   grid-template-columns:repeat(3,1fr);
+   gap:12px;
+ }
+ .card{
+   border-radius:20px;
+   padding:15px 10px;
+   font-size:12px;
+   display:flex;
+   flex-direction:column;
+   align-items:center;
+   justify-content:center;
+   box-shadow:0 4px 8px rgba(0,0,0,0.1);
+ }
+ .card h3{
+   font-size:13px;
+   margin:8px 0 0 0;
+   text-align:center;
+ }
+ .card p{display:none;} /* hide description on mobile */
 }
 </style>
 </head>
@@ -102,29 +125,67 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <main>
 <h2>Choose Your Preparation Module</h2>
 <div class="card-grid">
-<div class="card" onclick="location.href='rs-cit-module.html'"><h3>Start RS-CIT Exam तैयारी</h3><p>Start your RS-CIT practice test now!</p></div>
-<div class="card"><h3>Computer Efficiency</h3><p>Practice to improve your computer skills.</p></div>
-<div class="card"><h3>Typing Tutor</h3><p>Boost your typing speed and accuracy.</p></div>
-<div class="card"><h3>Raj HighCourt Stenographer</h3><p>Prepare with dictation & shorthand modules.</p></div>
-<div class="card"><h3>RSMSSB LDC</h3><p>Get ready for Rajasthan LDC recruitment.</p></div>
-<div class="card"><h3>REET (Main) Test</h3><p>Test your knowledge for REET exams.</p></div>
-<div class="card"><h3>चतुर्थ श्रेणी भर्ती</h3><p>Practice for Group-D job recruitment exams.</p></div>
 
-<!-- New Added Cards -->
-<div class="card">
-  <h3>Advance MS Excel</h3>
-  <p>Master Advanced MS Excel with AI in just 30 days through our crash course with premium support.</p>
+<div class="card" onclick="location.href='rs-cit-module.html'">
+  <div style="font-size:28px;">📘</div>
+  <h3>RS-CIT</h3>
+  <p>Start your RS-CIT practice test now!</p>
 </div>
 
 <div class="card">
-  <h3>C Programming Language</h3>
-  <p>Learn the fundamentals of C Language programming in only 20 days with easy and practical methods.</p>
+  <div style="font-size:28px;">💻</div>
+  <h3>Computer Efficiency</h3>
+  <p>Practice to improve your computer skills.</p>
 </div>
 
 <div class="card">
-  <h3>Admin Control Panel</h3>
-  <p>Access the secure admin dashboard for managing institute operations and settings.</p>
+  <div style="font-size:28px;">⌨</div>
+  <h3>Typing Tutor</h3>
+  <p>Boost your typing speed and accuracy.</p>
 </div>
+
+<div class="card">
+  <div style="font-size:28px;">🎤</div>
+  <h3>Stenographer</h3>
+  <p>Prepare with dictation & shorthand modules.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">📝</div>
+  <h3>RSMSSB LDC</h3>
+  <p>Get ready for Rajasthan LDC recruitment.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">📖</div>
+  <h3>REET (Main)</h3>
+  <p>Test your knowledge for REET exams.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">👨‍🔧</div>
+  <h3>Class IV</h3>
+  <p>Practice for Group-D job recruitment exams.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">📊</div>
+  <h3>MS Excel</h3>
+  <p>Master Advanced MS Excel with AI in just 30 days.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">💻</div>
+  <h3>C Language</h3>
+  <p>Learn the fundamentals of C Language programming.</p>
+</div>
+
+<div class="card">
+  <div style="font-size:28px;">⚙</div>
+  <h3>Admin Panel</h3>
+  <p>Access the secure admin dashboard for managing institute.</p>
+</div>
+
 </div>
 </main>
 </div>
@@ -163,4 +224,3 @@ document.querySelectorAll(".card").forEach(card=>{
 
 </body>
 </html>
-
