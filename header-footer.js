@@ -1,9 +1,5 @@
 // ================== HEADER + FOOTER ==================
 
-document.addEventListener("DOMContentLoaded", () => {
-   window.scrollTo(0, 0);
-});
-
 // ✅ Inject CSS for header & footer (desktop + mobile responsive)
 const style = document.createElement("style");
 style.textContent = `
