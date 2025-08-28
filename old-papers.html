@@ -56,17 +56,27 @@
     .paper-btn {
       background: var(--bg);
       border: 2px solid var(--primary);
-      padding: 12px;
+      padding: 12px 14px;
       font-size: 14px;
       font-weight: 600;
       border-radius: var(--radius);
       cursor: pointer;
       transition: all 0.3s;
-      text-align: left;
+      display: flex;
+      justify-content: space-between; /* ✅ Title left, Code right */
+      align-items: center;
     }
     .paper-btn:hover {
       background: var(--accent);
       color: white;
+    }
+    .paper-btn .title {
+      flex: 1;
+    }
+    .paper-btn .code {
+      font-weight: bold;
+      margin-left: 12px;
+      white-space: nowrap;
     }
 
     /* ===== MOBILE RESPONSIVE ===== */
@@ -138,9 +148,10 @@
   const papersList = document.getElementById("papersList");
   papers.forEach(paper => {
     const code = paper.match(/T\d+/)[0];
+    const title = paper.replace(/🔹T\d+/, "").trim();
     const btn = document.createElement("button");
     btn.className = "paper-btn";
-    btn.textContent = paper;
+    btn.innerHTML = `<span class="title">${title}</span><span class="code">🔹${code}</span>`;
     btn.onclick = () => startTest(code);
     papersList.appendChild(btn);
   });
