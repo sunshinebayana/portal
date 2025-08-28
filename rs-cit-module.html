@@ -68,6 +68,8 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 .module-btn .emoji{
   font-size:32px;
   margin-bottom:10px;
+  display:inline-block;
+  animation:emoji-bounce 2.5s infinite;
 }
 .module-btn .meta .title{
   font-weight:600;
@@ -112,6 +114,11 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 @keyframes shine{
   0%{left:-75%;}
   100%{left:125%;}
+}
+/* 🎯 Emoji हल्का bounce effect */
+@keyframes emoji-bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
 }
 
 /* ===== OTHER STYLES ===== */
