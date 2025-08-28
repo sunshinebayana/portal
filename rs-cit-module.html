@@ -46,6 +46,7 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 }
 
 .module-btn{
+  position:relative;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -57,9 +58,11 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
   color:#fff;
   min-height:140px;
   box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  overflow:hidden;
+  animation:pulse 3s infinite;
 }
 .module-btn:hover{
-  transform:translateY(-6px) scale(1.02);
+  transform:translateY(-6px) scale(1.05);
   box-shadow:0 12px 28px rgba(0,0,0,0.25);
 }
 .module-btn .emoji{
@@ -77,6 +80,20 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
   margin-top:4px;
 }
 
+/* ✨ Shine Effect */
+.module-btn::before{
+  content:"";
+  position:absolute;
+  top:0;left:-75%;
+  width:50%;
+  height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
+  transform:skewX(-25deg);
+}
+.module-btn:hover::before{
+  animation:shine 1.5s forwards;
+}
+
 /* 🎨 Unique Gradient Colors per Module */
 .module-btn.book-chapters{background:linear-gradient(135deg,#42a5f5,#1e88e5);}
 .module-btn.internal-test{background:linear-gradient(135deg,#66bb6a,#388e3c);}
@@ -86,6 +103,16 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 .module-btn.ai-skill-bot{background:linear-gradient(135deg,#ef5350,#d32f2f);}
 .module-btn.common-test{background:linear-gradient(135deg,#8d6e63,#6d4c41);}
 .module-btn.result-rank{background:linear-gradient(135deg,#ec407a,#c2185b);}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.04);}
+}
+@keyframes shine{
+  0%{left:-75%;}
+  100%{left:125%;}
+}
 
 /* ===== OTHER STYLES ===== */
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
