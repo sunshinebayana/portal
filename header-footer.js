@@ -52,12 +52,16 @@ style.textContent = `
     font-size:13px;
     margin-top:auto;
   }
+
+  /* ✅ Mobile Specific Styles */
   @media (max-width: 600px) {
-    header{flex-direction: column;align-items: center;text-align:center;}
-    .logo-row{justify-content:center;}
-    .title-tagline span{font-size:16px;}
-    .title-tagline .tagline{font-size:12px;}
-    .nav-controls{justify-content:center;}
+    header{flex-direction: row;justify-content: flex-start;gap:10px;}
+    .logo-row{flex:0 0 auto;display:flex;align-items:center;gap:8px;}
+    .logo-row img{height:34px;}
+    .mobile-welcome{font-size:13px;font-weight:500;margin-left:4px;white-space:nowrap;}
+    .title-tagline{display:none;} /* hide tagline in mobile */
+    .nav-controls{margin-left:auto;display:flex;align-items:center;gap:6px;}
+    .welcome{display:none;} /* hide duplicate desktop welcome */
   }
 `;
 document.head.appendChild(style);
@@ -69,6 +73,7 @@ function loadHeader() {
   header.innerHTML = `
     <div class="logo-row">
       <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
+      <span class="mobile-welcome" id="welcomeMsgMobile"></span>
       <button class="home-btn" onclick="goHome()">🏠 Home</button>
     </div>
     <div class="title-tagline">
@@ -86,6 +91,7 @@ function loadHeader() {
   const userData = JSON.parse(localStorage.getItem("userData"));
   if (userData && userData.fullname) {
     document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
+    document.getElementById("welcomeMsgMobile").textContent = `Welcome, ${userData.fullname}!`;
   }
 }
 
