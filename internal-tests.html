@@ -17,21 +17,9 @@
       --radius:12px;
 
       /* icon bg colors for 15 subjects */
-      --c1:#4cafef;
-      --c2:#34a853;
-      --c3:#fbbc05;
-      --c4:#e91e63;
-      --c5:#9c27b0;
-      --c6:#ff5722;
-      --c7:#009688;
-      --c8:#3f51b5;
-      --c9:#795548;
-      --c10:#607d8b;
-      --c11:#8bc34a;
-      --c12:#9e9e9e;
-      --c13:#673ab7;
-      --c14:#2196f3;
-      --c15:#ff9800;
+      --c1:#4cafef; --c2:#34a853; --c3:#fbbc05; --c4:#e91e63; --c5:#9c27b0;
+      --c6:#ff5722; --c7:#009688; --c8:#3f51b5; --c9:#795548; --c10:#607d8b;
+      --c11:#8bc34a; --c12:#9e9e9e; --c13:#673ab7; --c14:#2196f3; --c15:#ff9800;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
@@ -113,40 +101,35 @@
       color:var(--accent) !important;
     }
 
-    /* text */
+    /* text layout */
     .btn-text {
       display:flex;
-      flex-direction: row;   /* ✅ row instead of column */
+      justify-content: space-between;   /* ✅ title left, code right */
       align-items: center;
-      gap: 6px;
+      width: 100%;
       font-size:15px;
       font-weight:600;
     }
-    .btn-text span {
+    .btn-text .title {
+      flex:1;
+    }
+    .btn-text .code {
       font-size:13px;
       color:var(--muted);
       font-weight:600;
+      margin-left: 10px;
+      white-space: nowrap;
     }
-    .feature-btn:hover .btn-text span {
+    .feature-btn:hover .btn-text .code {
       color:#fff;
     }
 
-    /* individual subject colors */
-    .c1 { background: var(--c1); }
-    .c2 { background: var(--c2); }
-    .c3 { background: var(--c3); }
-    .c4 { background: var(--c4); }
-    .c5 { background: var(--c5); }
-    .c6 { background: var(--c6); }
-    .c7 { background: var(--c7); }
-    .c8 { background: var(--c8); }
-    .c9 { background: var(--c9); }
-    .c10 { background: var(--c10); }
-    .c11 { background: var(--c11); }
-    .c12 { background: var(--c12); }
-    .c13 { background: var(--c13); }
-    .c14 { background: var(--c14); }
-    .c15 { background: var(--c15); }
+    /* subject icon colors */
+    .c1{background:var(--c1)} .c2{background:var(--c2)} .c3{background:var(--c3)}
+    .c4{background:var(--c4)} .c5{background:var(--c5)} .c6{background:var(--c6)}
+    .c7{background:var(--c7)} .c8{background:var(--c8)} .c9{background:var(--c9)}
+    .c10{background:var(--c10)} .c11{background:var(--c11)} .c12{background:var(--c12)}
+    .c13{background:var(--c13)} .c14{background:var(--c14)} .c15{background:var(--c15)}
 
     /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 600px) {
@@ -172,63 +155,108 @@
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T21')">
         <div class="icon c1"><i class="fa-solid fa-desktop"></i></div>
-        <div class="btn-text">🖥️ Introduction to Computer <span>🔹T21</span></div>
+        <div class="btn-text">
+          <span class="title">🖥️ Introduction to Computer</span>
+          <span class="code">🔹T21</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T22')">
         <div class="icon c2"><i class="fa-solid fa-microchip"></i></div>
-        <div class="btn-text">💻 Computer System <span>🔹T22</span></div>
+        <div class="btn-text">
+          <span class="title">💻 Computer System</span>
+          <span class="code">🔹T22</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T23')">
         <div class="icon c3"><i class="fa-solid fa-laptop"></i></div>
-        <div class="btn-text">🖱️ Exploring Your Computer <span>🔹T23</span></div>
+        <div class="btn-text">
+          <span class="title">🖱️ Exploring Your Computer</span>
+          <span class="code">🔹T23</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T24')">
         <div class="icon c4"><i class="fa-solid fa-globe"></i></div>
-        <div class="btn-text">🌐 Introduction of Internet <span>🔹T24</span></div>
+        <div class="btn-text">
+          <span class="title">🌐 Introduction of Internet</span>
+          <span class="code">🔹T24</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T25')">
         <div class="icon c5"><i class="fa-solid fa-wallet"></i></div>
-        <div class="btn-text">💰 Financial Literacy & Digital Payment <span>🔹T25</span></div>
+        <div class="btn-text">
+          <span class="title">💰 Financial Literacy & Digital Payment</span>
+          <span class="code">🔹T25</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T26')">
         <div class="icon c6"><i class="fa-solid fa-network-wired"></i></div>
-        <div class="btn-text">🌍 Internet Applications <span>🔹T26</span></div>
+        <div class="btn-text">
+          <span class="title">🌍 Internet Applications</span>
+          <span class="code">🔹T26</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T27')">
         <div class="icon c7"><i class="fa-solid fa-mobile-screen-button"></i></div>
-        <div class="btn-text">📱 Mobile Devices/Smartphone <span>🔹T27</span></div>
+        <div class="btn-text">
+          <span class="title">📱 Mobile Devices/Smartphone</span>
+          <span class="code">🔹T27</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T28')">
         <div class="icon c8"><i class="fa-solid fa-file-word"></i></div>
-        <div class="btn-text">📝 Microsoft Word <span>🔹T28</span></div>
+        <div class="btn-text">
+          <span class="title">📝 Microsoft Word</span>
+          <span class="code">🔹T28</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T29')">
         <div class="icon c9"><i class="fa-solid fa-file-excel"></i></div>
-        <div class="btn-text">📊 Microsoft Excel <span>🔹T29</span></div>
+        <div class="btn-text">
+          <span class="title">📊 Microsoft Excel</span>
+          <span class="code">🔹T29</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T30')">
         <div class="icon c10"><i class="fa-solid fa-file-powerpoint"></i></div>
-        <div class="btn-text">📈 MS PowerPoint <span>🔹T30</span></div>
+        <div class="btn-text">
+          <span class="title">📈 MS PowerPoint</span>
+          <span class="code">🔹T30</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T31')">
         <div class="icon c11"><i class="fa-solid fa-shield-halved"></i></div>
-        <div class="btn-text">🛡️ Cyber Security & Awareness <span>🔹T31</span></div>
+        <div class="btn-text">
+          <span class="title">🛡️ Cyber Security & Awareness</span>
+          <span class="code">🔹T31</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T32')">
         <div class="icon c12"><i class="fa-solid fa-gear"></i></div>
-        <div class="btn-text">⚙️ Other Office Tools <span>🔹T32</span></div>
+        <div class="btn-text">
+          <span class="title">⚙️ Other Office Tools</span>
+          <span class="code">🔹T32</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T33')">
         <div class="icon c13"><i class="fa-solid fa-laptop-code"></i></div>
-        <div class="btn-text">💡 Useful Application of IT <span>🔹T33</span></div>
+        <div class="btn-text">
+          <span class="title">💡 Useful Application of IT</span>
+          <span class="code">🔹T33</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T34')">
         <div class="icon c14"><i class="fa-solid fa-city"></i></div>
-        <div class="btn-text">🏛️ Citizen Centric Services <span>🔹T34</span></div>
+        <div class="btn-text">
+          <span class="title">🏛️ Citizen Centric Services</span>
+          <span class="code">🔹T34</span>
+        </div>
       </button>
       <button class="feature-btn" onclick="startTest('T35')">
         <div class="icon c15"><i class="fa-solid fa-landmark"></i></div>
-        <div class="btn-text">🏤 eGovernance Services (Raj.) <span>🔹T35</span></div>
+        <div class="btn-text">
+          <span class="title">🏤 eGovernance Services (Raj.)</span>
+          <span class="code">🔹T35</span>
+        </div>
       </button>
     </div>
   </main>
