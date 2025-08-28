@@ -10,7 +10,7 @@
   --secondary:#f8bbd0;
   --accent:#e91e63;
   --bg:#fff;
-  --muted:#6b7280;
+  --muted:#eaeaea;
   --radius:18px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -34,7 +34,7 @@ main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
   border:1px solid #f1f1f1;
 }
 h1{font-size:22px;margin:0 0 8px;color:var(--accent);text-align:center}
-p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
+p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 
 /* ===== GRID ICON STYLE ===== */
 .grid{
@@ -52,16 +52,15 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
   justify-content:center;
   padding:20px 14px;
   border-radius:20px;
-  border:1px solid rgba(15,23,42,0.08);
-  background:linear-gradient(180deg,#ffffff,#f8f9fc);
   cursor:pointer;
   transition:transform .2s ease, box-shadow .2s ease;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  color:#fff;
   min-height:140px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
 }
 .module-btn:hover{
   transform:translateY(-6px) scale(1.02);
-  box-shadow:0 12px 28px rgba(0,0,0,0.12);
+  box-shadow:0 12px 28px rgba(0,0,0,0.25);
 }
 .module-btn .emoji{
   font-size:32px;
@@ -70,18 +69,28 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
 .module-btn .meta .title{
   font-weight:600;
   font-size:15px;
-  color:var(--primary);
+  color:#fff;
 }
 .module-btn .meta .desc{
   font-size:12px;
-  color:var(--muted);
+  opacity:0.9;
   margin-top:4px;
 }
+
+/* 🎨 Unique Gradient Colors per Module */
+.module-btn.book-chapters{background:linear-gradient(135deg,#42a5f5,#1e88e5);}
+.module-btn.internal-test{background:linear-gradient(135deg,#66bb6a,#388e3c);}
+.module-btn.old-papers{background:linear-gradient(135deg,#ffa726,#fb8c00);}
+.module-btn.important-tests{background:linear-gradient(135deg,#ab47bc,#8e24aa);}
+.module-btn.digital-zone{background:linear-gradient(135deg,#26c6da,#0097a7);}
+.module-btn.ai-skill-bot{background:linear-gradient(135deg,#ef5350,#d32f2f);}
+.module-btn.common-test{background:linear-gradient(135deg,#8d6e63,#6d4c41);}
+.module-btn.result-rank{background:linear-gradient(135deg,#ec407a,#c2185b);}
 
 /* ===== OTHER STYLES ===== */
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .btn.primary{background:var(--accent);color:white}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.6);color:white}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.2);color:var(--primary)}
 
 .badge{display:inline-block;background:#fde7f0;color:var(--accent);
   padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
@@ -103,56 +112,56 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
     <p class="lead">Select a module to start practice. Mix of Hindi/English labels for your students.</p>
 
     <div class="grid">
-      <div class="module-btn" onclick="openModule('book-chapters')">
+      <div class="module-btn book-chapters" onclick="openModule('book-chapters')">
         <div class="emoji">📘</div>
         <div class="meta">
           <div class="title">RS-CIT Book Chapter Tests</div>
           <div class="desc">Topicwise chapter tests</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('internal-test')">
+      <div class="module-btn internal-test" onclick="openModule('internal-test')">
         <div class="emoji">🧪</div>
         <div class="meta">
           <div class="title">RS-CIT Internal Test</div>
           <div class="desc">Short quizzes to check concepts</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('old-papers')">
+      <div class="module-btn old-papers" onclick="openModule('old-papers')">
         <div class="emoji">📄</div>
         <div class="meta">
           <div class="title">Old Papers — RS-CIT</div>
           <div class="desc">Solve previous years' papers</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('important-tests')">
+      <div class="module-btn important-tests" onclick="openModule('important-tests')">
         <div class="emoji">💡</div>
         <div class="meta">
           <div class="title">RS-CIT Important Tests</div>
           <div class="desc">High-yield exam practice</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('digital-zone')">
+      <div class="module-btn digital-zone" onclick="openModule('digital-zone')">
         <div class="emoji">📖</div>
         <div class="meta">
           <div class="title">Digital Learning Zone</div>
           <div class="desc">Interactive lessons & videos</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('ai-skill-bot')">
+      <div class="module-btn ai-skill-bot" onclick="openModule('ai-skill-bot')">
         <div class="emoji">💬</div>
         <div class="meta">
           <div class="title">AI Skill Bot</div>
           <div class="desc">Smart RS-CIT assistant</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('common-test')">
+      <div class="module-btn common-test" onclick="openModule('common-test')">
         <div class="emoji">🟢</div>
         <div class="meta">
           <div class="title">स्पेशल कॉमन TEST</div>
           <div class="desc">Full syllabus mock test</div>
         </div>
       </div>
-      <div class="module-btn" onclick="openModule('result-rank')">
+      <div class="module-btn result-rank" onclick="openModule('result-rank')">
         <div class="emoji">📢</div>
         <div class="meta">
           <div class="title">View Result & Rank</div>
@@ -165,7 +174,7 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
       <div class="important-list" style="flex:1;min-width:220px">
         <div class="important-item">
           <div>📢 Announcements</div>
-          <div style="font-size:13px;color:var(--muted)">No new alerts</div>
+          <div style="font-size:13px;color:var(--primary)">No new alerts</div>
         </div>
         <div class="important-item">
           <div>🔔 Quick Links</div>
@@ -177,7 +186,7 @@ p.lead{color:var(--muted);margin:0 0 12px;text-align:center}
       </div>
       <div style="min-width:240px;text-align:right">
         <div class="badge">Student Mode</div>
-        <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: Use timed tests to simulate exam.</div>
+        <div style="margin-top:10px;color:var(--primary);font-size:13px">Tip: Use timed tests to simulate exam.</div>
       </div>
     </div>
   </section>
