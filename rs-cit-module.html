@@ -23,23 +23,8 @@ body{
   min-height:100vh;
 }
 
-/* ===== HEADER FIXED ===== */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:70px;
-  background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-  z-index:1000;
-}
-
 /* ===== MAIN CONTENT ===== */
-main{
-  max-width:1000px;
-  margin:28px auto;
-  padding:90px 18px 0;  /* 👈 Header ke neeche se start */
-  flex:1;
-}
+main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
 .card{
   background:var(--bg);
   border-radius:var(--radius);
@@ -275,11 +260,6 @@ function renderModule(key){
     default:return `<p>Module not found.</p>`;
   }
 }
-
-/* 👇 Page load hone ke baad hamesha top (header ke neeche) dikhai de */
-window.addEventListener("load", () => {
-  window.scrollTo({ top: 0, behavior: "instant" });
-});
 </script>
 <script src="header-footer.js"></script>
 </body>
