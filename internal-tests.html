@@ -231,7 +231,10 @@
       document.getElementById("examModeBtn").classList.toggle("active-mode", mode==="exam");
     }
 
-    function goBack(){ location.href="rs-cit-module.html"; }
+  function goBack(){
+  location.href="rs-cit-module.html";
+  setTimeout(()=>{ window.scrollTo(0,0); }, 200);
+}
 
     function startTest(code) {
       const userData = JSON.parse(localStorage.getItem("userData"));
@@ -254,3 +257,4 @@
   <script src="header-footer.js"></script>
 </body>
 </html>
+
