@@ -16,16 +16,32 @@
       background: #112d4e; /* navy blue */
       color: #fff;
       padding: 12px 20px;
-      font-size: 20px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       font-weight: bold;
       text-align: center;
     }
-    .exam-name {
+    .header-title {
       font-size: 22px;
       text-transform: uppercase;
+    }
+    .header-tagline {
+      font-size: 14px;
+      font-weight: normal;
+      color: #fce4ec;
+    }
+    .exam-name {
+      font-size: 20px;
+      margin-top: 4px;
+    }
+    footer {
+      background: #112d4e;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      margin-top: 20px;
     }
     .container {
       max-width: 700px;
@@ -222,7 +238,12 @@
   </style>
 </head>
 <body>
-<header><span id="examNameLabel" class="exam-name"></span></header>
+<header>
+  <div class="header-title">Sunshine Computer Training & STENO Classes, Bayana</div>
+  <div class="header-tagline">Master Typing, Steno & Computer Skills</div>
+  <span id="examNameLabel" class="exam-name"></span>
+</header>
+
 <div class="container">
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div class="top-info-row">
@@ -248,10 +269,12 @@
   </div>
 </div>
 
+<footer>
+  © 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal
+</footer>
 
 <!-- ✅ Protect.js include -->
 <script src="protect.js"></script>
-
 <script>
 const code=localStorage.getItem("test_code")||"",
       mode=(localStorage.getItem("test_mode")||"").toLowerCase(),
@@ -463,4 +486,5 @@ initTest();
 </script>
 </body>
 </html>
+
 
