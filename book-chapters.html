@@ -15,7 +15,7 @@
       --accent:#e91e63;
       --bg:#fff;
       --muted:#6b7280;
-      --radius:18px;
+      --radius:14px;
 
       /* icon bg colors */
       --c1:#4cafef;
@@ -35,22 +35,22 @@
     }
 
     /* ===== MAIN CONTENT ===== */
-    main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1;text-align:center}
-    h2{font-size:22px;margin:0 0 18px;color:var(--accent);}
+    main{max-width:900px;margin:20px auto;padding:0 14px;flex:1;text-align:center}
+    h2{font-size:20px;margin:0 0 16px;color:var(--accent);}
 
     /* Mode Toggle */
     .mode-toggle {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
     .mode-toggle button {
-      padding: 8px 14px;
+      padding: 6px 12px;
       border: none;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       background: #e0e0e0;
       transition: all 0.3s ease;
@@ -61,45 +61,45 @@
       font-weight: bold;
     }
 
-    /* ===== Mobile App Style Grid ===== */
+    /* ===== Menu Style Grid ===== */
     .btn-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 20px;
-      padding: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 14px;
+      padding: 6px;
     }
     .feature-btn {
       background: white;
       border: none;
-      padding: 20px 10px;
-      font-size: 15px;
+      padding: 14px 8px;
+      font-size: 14px;
       border-radius: var(--radius);
       cursor: pointer;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      transition: all 0.25s ease;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .feature-btn:hover {
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
       background: var(--accent);
       color: #fff;
     }
 
-    /* ===== Circle Icons ===== */
+    /* ===== Circle Icons (Smaller) ===== */
     .icon {
-      width: 70px;
-      height: 70px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 20px;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       transition: all 0.3s ease;
     }
     .feature-btn:hover .icon {
@@ -115,7 +115,7 @@
     .c5 { background: var(--c5); }
 
     .feature-btn span {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
       color: var(--muted);
     }
@@ -138,35 +138,35 @@
       <button id="examModeBtn" onclick="switchMode('exam')"><i class="fa-solid fa-flask"></i> Exam Mode</button>
     </div>
 
-    <!-- Mobile App Style Buttons -->
+    <!-- Menu Style Buttons -->
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">
         <div class="icon c1"><i class="fa-solid fa-computer"></i></div>
-        Introduction to Computer
+        Introduction
         <span>🔹T11</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T12')">
         <div class="icon c2"><i class="fa-solid fa-globe"></i></div>
-        Internet and Services
+        Internet
         <span>🔹T12</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T13')">
         <div class="icon c3"><i class="fa-solid fa-file-word"></i></div>
-        MS Office & Tools
+        MS Office
         <span>🔹T13</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T14')">
         <div class="icon c4"><i class="fa-solid fa-shield-halved"></i></div>
-        Cyber Security
+        Security
         <span>🔹T14</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T15')">
         <div class="icon c5"><i class="fa-solid fa-gears"></i></div>
-        IT Based Services
+        IT Services
         <span>🔹T15</span>
       </button>
     </div>
