@@ -4,6 +4,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Sunshine Dashboard</title>
+
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 <style>
 :root{
   --primary:#0d1b4c;
@@ -54,8 +58,9 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
   transition:.3s;
 }
 .card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(13,27,76,0.2);}
-.card h3{font-size:16px;color:var(--primary);margin-bottom:10px;}
+.card h3{font-size:16px;color:var(--primary);margin-top:8px;}
 .card p{font-size:13px;color:var(--muted);}
+.card .material-icons{font-size:36px;color:var(--accent);}
 
 /* Message Box */
 #messageBox{
@@ -101,6 +106,7 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
    text-align:center;
  }
  .card p{display:none;} /* hide description on mobile */
+ .card .material-icons{font-size:40px;}
 }
 </style>
 </head>
@@ -112,78 +118,78 @@ h2{margin-bottom:25px;font-size:22px;color:var(--accent);text-align:center;}
 <div class="dashboard">
 <aside class="sidebar">
 <h3>Navigation</h3>
-<a href="rs-cit-module.html">📘 RS-CIT</a>
-<a href="#">⌨ Typing Tutor</a>
-<a href="#">🎤 Stenographer</a>
-<a href="#">📝 RSMSSB LDC</a>
-<a href="#">📖 REET (Main)</a>
-<a href="#">👨‍🔧 Class IV Exams</a>
-<a href="advance-ms-excel.html">📊 Advance MS Excel</a>
-<a href="c-programming.html">💻 C Programming Language</a>
-<a href="admin-panel.html">⚙ Admin Control Panel</a>
+<a href="rs-cit-module.html"><span class="material-icons">menu_book</span> RS-CIT</a>
+<a href="#"><span class="material-icons">keyboard</span> Typing Tutor</a>
+<a href="#"><span class="material-icons">mic</span> Stenographer</a>
+<a href="#"><span class="material-icons">assignment</span> RSMSSB LDC</a>
+<a href="#"><span class="material-icons">menu_book</span> REET (Main)</a>
+<a href="#"><span class="material-icons">build</span> Class IV Exams</a>
+<a href="advance-ms-excel.html"><span class="material-icons">table_chart</span> Advance MS Excel</a>
+<a href="c-programming.html"><span class="material-icons">code</span> C Programming</a>
+<a href="admin-panel.html"><span class="material-icons">settings</span> Admin Panel</a>
 </aside>
 <main>
 <h2>Choose Your Preparation Module</h2>
 <div class="card-grid">
 
 <div class="card" onclick="location.href='rs-cit-module.html'">
-  <div style="font-size:28px;">📘</div>
+  <span class="material-icons">menu_book</span>
   <h3>RS-CIT</h3>
   <p>Start your RS-CIT practice test now!</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">💻</div>
+  <span class="material-icons">computer</span>
   <h3>Computer Efficiency</h3>
   <p>Practice to improve your computer skills.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">⌨</div>
+  <span class="material-icons">keyboard</span>
   <h3>Typing Tutor</h3>
   <p>Boost your typing speed and accuracy.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">🎤</div>
+  <span class="material-icons">mic</span>
   <h3>Stenographer</h3>
   <p>Prepare with dictation & shorthand modules.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">📝</div>
+  <span class="material-icons">assignment</span>
   <h3>RSMSSB LDC</h3>
   <p>Get ready for Rajasthan LDC recruitment.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">📖</div>
+  <span class="material-icons">menu_book</span>
   <h3>REET (Main)</h3>
   <p>Test your knowledge for REET exams.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">👨‍🔧</div>
+  <span class="material-icons">build</span>
   <h3>Class IV</h3>
   <p>Practice for Group-D job recruitment exams.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">📊</div>
+  <span class="material-icons">table_chart</span>
   <h3>MS Excel</h3>
-  <p>Master Advanced MS Excel with AI in just 30 days.</p>
+  <p>Master Advanced MS Excel in 30 days.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">💻</div>
+  <span class="material-icons">code</span>
   <h3>C Language</h3>
   <p>Learn the fundamentals of C Language programming.</p>
 </div>
 
 <div class="card">
-  <div style="font-size:28px;">⚙</div>
+  <span class="material-icons">settings</span>
   <h3>Admin Panel</h3>
-  <p>Access the secure admin dashboard for managing institute.</p>
+  <p>Access the secure admin dashboard.</p>
 </div>
 
 </div>
