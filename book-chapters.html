@@ -16,6 +16,13 @@
       --bg:#fff;
       --muted:#6b7280;
       --radius:18px;
+
+      /* icon bg colors */
+      --c1:#4cafef;
+      --c2:#34a853;
+      --c3:#fbbc05;
+      --c4:#e91e63;
+      --c5:#9c27b0;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
@@ -81,14 +88,32 @@
       background: var(--accent);
       color: #fff;
     }
-    .feature-btn .icon {
-      font-size: 34px;
-      margin-bottom: 8px;
-      color: var(--accent);
+
+    /* ===== Circle Icons ===== */
+    .icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
     }
     .feature-btn:hover .icon {
-      color: #fff;
+      background: #fff !important;
+      color: var(--accent) !important;
     }
+
+    /* individual colors */
+    .c1 { background: var(--c1); }
+    .c2 { background: var(--c2); }
+    .c3 { background: var(--c3); }
+    .c4 { background: var(--c4); }
+    .c5 { background: var(--c5); }
+
     .feature-btn span {
       font-size: 13px;
       font-weight: bold;
@@ -116,31 +141,31 @@
     <!-- Mobile App Style Buttons -->
     <div class="btn-grid">
       <button class="feature-btn" onclick="startTest('T11')">
-        <div class="icon"><i class="fa-solid fa-computer"></i></div>
+        <div class="icon c1"><i class="fa-solid fa-computer"></i></div>
         Introduction to Computer
         <span>🔹T11</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T12')">
-        <div class="icon"><i class="fa-solid fa-globe"></i></div>
+        <div class="icon c2"><i class="fa-solid fa-globe"></i></div>
         Internet and Services
         <span>🔹T12</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T13')">
-        <div class="icon"><i class="fa-solid fa-file-word"></i></div>
+        <div class="icon c3"><i class="fa-solid fa-file-word"></i></div>
         MS Office & Tools
         <span>🔹T13</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T14')">
-        <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="icon c4"><i class="fa-solid fa-shield-halved"></i></div>
         Cyber Security
         <span>🔹T14</span>
       </button>
 
       <button class="feature-btn" onclick="startTest('T15')">
-        <div class="icon"><i class="fa-solid fa-gears"></i></div>
+        <div class="icon c5"><i class="fa-solid fa-gears"></i></div>
         IT Based Services
         <span>🔹T15</span>
       </button>
