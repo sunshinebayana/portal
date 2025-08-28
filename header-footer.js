@@ -62,27 +62,27 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ✅ Header Loader
+// ✅ Header Loader (Updated: Welcome and Home swapped)
 function loadHeader() {
   const header = document.querySelector("header");
   if (!header) return;
   header.innerHTML = `
     <div class="logo-row">
       <img src="https://raw.githubusercontent.com/sunshinebayana/portal/main/logo-192.png" alt="Logo">
-      <button class="home-btn" onclick="goHome()">🏠 Home</button>
+      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
     </div>
     <div class="title-tagline">
       <span>Sunshine Computer Training & STENO Classes, Bayana</span>
       <div class="tagline">Master Typing, Steno & Computer Skills 🚀</div>
     </div>
     <div class="nav-controls">
-      <span class="welcome" id="welcomeMsg">Welcome, User!</span>
+      <button class="home-btn" onclick="goHome()">🏠 Home</button>
       <button class="btn" onclick="goBack()">⬅ Back</button>
       <button class="btn" onclick="logoutUser()">🚪 Logout</button>
     </div>
   `;
 
-  // ✅ Set Welcome Message
+  // ✅ Set Welcome Message dynamically
   const userData = JSON.parse(localStorage.getItem("userData"));
   if (userData && userData.fullname) {
     document.getElementById("welcomeMsg").textContent = `Welcome, ${userData.fullname}!`;
@@ -97,8 +97,8 @@ function loadFooter() {
 }
 
 // ✅ Common Functions
-function goHome(){ location.href = "dashboard.html"; }
-
+function goHome() { location.href = "dashboard.html"; }
+function goBack() { history.back(); }
 function logoutUser() {
   const userData = JSON.parse(localStorage.getItem("userData"));
   if (userData && userData.username) {
