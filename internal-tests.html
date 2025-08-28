@@ -4,14 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🧪 RS-CIT Internal Tests — Sunshine Institute</title>
+
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
   <style>
     :root{
       --primary:#0d1b4c;
-      --secondary:#f8bbd0;
       --accent:#e91e63;
       --bg:#fff;
       --muted:#6b7280;
       --radius:12px;
+
+      /* icon bg colors */
+      --c1:#4cafef;
+      --c2:#34a853;
+      --c3:#fbbc05;
+      --c4:#e91e63;
+      --c5:#9c27b0;
+      --c6:#ff5722;
+      --c7:#009688;
+      --c8:#3f51b5;
+      --c9:#795548;
+      --c10:#607d8b;
+      --c11:#8bc34a;
+      --c12:#9e9e9e;
+      --c13:#673ab7;
+      --c14:#2196f3;
+      --c15:#ff9800;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
@@ -27,6 +47,7 @@
     main{max-width:1000px;margin:24px auto;padding:0 16px;flex:1}
     h2{font-size:22px;margin:0 0 18px;color:var(--accent);text-align:center}
 
+    /* Mode Toggle */
     .mode-toggle {
       display: flex;
       justify-content: center;
@@ -48,42 +69,70 @@
       color: white;
       font-weight: bold;
     }
+
+    /* ===== Grid Button Layout ===== */
     .btn-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
     }
     .feature-btn {
-      background: white;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      padding: 18px 15px;
-      font-size: 15px;
-      font-weight: 600;
-      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px 18px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
       text-align: left;
     }
     .feature-btn:hover {
-      background-color: var(--accent);
-      color: white;
       transform: translateY(-3px);
+      background: var(--accent);
+      color:#fff;
     }
-    .feature-btn span {
-      float: right;
-      font-weight: bold;
+
+    /* circle icon */
+    .icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+    .feature-btn:hover .icon {
+      background:#fff !important;
+      color:var(--accent) !important;
+    }
+
+    /* text */
+    .btn-text {
+      display:flex;
+      flex-direction:column;
+      font-size:15px;
+      font-weight:600;
+    }
+    .btn-text span {
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .feature-btn:hover .btn-text span {
+      color:#fff;
     }
 
     /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 600px) {
-      .title-tagline span{
-        font-size:16px;
-      }
-      .title-tagline .tagline{
-        font-size:12px;
-      }
+      h2 { font-size:18px; }
+      .btn-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -93,30 +142,75 @@
   <header id="header"></header>
 
   <main>
-    <h2>Select an Internal Test</h2>
+    <h2>🧪 RS-CIT Internal Tests</h2>
 
     <!-- Mode Toggle -->
     <div class="mode-toggle">
-      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
-      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
+      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')"><i class="fa-solid fa-pen"></i> Practice Mode</button>
+      <button id="examModeBtn" onclick="switchMode('exam')"><i class="fa-solid fa-flask"></i> Exam Mode</button>
     </div>
 
     <div class="btn-grid">
-      <button class="feature-btn" onclick="startTest('T21')">1. Introduction to Computer <span>🔹T21</span></button>
-      <button class="feature-btn" onclick="startTest('T22')">2. Computer System <span>🔹T22</span></button>
-      <button class="feature-btn" onclick="startTest('T23')">3. Exploring Your Computer <span>🔹T23</span></button>
-      <button class="feature-btn" onclick="startTest('T24')">4. Introduction of Internet <span>🔹T24</span></button>
-      <button class="feature-btn" onclick="startTest('T25')">5. Financial Literacy & Digital Payment Applications <span>🔹T25</span></button>
-      <button class="feature-btn" onclick="startTest('T26')">6. Internet Applications <span>🔹T26</span></button>
-      <button class="feature-btn" onclick="startTest('T27')">7. Working with Mobile Devices/Smartphone <span>🔹T27</span></button>
-      <button class="feature-btn" onclick="startTest('T28')">8. Microsoft Word <span>🔹T28</span></button>
-      <button class="feature-btn" onclick="startTest('T29')">9. Microsoft Excel <span>🔹T29</span></button>
-      <button class="feature-btn" onclick="startTest('T30')">10. MS PowerPoint <span>🔹T30</span></button>
-      <button class="feature-btn" onclick="startTest('T31')">11. Cyber Security & Awareness <span>🔹T31</span></button>
-      <button class="feature-btn" onclick="startTest('T32')">12. Other Office Tools <span>🔹T32</span></button>
-      <button class="feature-btn" onclick="startTest('T33')">13. Useful Application of IT <span>🔹T33</span></button>
-      <button class="feature-btn" onclick="startTest('T34')">14. Exploring Common Citizen Centric Services <span>🔹T34</span></button>
-      <button class="feature-btn" onclick="startTest('T35')">15. Major eGovernance Services and Schemes for Citizens of Raj. <span>🔹T35</span></button>
+      <button class="feature-btn" onclick="startTest('T21')">
+        <div class="icon c1"><i class="fa-solid fa-desktop"></i></div>
+        <div class="btn-text">Introduction to Computer<span>🔹T21</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T22')">
+        <div class="icon c2"><i class="fa-solid fa-microchip"></i></div>
+        <div class="btn-text">Computer System<span>🔹T22</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T23')">
+        <div class="icon c3"><i class="fa-solid fa-laptop"></i></div>
+        <div class="btn-text">Exploring Your Computer<span>🔹T23</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T24')">
+        <div class="icon c4"><i class="fa-solid fa-globe"></i></div>
+        <div class="btn-text">Introduction of Internet<span>🔹T24</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T25')">
+        <div class="icon c5"><i class="fa-solid fa-wallet"></i></div>
+        <div class="btn-text">Financial Literacy & Digital Payment<span>🔹T25</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T26')">
+        <div class="icon c6"><i class="fa-solid fa-network-wired"></i></div>
+        <div class="btn-text">Internet Applications<span>🔹T26</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T27')">
+        <div class="icon c7"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        <div class="btn-text">Mobile Devices/Smartphone<span>🔹T27</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T28')">
+        <div class="icon c8"><i class="fa-solid fa-file-word"></i></div>
+        <div class="btn-text">Microsoft Word<span>🔹T28</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T29')">
+        <div class="icon c9"><i class="fa-solid fa-file-excel"></i></div>
+        <div class="btn-text">Microsoft Excel<span>🔹T29</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T30')">
+        <div class="icon c10"><i class="fa-solid fa-file-powerpoint"></i></div>
+        <div class="btn-text">MS PowerPoint<span>🔹T30</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T31')">
+        <div class="icon c11"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="btn-text">Cyber Security & Awareness<span>🔹T31</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T32')">
+        <div class="icon c12"><i class="fa-solid fa-gear"></i></div>
+        <div class="btn-text">Other Office Tools<span>🔹T32</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T33')">
+        <div class="icon c13"><i class="fa-solid fa-laptop-code"></i></div>
+        <div class="btn-text">Useful Application of IT<span>🔹T33</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T34')">
+        <div class="icon c14"><i class="fa-solid fa-city"></i></div>
+        <div class="btn-text">Citizen Centric Services<span>🔹T34</span></div>
+      </button>
+      <button class="feature-btn" onclick="startTest('T35')">
+        <div class="icon c15"><i class="fa-solid fa-landmark"></i></div>
+        <div class="btn-text">eGovernance Services (Raj.)<span>🔹T35</span></div>
+      </button>
     </div>
   </main>
 
@@ -126,19 +220,15 @@
   <script src="protect.js"></script>
   <script>
     let selectedMode = "practice";
-
     const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (isLoggedIn !== "true") {
-      location.replace("login.html");
-    }
+    if (isLoggedIn !== "true") location.replace("login.html");
 
     function switchMode(mode) {
       selectedMode = mode;
-      document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode === "practice");
-      document.getElementById("examModeBtn").classList.toggle("active-mode", mode === "exam");
+      document.getElementById("practiceModeBtn").classList.toggle("active-mode", mode==="practice");
+      document.getElementById("examModeBtn").classList.toggle("active-mode", mode==="exam");
     }
 
-    // ✅ Keep page-specific goBack()
     function goBack(){ location.href="rs-cit-module.html"; }
 
     function startTest(code) {
