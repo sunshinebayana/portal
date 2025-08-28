@@ -58,6 +58,10 @@ style.textContent = `
     .title-tagline span{font-size:16px;}
     .title-tagline .tagline{font-size:12px;}
     .nav-controls{justify-content:center;}
+
+    /* ✅ Swap Home & Welcome only on Mobile */
+    .logo-row .home-btn{order:2;}       /* Home button goes after */
+    .nav-controls .welcome{order:-1;}   /* Welcome goes before */
   }
 `;
 document.head.appendChild(style);
@@ -98,6 +102,8 @@ function loadFooter() {
 
 // ✅ Common Functions
 function goHome(){ location.href = "dashboard.html"; }
+
+function goBack(){ history.back(); }
 
 function logoutUser() {
   const userData = JSON.parse(localStorage.getItem("userData"));
