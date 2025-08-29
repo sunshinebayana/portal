@@ -300,21 +300,18 @@ const ChatBot = (() => {
     // -------------------------
 // Summary Display
 showBotMessage(`
-  📊 <b>Result Summary</b><br>
-  🏆 Result: <b>${result}</b><br>
-  📌 Max Marks: ${maxMarks}<br>
-  ✍ Obtained Marks: ${obtainedMarks}<br>
-  ❓ Total Questions: ${totalQuestions}<br>
-  📝 Attempted: ${attemptedQs}<br>
-  ✅ Correct Answers: ${correctAnswers}<br>
-  ⏰ Exam Time: ${examTime} min<br>
-  ⏳ Time Taken: ${timeTaken}<br>
+  <center>
+    📊 <b>Result Summary</b><br>
+    🏆 Result: <b>${result}</b><br>
+    📌 Max Marks: ${maxMarks}<br>
+    ✍ Obtained Marks: ${obtainedMarks}<br>
+    ❓ Total Questions: ${totalQuestions}<br>
+    📝 Attempted: ${attemptedQs}<br>
+    ✅ Correct Answers: ${correctAnswers}<br>
+    ⏰ Exam Time: ${examTime} min<br>
+    ⏳ Time Taken: ${timeTaken}<br>
+  </center>
 `);
-
-
-
-
-
  // ✅ Backend Append Logic
   const currentDate = new Date();
   const dateStr = `${String(currentDate.getDate()).padStart(2,'0')}/${String(currentDate.getMonth()+1).padStart(2,'0')}/${currentDate.getFullYear()}`;
