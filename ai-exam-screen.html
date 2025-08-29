@@ -121,6 +121,8 @@
 </div>
 <script src="protect.js"></script>
 <script>
+  let startTime = Date.now();
+
 const code = localStorage.getItem("test_code")||"",
       username = (localStorage.getItem("test_username")||"").trim(),
       fullname = localStorage.getItem("test_fullname")||"";
@@ -268,8 +270,36 @@ const ChatBot = (() => {
   }
 
   function showSummary() {
-    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
-    showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
+  clearInterval(timerInterval);
+
+  const totalQ = questions.length;
+  const attemptedQ = attempted;
+  const correctAns = correct;
+  const maxMarksCalc = totalQ; // या backend से आने वाले maxMarks
+  const obtained = correctAns;
+  const percentage = maxMarksCalc > 0 ? (obtained / maxMarksCalc) * 100 : 0;
+  const result = percentage >= 40 ? "Pass" : "Fail";
+
+  // Time calculation
+  const endTime = Date.now();
+  const timeTakenMs = endTime - startTime;
+  const mins = Math.floor(timeTakenMs / 60000);
+  const secs = Math.floor((timeTakenMs % 60000) / 1000);
+  const timeTaken = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+  showBotMessage(`📊 <b>Result Summary</b><br>
+    ✔ Result: ${result}<br>
+    ✔ Max Marks: ${maxMarksCalc}<br>
+    ✔ Obtained Marks: ${obtained}<br>
+    ✔ Total Questions: ${totalQ}<br>
+    ✔ Attempted: ${attemptedQ}<br>
+    ✔ Correct Answers: ${correctAns}<br>
+    ✔ Exam Time: 60 min<br>
+    ✔ Time Taken: ${timeTaken}`);
+
+  document.getElementById("optionsArea").innerHTML = "";
+}
+
 
     if (score < 50) {
       showCustomCelebration("Motivation Time!", 
