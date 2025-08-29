@@ -267,9 +267,48 @@ const ChatBot = (() => {
     }
   }
 
-  function showSummary() {
-    showBotMessage(`🤖 Practice Complete, ${fullname}!`);
-    showBotMessage(`✔ Attempted: ${attempted}<br>✔ Correct: ${correct}<br>✔ Marks: ${score}`);
+   function showSummary() {
+    clearInterval(timerInterval);
+
+    // -------------------------
+    // Backend values
+    const maxMarks = (questions.length * 2);   // हर सही जवाब = 2 Marks
+    const obtainedMarks = score;               // student का actual score
+    const totalQuestions = questions.length;   // कुल प्रश्न
+    const attemptedQs = attempted;             // कितने attempt हुए
+    const correctAnswers = correct;            // सही answers
+    const examTime = 60;                       // exam allotted duration (minutes) (hardcoded abhi)
+    
+    // Timer से लिया गया समय
+    const timeDisplay = document.getElementById("timerDisplay").textContent;
+    let timeTaken = "";
+    if(timeDisplay.includes("Left Time:")){
+      const left = timeDisplay.replace("Left Time:","").trim(); // mm:ss bacha hua
+      const [m,s] = left.split(":").map(Number);
+      const totalLeft = (m*60)+s;
+      const totalGiven = examTime*60;
+      const used = totalGiven-totalLeft;
+      const minsUsed = Math.floor(used/60);
+      const secsUsed = used%60;
+      timeTaken = `${String(minsUsed).padStart(2,'0')}:${String(secsUsed).padStart(2,'0')}`;
+    }
+
+    // Result (Pass/Fail)
+    const passMarks = Math.ceil(maxMarks*0.40); // 40% of maxMarks
+    const result = (obtainedMarks >= passMarks) ? "✅ Pass" : "❌ Fail";
+
+    // -------------------------
+    // Summary Display
+    showBotMessage(`📊 <b>Result Summary</b><br>
+      🏆 Result: <b>${result}</b><br>
+      📌 Max Marks: ${maxMarks}<br>
+      ✍ Obtained Marks: ${obtainedMarks}<br>
+      ❓ Total Questions: ${totalQuestions}<br>
+      📝 Attempted: ${attemptedQs}<br>
+      ✅ Correct Answers: ${correctAnswers}<br>
+      ⏰ Exam Time: ${examTime} min<br>
+      ⏳ Time Taken: ${timeTaken}
+    `);
 
     if (score < 50) {
       showCustomCelebration("Motivation Time!", 
