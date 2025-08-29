@@ -290,12 +290,12 @@ const ChatBot = (() => {
       const used = totalGiven-totalLeft;
       const minsUsed = Math.floor(used/60);
       const secsUsed = used%60;
-      timeTaken = `${String(minsUsed).padStart(2,'0')}:${String(secsUsed).padStart(2,'0')}`;
+      timeTaken = `${minsUsed}m ${String(secsUsed).padStart(2,'0')}s`;
     }
 
     // Result (Pass/Fail)
     const passMarks = Math.ceil(maxMarks*0.40); // 40% of maxMarks
-    const result = (obtainedMarks >= passMarks) ? "✅ Pass" : "❌ Fail";
+    const result = (obtainedMarks >= passMarks) ? "Pass" : "Fail";
 
     // -------------------------
     // Summary Display
