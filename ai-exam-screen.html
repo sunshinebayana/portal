@@ -20,15 +20,16 @@
       margin: 0;
       padding: 0;
     }
-    header {
-      background: var(--primary);
-      color: #fff;
-      padding: 12px 20px;
-      font-size: 18px;
-      font-weight: bold;
-      text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
+   header {
+  background-color: #001f4d; /* Navy blue background */
+  color: #fff;               /* White text */
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
     .container {
       max-width: 650px;
       margin: 10px auto;
@@ -106,7 +107,14 @@
   </style>
 </head>
 <body>
-<header><span id="examNameLabel" class="exam-name"></span></header>
+<header style="text-align:center; padding:10px 0; background-color:#001f4d; color:#fff;">
+  <div>
+    <span style="font-size:22px; font-weight:bold;">Sunshine Computer Training & STENO Classes, Bayana</span><br>
+    <span style="font-size:13px; font-style:italic;">Master Typing, Steno & Computer Skills</span><br>
+    <span id="examNameLabel" class="exam-name" style="display:block; font-size:16px; font-weight:bold; margin-top:5px;"></span>
+  </div>
+</header>
+
 <div class="container">
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div id="quizArea" class="loading">⏳ Please wait...</div>
@@ -330,4 +338,8 @@ function closeTest(){
 initTest();
 </script>
 </body>
+  <footer style="text-align:center; margin-top:20px; padding:10px; font-size:12px; color:#fff; background-color: #001f4d;">
+  @ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal
+</footer>
+
 </html>
