@@ -298,17 +298,23 @@ const ChatBot = (() => {
     const result = (obtainedMarks >= passMarks) ? "Pass" : "Fail";
 
     // -------------------------
-    // Summary Display
-    showBotMessage(`📊 <b>Result Summary</b><br>
-      🏆 Result: <b>${result}</b><br>
-      📌 Max Marks: ${maxMarks}<br>
-      ✍ Obtained Marks: ${obtainedMarks}<br>
-      ❓ Total Questions: ${totalQuestions}<br>
-      📝 Attempted: ${attemptedQs}<br>
-      ✅ Correct Answers: ${correctAnswers}<br>
-      ⏰ Exam Time: ${examTime} min<br>
-      ⏳ Time Taken: ${timeTaken}
-    `);
+   // Summary Display
+showBotMessage(`
+  <div style="display:flex; align-items:center; justify-content:center; height:100vh; text-align:center; font-family:Arial, sans-serif; line-height:1.8;">
+    <div style="background:#fff; padding:20px 30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:400px;">
+      <h2 style="margin:0 0 10px; font-size:22px;">📊 Result Summary</h2>
+      🏆 <b>Result:</b> ${result}<br>
+      📌 <b>Max Marks:</b> ${maxMarks}<br>
+      ✍ <b>Obtained Marks:</b> ${obtainedMarks}<br>
+      ❓ <b>Total Questions:</b> ${totalQuestions}<br>
+      📝 <b>Attempted:</b> ${attemptedQs}<br>
+      ✅ <b>Correct Answers:</b> ${correctAnswers}<br>
+      ⏰ <b>Exam Time:</b> ${examTime} min<br>
+      ⏳ <b>Time Taken:</b> ${timeTaken}
+    </div>
+  </div>
+`);
+
  // ✅ Backend Append Logic
   const currentDate = new Date();
   const dateStr = `${String(currentDate.getDate()).padStart(2,'0')}/${String(currentDate.getMonth()+1).padStart(2,'0')}/${currentDate.getFullYear()}`;
