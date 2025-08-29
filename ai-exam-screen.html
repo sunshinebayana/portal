@@ -299,29 +299,24 @@ const ChatBot = (() => {
 
     // -------------------------
 // Summary Display
+// Summary Display
 showBotMessage(`
-  <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; margin:0; padding:0; text-align:center; font-family:Arial, sans-serif; line-height:1.6;">
-    
-    <div style="background:#fff; padding:20px 30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:400px; width:100%; margin:0;">
-      <h2 style="margin:0 0 10px 0; font-size:22px;">📊 Result Summary</h2>
-      🏆 <b>Result:</b> ${result}<br>
-      📌 <b>Max Marks:</b> ${maxMarks}<br>
-      ✍ <b>Obtained Marks:</b> ${obtainedMarks}<br>
-      ❓ <b>Total Questions:</b> ${totalQuestions}<br>
-      📝 <b>Attempted:</b> ${attemptedQs}<br>
-      ✅ <b>Correct Answers:</b> ${correctAnswers}<br>
-      ⏰ <b>Exam Time:</b> ${examTime} min<br>
-      ⏳ <b>Time Taken:</b> ${timeTaken}
+  <div style="display:flex; justify-content:center; align-items:center; height:100vh; margin:0; padding:0;">
+    <div style="text-align:center; margin:0; padding:0;">
+      📊 <b>Result Summary</b><br>
+      🏆 Result: <b>${result}</b><br>
+      📌 Max Marks: ${maxMarks}<br>
+      ✍ Obtained Marks: ${obtainedMarks}<br>
+      ❓ Total Questions: ${totalQuestions}<br>
+      📝 Attempted: ${attemptedQs}<br>
+      ✅ Correct Answers: ${correctAnswers}<br>
+      ⏰ Exam Time: ${examTime} min<br>
+      ⏳ Time Taken: ${timeTaken}<br><br>
+      <button onclick="location.reload()" style="margin:0; padding:0;">Close</button>
     </div>
-
-    <!-- ✅ Bottom Center Close Button -->
-    <button onclick="closeTest()" 
-      style="margin:10px 0 0 0; padding:10px 25px; background:#e91e63; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;">
-      ✖ Close
-    </button>
-
   </div>
 `);
+
 
 
 
