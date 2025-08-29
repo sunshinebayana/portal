@@ -87,7 +87,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px; /* increased emoji size */
+      font-size: 28px;
       color: #fff;
       flex-shrink: 0;
       transition: all 0.3s ease;
@@ -129,8 +129,8 @@
 
     <!-- Mode Toggle -->
     <div class="mode-toggle">
-      <button id="practiceModeBtn" class="active-mode">📝 Practice Mode</button>
-      <button id="examModeBtn">🧪 Exam Mode</button>
+      <button id="practiceModeBtn" class="active-mode" onclick="switchMode('practice')">📝 Practice Mode</button>
+      <button id="examModeBtn" onclick="switchMode('exam')">🧪 Exam Mode</button>
     </div>
 
     <!-- Menu Style Buttons -->
