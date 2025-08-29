@@ -309,6 +309,29 @@ const ChatBot = (() => {
       ⏰ Exam Time: ${examTime} min<br>
       ⏳ Time Taken: ${timeTaken}
     `);
+ // ✅ Backend Append Logic
+  const currentDate = new Date();
+  const dateStr = `${String(currentDate.getDate()).padStart(2,'0')}/${String(currentDate.getMonth()+1).padStart(2,'0')}/${currentDate.getFullYear()}`;
+
+  const resultPayload = new FormData();
+  resultPayload.append("action", "appendResult");
+  resultPayload.append("date", dateStr);
+  resultPayload.append("code", code);
+  resultPayload.append("username", username);
+  resultPayload.append("fullname", fullname);
+  resultPayload.append("result", result);
+  resultPayload.append("maxMarks", maxMarks);
+  resultPayload.append("obtainedMarks", obtainedMarks);
+  resultPayload.append("totalQuestions", totalQuestions);
+  resultPayload.append("attempted", attemptedQs);
+  resultPayload.append("correctAnswers", correctAnswers);
+  resultPayload.append("examTime", examTime);
+  resultPayload.append("timeTaken", timeTaken);
+
+  fetch(BASE_URL, { method: "POST", body: resultPayload })
+    .then(res => res.text())
+    .then(data => console.log("✅ Result saved:", data))
+    .catch(err => console.error("❌ Error saving result:", err));
 
     if (score < 50) {
       showCustomCelebration("Motivation Time!", 
