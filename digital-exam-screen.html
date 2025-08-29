@@ -14,11 +14,18 @@
     header {
       background: linear-gradient(90deg, #7b2ff7, #f107a3);
       color: #fff;
-      padding: 10px 20px;
-      font-size: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    header p {
+      margin: 5px 0 0 0;
+      font-size: 14px;
+      font-style: italic;
     }
     .exam-name {
       font-size: 20px;
@@ -159,12 +166,23 @@
       color: #fff;
       border-color: #4caf50;
     }
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      color: #555;
+      background: #f0f0f0;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
+
 <header>
-  <span id="examNameLabel" class="exam-name"></span>
+  <h1>Sunshine Computer Training & STENO Classes, Bayana</h1>
+  <p>Master Typing, Steno & Computer Skills</p>
 </header>
+
 <div class="container">
   <button class="close-btn" onclick="closeTest()">✖</button>
   <div class="top-info-row">
@@ -180,7 +198,11 @@
   <div id="quizArea" class="loading">⏳ Please wait...</div>
   <div id="questionNav" class="question-nav"></div>
 </div>
-  <!-- ✅ Protect file include -->
+
+<footer>
+  @ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal
+</footer>
+
 <script src="protect.js"></script>
 <script>
   const code = localStorage.getItem("test_code") || "";
