@@ -300,9 +300,9 @@ const ChatBot = (() => {
     // -------------------------
    // Summary Display
 showBotMessage(`
-  <div style="display:flex; align-items:center; justify-content:center; height:100vh; text-align:center; font-family:Arial, sans-serif; line-height:1.8;">
-    <div style="background:#fff; padding:20px 30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:400px;">
-      <h2 style="margin:0 0 10px; font-size:22px;">📊 Result Summary</h2>
+  <div style="display:flex; align-items:center; justify-content:center; height:100vh; text-align:center; font-family:Arial, sans-serif; line-height:1.8; margin:0;">
+    <div style="background:#fff; padding:20px 30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); max-width:400px; margin:0;">
+      <h2 style="margin:0; font-size:22px;">📊 Result Summary</h2>
       🏆 <b>Result:</b> ${result}<br>
       📌 <b>Max Marks:</b> ${maxMarks}<br>
       ✍ <b>Obtained Marks:</b> ${obtainedMarks}<br>
@@ -311,16 +311,11 @@ showBotMessage(`
       ✅ <b>Correct Answers:</b> ${correctAnswers}<br>
       ⏰ <b>Exam Time:</b> ${examTime} min<br>
       ⏳ <b>Time Taken:</b> ${timeTaken}
-
-       <!-- ✅ Bottom Center Close Button -->
-      <button onclick="closeTest()" 
-        style="margin-top:15px; padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;">
-        ✖ Close
-      </button>
-      
     </div>
   </div>
 `);
+
+
 
  // ✅ Backend Append Logic
   const currentDate = new Date();
@@ -367,7 +362,12 @@ showBotMessage(`
     document.getElementById("optionsArea").innerHTML="";
     clearInterval(timerInterval);
   }
-
+    <!-- ✅ Bottom Center Close Button -->
+      <button onclick="closeTest()" 
+        style="margin-top:15px; padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;">
+        ✖ Close
+      </button>
+  
   function triggerFlowerRain(){
     const flowers = ["🌸","🌺","🌼","💮"];
     for(let i=0;i<20;i++){
