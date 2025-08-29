@@ -312,6 +312,11 @@ showBotMessage(`
       ⏰ <b>Exam Time:</b> ${examTime} min<br>
       ⏳ <b>Time Taken:</b> ${timeTaken}
     </div>
+      <!-- ✅ Bottom Center Close Button -->
+      <button onclick="closeTest()" 
+        style="margin-top:15px; padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;">
+        ✖ Close
+      </button>
   </div>
 `);
 
@@ -362,11 +367,7 @@ showBotMessage(`
     document.getElementById("optionsArea").innerHTML="";
     clearInterval(timerInterval);
   }
-    <!-- ✅ Bottom Center Close Button -->
-      <button onclick="closeTest()" 
-        style="margin-top:15px; padding:10px 20px; background:#e91e63; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;">
-        ✖ Close
-      </button>
+  
   
   function triggerFlowerRain(){
     const flowers = ["🌸","🌺","🌼","💮"];
