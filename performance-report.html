@@ -117,7 +117,7 @@
       return;
     }
 
-    fetch(`${BASE_URL}?action=viewResultReport&username=${encodeURIComponent(username)}`)
+    fetch(`${BASE_URL}?action=getperformancereport&username=${encodeURIComponent(username)}`)
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
@@ -125,25 +125,27 @@
           return;
         }
 
+        const r = data.report;
+
         // Performance table
         const reportHtml = `
           <table>
-            <tr><th>Total Test Given</th><td>${data.totalTests || 0}</td></tr>
-            <tr><th>Average Marks</th><td>${data.avgMarks || "--"}</td></tr>
-            <tr><th>Best Score</th><td>${data.bestScore || "--"} (TestCode: ${data.bestScoreTestCode || "--"})</td></tr>
-            <tr><th>Worst Score</th><td>${data.worstScore || "--"} (TestCode: ${data.worstScoreTestCode || "--"})</td></tr>
-            <tr><th>Weighted Score</th><td>${data.weightedScore || "--"}</td></tr>
-            <tr><th>Rank</th><td>${data.rank || "--"}</td></tr>
-            <tr><th>Over All Rank</th><td>${data.overallRank || "--"}</td></tr>
-            <tr><th>Improvement Insights</th><td>${data.remarks || "--"}</td></tr>
+            <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
+            <tr><th>Average Marks</th><td>${r.averageMarks || "--"}</td></tr>
+            <tr><th>Best Score</th><td>${r.bestScore || "--"} (TestCode: ${r.bestScoreTest || "--"})</td></tr>
+            <tr><th>Worst Score</th><td>${r.worstScore || "--"} (TestCode: ${r.worstScoreTest || "--"})</td></tr>
+            <tr><th>Weighted Score</th><td>${r.weightedScore || "--"}</td></tr>
+            <tr><th>Rank</th><td>${r.rank || "--"}</td></tr>
+            <tr><th>Over All Rank</th><td>${r.overallRank || "--"}</td></tr>
+            <tr><th>Improvement Insights</th><td>${r.remarks || "--"}</td></tr>
           </table>
         `;
 
         // Top Rankers section
         let topRankHtml = "";
-        if (data.topRankers && data.topRankers.length) {
+        if (data.topFive && data.topFive.length) {
           topRankHtml += `<div class="top-rank"><h3>🏆 Top 5 Rank Holders</h3><ol>`;
-          data.topRankers.forEach(name => {
+          data.topFive.forEach(name => {
             topRankHtml += `<li>${name}</li>`;
           });
           topRankHtml += `</ol></div>`;
@@ -152,7 +154,7 @@
         document.getElementById("reportArea").innerHTML = reportHtml + topRankHtml;
 
         // Chart rendering
-        renderChart(data);
+        renderChart(r);
       })
       .catch(err => {
         console.error("Error:", err);
@@ -160,7 +162,7 @@
       });
   }
 
-  function renderChart(data) {
+  function renderChart(r) {
     const ctx = document.getElementById('performanceChart').getContext('2d');
     if (chartInstance) {
       chartInstance.destroy();
@@ -172,10 +174,10 @@
         datasets: [{
           label: 'Score (%)',
           data: [
-            parseFloat((data.avgMarks || '0').replace('%','')),
-            parseFloat((data.bestScore || '0').replace('%','')),
-            parseFloat((data.worstScore || '0').replace('%','')),
-            parseFloat((data.weightedScore || '0').replace('%',''))
+            parseFloat((r.averageMarks || '0').toString().replace('%','')),
+            parseFloat((r.bestScore || '0').toString().replace('%','')),
+            parseFloat((r.worstScore || '0').toString().replace('%','')),
+            parseFloat((r.weightedScore || '0').toString().replace('%',''))
           ],
           backgroundColor: ['#7b2ff7', '#4caf50', '#f44336', '#2196f3']
         }]
