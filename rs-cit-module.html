@@ -255,7 +255,7 @@ function renderModule(key){
     case 'digital-zone':location.href='digital-learning.html';return'';
     case 'ai-skill-bot':location.href='ai-skill-bot.html';return'';
     case 'common-test':return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test before final exam.</p>`;
-    case 'result-rank': return '';  
+    case 'result-rank':location.href='performance-report.html';return'';
     case 'schedule':return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests.</p>`;
     case 'contact':return `<h2>📞 Contact</h2><p class="lead">Director: Atendra Sharma — 9929856121</p>`;
     default:return `<p>Module not found.</p>`;
@@ -265,5 +265,6 @@ function renderModule(key){
 <script src="header-footer.js"></script>
 </body>
 </html>
+
 
 
