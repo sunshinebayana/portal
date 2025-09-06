@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RS-CIT Result Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #f3e7ff);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #001f4d;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    header span.title {
+      font-size: 20px;
+      font-weight: bold;
+      display: block;
+    }
+    header span.tagline {
+      font-size: 13px;
+      font-style: italic;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(123, 47, 247, 0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #001f4d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f3e5f5;
+      color: #333;
+    }
+    .top-rank {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9ff;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    .top-rank h3 {
+      margin-bottom: 10px;
+      color: #7b2ff7;
+    }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #001f4d;
+    }
+    .chart-container {
+      margin-top: 30px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <span class="title">Sunshine Computer Training & STENO Classes, Bayana</span>
+    <span class="tagline">Master Typing, Steno & Computer Skills</span>
+    <div id="fullnameLabel" style="margin-top:5px;"></div>
+  </header>
+
+  <div class="container">
+    <h2>📊 Performance Report</h2>
+    <div id="reportArea">⏳ Loading your report...</div>
+
+    <!-- Chart Section -->
+    <div class="chart-container">
+      <h3 style="text-align:center; color:#7b2ff7;">📈 Performance Overview</h3>
+      <canvas id="performanceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    @ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal
+  </footer>
+
+<script>
+  const username = (localStorage.getItem("test_username") || "").trim();
+  const fullname = localStorage.getItem("test_fullname") || "";
+
+  document.getElementById("fullnameLabel").textContent = fullname ? `👤 ${fullname}` : "👤 Guest User";
+
+  let chartInstance = null;
+
+  function loadResultReport() {
+    if (!username) {
+      document.getElementById("reportArea").innerHTML = `<h3 style="color:red;">❌ User not found. Please login again.</h3>`;
+      return;
+    }
+
+    fetch(`${BASE_URL}?action=viewResultReport&username=${encodeURIComponent(username)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          document.getElementById("reportArea").innerHTML = `<h3 style="color:red;">⚠ ${data.message || "Error fetching report."}</h3>`;
+          return;
+        }
+
+        // Performance table
+        const reportHtml = `
+          <table>
+            <tr><th>Total Test Given</th><td>${data.totalTests || 0}</td></tr>
+            <tr><th>Average Marks</th><td>${data.avgMarks || "--"}</td></tr>
+            <tr><th>Best Score</th><td>${data.bestScore || "--"} (TestCode: ${data.bestScoreTestCode || "--"})</td></tr>
+            <tr><th>Worst Score</th><td>${data.worstScore || "--"} (TestCode: ${data.worstScoreTestCode || "--"})</td></tr>
+            <tr><th>Weighted Score</th><td>${data.weightedScore || "--"}</td></tr>
+            <tr><th>Rank</th><td>${data.rank || "--"}</td></tr>
+            <tr><th>Over All Rank</th><td>${data.overallRank || "--"}</td></tr>
+            <tr><th>Improvement Insights</th><td>${data.remarks || "--"}</td></tr>
+          </table>
+        `;
+
+        // Top Rankers section
+        let topRankHtml = "";
+        if (data.topRankers && data.topRankers.length) {
+          topRankHtml += `<div class="top-rank"><h3>🏆 Top 5 Rank Holders</h3><ol>`;
+          data.topRankers.forEach(name => {
+            topRankHtml += `<li>${name}</li>`;
+          });
+          topRankHtml += `</ol></div>`;
+        }
+
+        document.getElementById("reportArea").innerHTML = reportHtml + topRankHtml;
+
+        // Chart rendering
+        renderChart(data);
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        document.getElementById("reportArea").innerHTML = `<h3 style="color:red;">⚠ Error loading report. Please try again later.</h3>`;
+      });
+  }
+
+  function renderChart(data) {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Average Marks', 'Best Score', 'Worst Score', 'Weighted Score'],
+        datasets: [{
+          label: 'Score (%)',
+          data: [
+            parseFloat((data.avgMarks || '0').replace('%','')),
+            parseFloat((data.bestScore || '0').replace('%','')),
+            parseFloat((data.worstScore || '0').replace('%','')),
+            parseFloat((data.weightedScore || '0').replace('%',''))
+          ],
+          backgroundColor: ['#7b2ff7', '#4caf50', '#f44336', '#2196f3']
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Percentage (%)'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  loadResultReport();
+</script>
+</body>
+</html>
