@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -19,16 +19,25 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
     table, th, td {
       border: 1px solid #ccc;
     }
     th, td {
-      padding: 8px;
+      padding: 10px;
       text-align: left;
     }
     th {
       background: #eee;
+    }
+    .section-title {
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #444;
+      text-align: center;
     }
   </style>
 </head>
@@ -41,7 +50,7 @@
 
   <script src="protect.js"></script>
   <script>
-    // ✅ अब सिर्फ userData से ही username मिलेगा
+    // ✅ userData से username लेना
     const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
 
@@ -60,11 +69,30 @@
           }
 
           const r = data.report;
+          const t = data.topRankers;
 
-          // ✅ सिर्फ़ Total Test Given दिखाना है
+          // ✅ Performance Report Table
           const reportHtml = `
             <table>
               <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
+              <tr><th>Average Marks</th><td>${r.averageMarks || "-"}%</td></tr>
+              <tr><th>Best Score</th><td>${r.bestScore || "-"}%</td></tr>
+              <tr><th>Best Score TestCode</th><td>${r.bestScoreTestCode || "-"}</td></tr>
+              <tr><th>Worst Score</th><td>${r.worstScore || "-"}%</td></tr>
+              <tr><th>Worst Score TestCode</th><td>${r.worstScoreTestCode || "-"}</td></tr>
+              <tr><th>Weighted Score</th><td>${r.weightedScore || "-"}</td></tr>
+              <tr><th>Rank</th><td>${r.rank || "-"}</td></tr>
+              <tr><th>Overall Rank</th><td>${r.overallRank || "-"}</td></tr>
+              <tr><th>Improvement Insights</th><td>${r.improvementInsights || "-"}</td></tr>
+            </table>
+
+            <div class="section-title">🏆 Top 5 Rankers</div>
+            <table>
+              <tr><th>Rank 1</th><td>${t.rank1 || "-"}</td></tr>
+              <tr><th>Rank 2</th><td>${t.rank2 || "-"}</td></tr>
+              <tr><th>Rank 3</th><td>${t.rank3 || "-"}</td></tr>
+              <tr><th>Rank 4</th><td>${t.rank4 || "-"}</td></tr>
+              <tr><th>Rank 5</th><td>${t.rank5 || "-"}</td></tr>
             </table>
           `;
 
@@ -75,9 +103,11 @@
           document.getElementById("reportArea").innerHTML = `<p style="color:red;">⚠ Error loading report. Please try again later.</p>`;
         });
     }
-function goBack(){ 
-  location.href="rs-cit-module.html"; 
-}
+
+    function goBack(){ 
+      location.href="rs-cit-module.html"; 
+    }
+
     loadResultReport();
   </script>
 
