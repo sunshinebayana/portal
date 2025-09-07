@@ -9,50 +9,66 @@
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f0f4ff; /* light pick-white tone */
+      background: linear-gradient(135deg, #eef2ff, #fdf2f7);
       color: #333;
     }
+
     h2 {
       text-align: center;
-      color: #001f4d; /* navy blue */
-      margin: 25px 0;
-      font-size: 28px;
-      font-weight: bold;
+      color: #001f4d;
+      margin: 30px 0;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+
     .container {
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
-      padding: 15px;
+      padding: 20px;
     }
+
     .card {
       background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      margin-bottom: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      margin-bottom: 35px;
       overflow: hidden;
-      transition: transform 0.2s ease;
+      transition: all 0.3s ease;
     }
     .card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
     }
+
     .card-header {
       background: linear-gradient(90deg, #001f4d, #ff6699);
       color: #fff;
-      padding: 14px 18px;
+      padding: 16px 20px;
       font-size: 20px;
       font-weight: bold;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
+
     .card-body {
-      padding: 20px;
+      padding: 22px;
+      animation: fadeIn 0.7s ease;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
     }
     th, td {
       text-align: left;
-      padding: 12px;
+      padding: 14px;
       border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
     }
@@ -69,13 +85,13 @@
     /* ✅ Overall Rank Highlight */
     .rank-highlight {
       display: inline-block;
-      background: #001f4d;
+      background: linear-gradient(135deg, #001f4d, #003d99);
       color: #fff;
       font-weight: bold;
-      padding: 6px 16px;
-      border-radius: 20px;
+      padding: 8px 20px;
+      border-radius: 25px;
       font-size: 18px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
     }
 
     /* ✅ Top Rankers Table */
@@ -84,18 +100,25 @@
       border-collapse: collapse;
     }
     .rankers-table th {
-      background: #001f4d;
+      background: linear-gradient(90deg, #001f4d, #003d99);
       color: #fff;
       text-align: center;
+      font-size: 17px;
+      letter-spacing: 0.3px;
     }
     .rankers-table td {
       text-align: center;
       border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
       font-weight: 500;
+      padding: 12px;
     }
     .rankers-table tr:nth-child(even) {
-      background: #fdf2f7; /* light pink shade */
+      background: #fdf2f7;
+    }
+    .rankers-table tr:hover {
+      background: #f1f5ff;
+      transition: background 0.3s ease;
     }
   </style>
 </head>
@@ -116,16 +139,16 @@
     function loadResultReport() {
       if (!username) {
         document.getElementById("reportArea").innerHTML =
-          `<p style="color:red; text-align:center;">❌ User not found. Please login again.</p>`;
+          `<p style="color:red; text-align:center; font-weight:bold;">❌ User not found. Please login again.</p>`;
         return;
       }
 
-      fetch(`${BASE_URL}?action=getperformancereport&username=${encodeURIComponent(username)}`)
+      fetch(\`\${BASE_URL}?action=getperformancereport&username=\${encodeURIComponent(username)}\`)
         .then(res => res.json())
         .then(data => {
           if (!data.success) {
             document.getElementById("reportArea").innerHTML =
-              `<p style="color:red; text-align:center;">⚠ ${data.message || "Error fetching report."}</p>`;
+              `<p style="color:red; text-align:center; font-weight:bold;">⚠ \${data.message || "Error fetching report."}</p>`;
             return;
           }
 
@@ -140,23 +163,23 @@
                 <table>
                   <tr>
                     <th>Overall Rank</th>
-                    <td colspan="3"><span class="rank-highlight">${r.overallRank || "-"}</span></td>
+                    <td colspan="3"><span class="rank-highlight">\${r.overallRank || "-"}</span></td>
                   </tr>
                   <tr>
                     <th>Total Test Given</th>
-                    <td>${r.totalTest || 0}</td>
+                    <td>\${r.totalTest || 0}</td>
                     <th>Average Marks</th>
-                    <td>${r.averageMarks || "-"}%</td>
+                    <td>\${r.averageMarks || "-"}%</td>
                   </tr>
                   <tr>
                     <th>Best Score</th>
-                    <td>${r.bestScore || "-"}%</td>
+                    <td>\${r.bestScore || "-"}%</td>
                     <th>Best Score TestCode</th>
-                    <td>${r.bestScoreTestCode || "-"}</td>
+                    <td>\${r.bestScoreTestCode || "-"}</td>
                   </tr>
                   <tr>
                     <th>Improvement Insights</th>
-                    <td colspan="3">${r.improvementInsights || "-"}</td>
+                    <td colspan="3">\${r.improvementInsights || "-"}</td>
                   </tr>
                 </table>
               </div>
@@ -174,11 +197,11 @@
                     <th>Name</th>
                     <th>Badge</th>
                   </tr>
-                  <tr><td>Rank 1</td><td>${t.rank1 || "-"}</td><td>🥇</td></tr>
-                  <tr><td>Rank 2</td><td>${t.rank2 || "-"}</td><td>🥈</td></tr>
-                  <tr><td>Rank 3</td><td>${t.rank3 || "-"}</td><td>🥉</td></tr>
-                  <tr><td>Rank 4</td><td>${t.rank4 || "-"}</td><td>⭐</td></tr>
-                  <tr><td>Rank 5</td><td>${t.rank5 || "-"}</td><td>⭐</td></tr>
+                  <tr><td>Rank 1</td><td>\${t.rank1 || "-"}</td><td>🥇</td></tr>
+                  <tr><td>Rank 2</td><td>\${t.rank2 || "-"}</td><td>🥈</td></tr>
+                  <tr><td>Rank 3</td><td>\${t.rank3 || "-"}</td><td>🥉</td></tr>
+                  <tr><td>Rank 4</td><td>\${t.rank4 || "-"}</td><td>⭐</td></tr>
+                  <tr><td>Rank 5</td><td>\${t.rank5 || "-"}</td><td>⭐</td></tr>
                 </table>
               </div>
             </div>
@@ -189,7 +212,7 @@
         .catch(err => {
           console.error("Error:", err);
           document.getElementById("reportArea").innerHTML =
-            `<p style="color:red; text-align:center;">⚠ Error loading report. Please try again later.</p>`;
+            `<p style="color:red; text-align:center; font-weight:bold;">⚠ Error loading report. Please try again later.</p>`;
         });
     }
 
