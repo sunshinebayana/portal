@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -37,6 +37,7 @@
   <div id="reportArea">⏳ Loading your report...</div>
 
 <script>
+  const BASE_URL = "https://script.google.com/macros/s/AKfycbx4Bx-4lSDrBsB1_i6E4reHBiKgKP1zhtVWryVoN8L90Bx72JHSNPaA12aV__fYbRA-/exec";
   const username = (localStorage.getItem("test_username") || "").trim();
 
   function loadResultReport() {
@@ -72,6 +73,5 @@
 
   loadResultReport();
 </script>
-<script src="project.js"></script>
 </body>
 </html>
