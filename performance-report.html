@@ -30,12 +30,6 @@
     th {
       background: #eee;
     }
-    .top-rank {
-      margin-top: 15px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background: #fafafa;
-    }
   </style>
 </head>
 <body>
@@ -43,7 +37,6 @@
   <div id="reportArea">⏳ Loading your report...</div>
 
 <script>
-  // Username और fullname localStorage से लेंगे
   const username = (localStorage.getItem("test_username") || "").trim();
 
   function loadResultReport() {
@@ -52,7 +45,6 @@
       return;
     }
 
-    // 🔻 यहां BASE_URL अपनी API वाली लिंक से replace करें
     fetch(`${BASE_URL}?action=getperformancereport&username=${encodeURIComponent(username)}`)
       .then(res => res.json())
       .then(data => {
@@ -63,31 +55,14 @@
 
         const r = data.report;
 
-        // Performance table
+        // सिर्फ़ Total Test Given दिखाना है
         const reportHtml = `
           <table>
             <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
-            <tr><th>Average Marks</th><td>${r.averageMarks || "--"}</td></tr>
-            <tr><th>Best Score</th><td>${r.bestScore || "--"} (TestCode: ${r.bestScoreTest || "--"})</td></tr>
-            <tr><th>Worst Score</th><td>${r.worstScore || "--"} (TestCode: ${r.worstScoreTest || "--"})</td></tr>
-            <tr><th>Weighted Score</th><td>${r.weightedScore || "--"}</td></tr>
-            <tr><th>Rank</th><td>${r.rank || "--"}</td></tr>
-            <tr><th>Over All Rank</th><td>${r.overallRank || "--"}</td></tr>
-            <tr><th>Improvement Insights</th><td>${r.remarks || "--"}</td></tr>
           </table>
         `;
 
-        // Top Rankers section
-        let topRankHtml = "";
-        if (data.topFive && data.topFive.length) {
-          topRankHtml += `<div class="top-rank"><b>🏆 Top 5 Rank Holders:</b><ol>`;
-          data.topFive.forEach(name => {
-            topRankHtml += `<li>${name}</li>`;
-          });
-          topRankHtml += `</ol></div>`;
-        }
-
-        document.getElementById("reportArea").innerHTML = reportHtml + topRankHtml;
+        document.getElementById("reportArea").innerHTML = reportHtml;
       })
       .catch(err => {
         console.error("Error:", err);
@@ -97,6 +72,6 @@
 
   loadResultReport();
 </script>
-   <script src="project.js"></script>
+<script src="project.js"></script>
 </body>
 </html>
