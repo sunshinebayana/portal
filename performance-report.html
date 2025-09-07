@@ -6,38 +6,98 @@
   <title>RS-CIT Result Report</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f2f5;
+      color: #333;
     }
     h2 {
       text-align: center;
-      color: #333;
-      margin-bottom: 15px;
+      color: #222;
+      margin: 20px 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 15px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: #4a90e2;
+      color: #fff;
+      padding: 12px 16px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .card-body {
+      padding: 15px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-    table, th, td {
-      border: 1px solid #ccc;
     }
     th, td {
-      padding: 10px;
       text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      font-size: 15px;
     }
     th {
-      background: #eee;
+      background: #f7f9fc;
+      font-weight: 600;
+      width: 40%;
     }
-    .section-title {
-      margin-top: 25px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #444;
+    tr:last-child td {
+      border-bottom: none;
+    }
+    /* ✅ Progress bar styles */
+    .progress-bar {
+      background: #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 18px;
+      margin-top: 5px;
+    }
+    .progress {
+      height: 100%;
       text-align: center;
+      color: #fff;
+      font-size: 12px;
+      line-height: 18px;
+    }
+    .avg { background: #4caf50; }
+    .best { background: #2196f3; }
+    .worst { background: #f44336; }
+    .weighted { background: #9c27b0; }
+    @media (max-width: 600px) {
+      th, td {
+        display: block;
+        width: 100%;
+      }
+      th {
+        background: transparent;
+        font-weight: bold;
+        padding-top: 12px;
+      }
+      td {
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      tr {
+        margin-bottom: 10px;
+        display: block;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: #fafafa;
+        padding: 8px;
+      }
     }
   </style>
 </head>
@@ -46,17 +106,28 @@
   <header id="header"></header>
 
   <h2>📊 Performance Report</h2>
-  <div id="reportArea">⏳ Loading your report...</div>
+  <div class="container">
+    <div id="reportArea">⏳ Loading your report...</div>
+  </div>
 
   <script src="protect.js"></script>
   <script>
-    // ✅ userData से username लेना
     const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
 
+    function createProgressBar(value, type) {
+      const val = parseFloat(value) || 0;
+      return `
+        <div class="progress-bar">
+          <div class="progress ${type}" style="width:${val}%; max-width:100%">${val}%</div>
+        </div>
+      `;
+    }
+
     function loadResultReport() {
       if (!username) {
-        document.getElementById("reportArea").innerHTML = `<p style="color:red;">❌ User not found. Please login again.</p>`;
+        document.getElementById("reportArea").innerHTML =
+          `<p style="color:red; text-align:center;">❌ User not found. Please login again.</p>`;
         return;
       }
 
@@ -64,43 +135,68 @@
         .then(res => res.json())
         .then(data => {
           if (!data.success) {
-            document.getElementById("reportArea").innerHTML = `<p style="color:red;">⚠ ${data.message || "Error fetching report."}</p>`;
+            document.getElementById("reportArea").innerHTML =
+              `<p style="color:red; text-align:center;">⚠ ${data.message || "Error fetching report."}</p>`;
             return;
           }
 
           const r = data.report;
           const t = data.topRankers;
 
-          // ✅ Performance Report Table
-          const reportHtml = `
-            <table>
-              <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
-              <tr><th>Average Marks</th><td>${r.averageMarks || "-"}%</td></tr>
-              <tr><th>Best Score</th><td>${r.bestScore || "-"}%</td></tr>
-              <tr><th>Best Score TestCode</th><td>${r.bestScoreTestCode || "-"}</td></tr>
-              <tr><th>Worst Score</th><td>${r.worstScore || "-"}%</td></tr>
-              <tr><th>Worst Score TestCode</th><td>${r.worstScoreTestCode || "-"}</td></tr>
-              <tr><th>Weighted Score</th><td>${r.weightedScore || "-"}</td></tr>
-              <tr><th>Rank</th><td>${r.rank || "-"}</td></tr>
-              <tr><th>Overall Rank</th><td>${r.overallRank || "-"}</td></tr>
-              <tr><th>Improvement Insights</th><td>${r.improvementInsights || "-"}</td></tr>
-            </table>
-
-            <div class="section-title">🏆 Top 5 Rankers</div>
-            <table>
-              <tr><th>Rank 1</th><td>${t.rank1 || "-"}</td></tr>
-              <tr><th>Rank 2</th><td>${t.rank2 || "-"}</td></tr>
-              <tr><th>Rank 3</th><td>${t.rank3 || "-"}</td></tr>
-              <tr><th>Rank 4</th><td>${t.rank4 || "-"}</td></tr>
-              <tr><th>Rank 5</th><td>${t.rank5 || "-"}</td></tr>
-            </table>
+          // ✅ Performance Report Card
+          const reportCard = `
+            <div class="card">
+              <div class="card-header">📌 Your Performance Summary</div>
+              <div class="card-body">
+                <table>
+                  <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
+                  <tr>
+                    <th>Average Marks</th>
+                    <td>${r.averageMarks || "-"}% ${createProgressBar(r.averageMarks, "avg")}</td>
+                  </tr>
+                  <tr>
+                    <th>Best Score</th>
+                    <td>${r.bestScore || "-"}% ${createProgressBar(r.bestScore, "best")}</td>
+                  </tr>
+                  <tr><th>Best Score TestCode</th><td>${r.bestScoreTestCode || "-"}</td></tr>
+                  <tr>
+                    <th>Worst Score</th>
+                    <td>${r.worstScore || "-"}% ${createProgressBar(r.worstScore, "worst")}</td>
+                  </tr>
+                  <tr><th>Worst Score TestCode</th><td>${r.worstScoreTestCode || "-"}</td></tr>
+                  <tr>
+                    <th>Weighted Score</th>
+                    <td>${r.weightedScore || "-"} ${createProgressBar(r.weightedScore, "weighted")}</td>
+                  </tr>
+                  <tr><th>Overall Rank</th><td>${r.overallRank || "-"}</td></tr>
+                  <tr><th>Improvement Insights</th><td>${r.improvementInsights || "-"}</td></tr>
+                </table>
+              </div>
+            </div>
           `;
 
-          document.getElementById("reportArea").innerHTML = reportHtml;
+          // ✅ Top 5 Rankers Card
+          const topRankersCard = `
+            <div class="card">
+              <div class="card-header">🏆 Top 5 Rankers</div>
+              <div class="card-body">
+                <table>
+                  <tr><th>Rank 1</th><td>${t.rank1 || "-"}</td></tr>
+                  <tr><th>Rank 2</th><td>${t.rank2 || "-"}</td></tr>
+                  <tr><th>Rank 3</th><td>${t.rank3 || "-"}</td></tr>
+                  <tr><th>Rank 4</th><td>${t.rank4 || "-"}</td></tr>
+                  <tr><th>Rank 5</th><td>${t.rank5 || "-"}</td></tr>
+                </table>
+              </div>
+            </div>
+          `;
+
+          document.getElementById("reportArea").innerHTML = reportCard + topRankersCard;
         })
         .catch(err => {
           console.error("Error:", err);
-          document.getElementById("reportArea").innerHTML = `<p style="color:red;">⚠ Error loading report. Please try again later.</p>`;
+          document.getElementById("reportArea").innerHTML =
+            `<p style="color:red; text-align:center;">⚠ Error loading report. Please try again later.</p>`;
         });
     }
 
@@ -113,7 +209,6 @@
 
   <!-- ✅ Footer -->
   <footer id="footer"></footer>
-
   <script src="header-footer.js"></script>
 </body>
 </html>
