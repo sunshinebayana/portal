@@ -41,7 +41,9 @@
 
   <script src="protect.js"></script>
   <script>
-    const username = (localStorage.getItem("test_username") || "").trim();
+    // ✅ अब सिर्फ userData से ही username मिलेगा
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const username = userData?.username?.trim() || "";
 
     function loadResultReport() {
       if (!username) {
