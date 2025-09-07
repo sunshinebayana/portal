@@ -74,8 +74,6 @@
     }
     .avg { background: #4caf50; }
     .best { background: #2196f3; }
-    .worst { background: #f44336; }
-    .weighted { background: #9c27b0; }
     @media (max-width: 600px) {
       th, td {
         display: block;
@@ -149,27 +147,36 @@
               <div class="card-header">📌 Your Performance Summary</div>
               <div class="card-body">
                 <table>
-                  <tr><th>Total Test Given</th><td>${r.totalTest || 0}</td></tr>
                   <tr>
+                    <th>Overall Rank</th>
+                    <td colspan="3">${r.overallRank || "-"}</td>
+                  </tr>
+                  <tr>
+                    <th>Total Test Given</th>
+                    <td>${r.totalTest || 0}</td>
                     <th>Average Marks</th>
                     <td>${r.averageMarks || "-"}% ${createProgressBar(r.averageMarks, "avg")}</td>
                   </tr>
                   <tr>
                     <th>Best Score</th>
                     <td>${r.bestScore || "-"}% ${createProgressBar(r.bestScore, "best")}</td>
+                    <th>Best Score TestCode</th>
+                    <td>${r.bestScoreTestCode || "-"}</td>
                   </tr>
-                  <tr><th>Best Score TestCode</th><td>${r.bestScoreTestCode || "-"}</td></tr>
                   <tr>
                     <th>Worst Score</th>
-                    <td>${r.worstScore || "-"}% ${createProgressBar(r.worstScore, "worst")}</td>
+                    <td>${r.worstScore || "-"}</td>
+                    <th>Worst Score TestCode</th>
+                    <td>${r.worstScoreTestCode || "-"}</td>
                   </tr>
-                  <tr><th>Worst Score TestCode</th><td>${r.worstScoreTestCode || "-"}</td></tr>
                   <tr>
                     <th>Weighted Score</th>
-                    <td>${r.weightedScore || "-"} ${createProgressBar(r.weightedScore, "weighted")}</td>
+                    <td colspan="3">${r.weightedScore || "-"}</td>
                   </tr>
-                  <tr><th>Overall Rank</th><td>${r.overallRank || "-"}</td></tr>
-                  <tr><th>Improvement Insights</th><td>${r.improvementInsights || "-"}</td></tr>
+                  <tr>
+                    <th>Improvement Insights</th>
+                    <td colspan="3">${r.improvementInsights || "-"}</td>
+                  </tr>
                 </table>
               </div>
             </div>
