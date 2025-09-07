@@ -9,14 +9,14 @@
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #ffeef5; /* light pink background */
+      background: linear-gradient(135deg, #ffe6f0, #f3e8ff);
       color: #333;
     }
     h2 {
       text-align: center;
-      color: #d6336c; /* deep pink heading */
-      margin: 20px 0;
-      font-size: 26px;
+      color: #8e2de2;
+      margin: 25px 0;
+      font-size: 28px;
       font-weight: bold;
     }
     .container {
@@ -28,7 +28,7 @@
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       overflow: hidden;
       transition: transform 0.2s ease;
     }
@@ -36,7 +36,7 @@
       transform: translateY(-4px);
     }
     .card-header {
-      background: linear-gradient(90deg, #ff99cc, #ffb6d9);
+      background: linear-gradient(90deg, #8e2de2, #ff69b4);
       color: #fff;
       padding: 14px 18px;
       font-size: 20px;
@@ -44,7 +44,7 @@
       letter-spacing: 0.5px;
     }
     .card-body {
-      padding: 18px;
+      padding: 20px;
     }
     table {
       width: 100%;
@@ -53,36 +53,57 @@
     th, td {
       text-align: left;
       padding: 12px;
-      border-bottom: 1px solid #f3d1e3;
-      font-size: 15px;
+      border-bottom: 1px solid #f0e1f5;
+      font-size: 16px;
     }
     th {
-      background: #fff0f6;
+      background: #faf5ff;
       font-weight: 600;
       width: 40%;
-      color: #a61e4d;
+      color: #6a1b9a;
     }
     tr:last-child td {
       border-bottom: none;
     }
 
-    /* ✅ Progress bar styles */
-    .progress-bar {
-      background: #f8cde0;
-      border-radius: 8px;
-      overflow: hidden;
-      height: 18px;
-      margin-top: 6px;
-    }
-    .progress {
-      height: 100%;
-      text-align: center;
+    /* ✅ Overall Rank Highlight */
+    .rank-highlight {
+      display: inline-block;
+      background: linear-gradient(90deg, #ff8fa3, #ff69b4);
       color: #fff;
-      font-size: 12px;
-      line-height: 18px;
+      font-weight: bold;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .avg { background: #ff69b4; } /* hot pink for avg */
-    .best { background: #ff4081; } /* pinkish highlight */
+
+    /* ✅ Top Rankers special style */
+    .rankers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 10px;
+    }
+    .ranker-item {
+      display: flex;
+      justify-content: space-between;
+      background: #fff0f6;
+      border: 1px solid #f8bbd0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #c2185b;
+    }
+    .ranker-item span {
+      font-weight: bold;
+      color: #6a1b9a;
+    }
+    .medal {
+      font-size: 20px;
+      margin-right: 8px;
+    }
 
     @media (max-width: 600px) {
       th, td {
@@ -96,12 +117,12 @@
       }
       td {
         padding-bottom: 12px;
-        border-bottom: 1px solid #f3d1e3;
+        border-bottom: 1px solid #f0e1f5;
       }
       tr {
         margin-bottom: 10px;
         display: block;
-        border: 1px solid #ffd6e8;
+        border: 1px solid #eee;
         border-radius: 10px;
         background: #fff5f8;
         padding: 8px;
@@ -123,15 +144,6 @@
     const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
 
-    function createProgressBar(value, type) {
-      const val = parseFloat(value) || 0;
-      return `
-        <div class="progress-bar">
-          <div class="progress ${type}" style="width:${val}%; max-width:100%">${val}%</div>
-        </div>
-      `;
-    }
-
     function loadResultReport() {
       if (!username) {
         document.getElementById("reportArea").innerHTML =
@@ -151,7 +163,7 @@
           const r = data.report;
           const t = data.topRankers;
 
-          // ✅ Performance Report Card (without Worst/Weighted Score)
+          // ✅ Performance Report Card
           const reportCard = `
             <div class="card">
               <div class="card-header">📌 Your Performance Summary</div>
@@ -159,17 +171,17 @@
                 <table>
                   <tr>
                     <th>Overall Rank</th>
-                    <td colspan="3">${r.overallRank || "-"}</td>
+                    <td colspan="3"><span class="rank-highlight">${r.overallRank || "-"}</span></td>
                   </tr>
                   <tr>
                     <th>Total Test Given</th>
                     <td>${r.totalTest || 0}</td>
                     <th>Average Marks</th>
-                    <td>${r.averageMarks || "-"}% ${createProgressBar(r.averageMarks, "avg")}</td>
+                    <td>${r.averageMarks || "-"}%</td>
                   </tr>
                   <tr>
                     <th>Best Score</th>
-                    <td>${r.bestScore || "-"}% ${createProgressBar(r.bestScore, "best")}</td>
+                    <td>${r.bestScore || "-"}%</td>
                     <th>Best Score TestCode</th>
                     <td>${r.bestScoreTestCode || "-"}</td>
                   </tr>
@@ -182,18 +194,18 @@
             </div>
           `;
 
-          // ✅ Top 5 Rankers Card
+          // ✅ Top 5 Rankers Card with special style
           const topRankersCard = `
             <div class="card">
               <div class="card-header">🏆 Top 5 Rankers</div>
               <div class="card-body">
-                <table>
-                  <tr><th>Rank 1</th><td>${t.rank1 || "-"}</td></tr>
-                  <tr><th>Rank 2</th><td>${t.rank2 || "-"}</td></tr>
-                  <tr><th>Rank 3</th><td>${t.rank3 || "-"}</td></tr>
-                  <tr><th>Rank 4</th><td>${t.rank4 || "-"}</td></tr>
-                  <tr><th>Rank 5</th><td>${t.rank5 || "-"}</td></tr>
-                </table>
+                <div class="rankers-list">
+                  <div class="ranker-item"><span class="medal">🥇</span> Rank 1 <span>${t.rank1 || "-"}</span></div>
+                  <div class="ranker-item"><span class="medal">🥈</span> Rank 2 <span>${t.rank2 || "-"}</span></div>
+                  <div class="ranker-item"><span class="medal">🥉</span> Rank 3 <span>${t.rank3 || "-"}</span></div>
+                  <div class="ranker-item">⭐ Rank 4 <span>${t.rank4 || "-"}</span></div>
+                  <div class="ranker-item">⭐ Rank 5 <span>${t.rank5 || "-"}</span></div>
+                </div>
               </div>
             </div>
           `;
