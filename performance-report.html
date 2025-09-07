@@ -9,12 +9,12 @@
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #ffe6f0, #f3e8ff);
+      background: #f0f4ff; /* light pick-white tone */
       color: #333;
     }
     h2 {
       text-align: center;
-      color: #8e2de2;
+      color: #001f4d; /* navy blue */
       margin: 25px 0;
       font-size: 28px;
       font-weight: bold;
@@ -26,8 +26,8 @@
     }
     .card {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       margin-bottom: 30px;
       overflow: hidden;
       transition: transform 0.2s ease;
@@ -36,7 +36,7 @@
       transform: translateY(-4px);
     }
     .card-header {
-      background: linear-gradient(90deg, #8e2de2, #ff69b4);
+      background: linear-gradient(90deg, #001f4d, #ff6699);
       color: #fff;
       padding: 14px 18px;
       font-size: 20px;
@@ -53,14 +53,14 @@
     th, td {
       text-align: left;
       padding: 12px;
-      border-bottom: 1px solid #f0e1f5;
+      border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
     }
     th {
-      background: #faf5ff;
+      background: #f8f9ff;
       font-weight: 600;
       width: 40%;
-      color: #6a1b9a;
+      color: #001f4d;
     }
     tr:last-child td {
       border-bottom: none;
@@ -69,7 +69,7 @@
     /* ✅ Overall Rank Highlight */
     .rank-highlight {
       display: inline-block;
-      background: linear-gradient(90deg, #ff8fa3, #ff69b4);
+      background: #001f4d;
       color: #fff;
       font-weight: bold;
       padding: 6px 16px;
@@ -78,55 +78,24 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    /* ✅ Top Rankers special style */
-    .rankers-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 10px;
+    /* ✅ Top Rankers Table */
+    .rankers-table {
+      width: 100%;
+      border-collapse: collapse;
     }
-    .ranker-item {
-      display: flex;
-      justify-content: space-between;
-      background: #fff0f6;
-      border: 1px solid #f8bbd0;
-      border-radius: 10px;
-      padding: 10px 14px;
+    .rankers-table th {
+      background: #001f4d;
+      color: #fff;
+      text-align: center;
+    }
+    .rankers-table td {
+      text-align: center;
+      border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
-      font-weight: 600;
-      color: #c2185b;
+      font-weight: 500;
     }
-    .ranker-item span {
-      font-weight: bold;
-      color: #6a1b9a;
-    }
-    .medal {
-      font-size: 20px;
-      margin-right: 8px;
-    }
-
-    @media (max-width: 600px) {
-      th, td {
-        display: block;
-        width: 100%;
-      }
-      th {
-        background: transparent;
-        font-weight: bold;
-        padding-top: 12px;
-      }
-      td {
-        padding-bottom: 12px;
-        border-bottom: 1px solid #f0e1f5;
-      }
-      tr {
-        margin-bottom: 10px;
-        display: block;
-        border: 1px solid #eee;
-        border-radius: 10px;
-        background: #fff5f8;
-        padding: 8px;
-      }
+    .rankers-table tr:nth-child(even) {
+      background: #fdf2f7; /* light pink shade */
     }
   </style>
 </head>
@@ -194,18 +163,23 @@
             </div>
           `;
 
-          // ✅ Top 5 Rankers Card with special style
+          // ✅ Top 5 Rankers Table
           const topRankersCard = `
             <div class="card">
               <div class="card-header">🏆 Top 5 Rankers</div>
               <div class="card-body">
-                <div class="rankers-list">
-                  <div class="ranker-item"><span class="medal">🥇</span> Rank 1 <span>${t.rank1 || "-"}</span></div>
-                  <div class="ranker-item"><span class="medal">🥈</span> Rank 2 <span>${t.rank2 || "-"}</span></div>
-                  <div class="ranker-item"><span class="medal">🥉</span> Rank 3 <span>${t.rank3 || "-"}</span></div>
-                  <div class="ranker-item">⭐ Rank 4 <span>${t.rank4 || "-"}</span></div>
-                  <div class="ranker-item">⭐ Rank 5 <span>${t.rank5 || "-"}</span></div>
-                </div>
+                <table class="rankers-table">
+                  <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Badge</th>
+                  </tr>
+                  <tr><td>Rank 1</td><td>${t.rank1 || "-"}</td><td>🥇</td></tr>
+                  <tr><td>Rank 2</td><td>${t.rank2 || "-"}</td><td>🥈</td></tr>
+                  <tr><td>Rank 3</td><td>${t.rank3 || "-"}</td><td>🥉</td></tr>
+                  <tr><td>Rank 4</td><td>${t.rank4 || "-"}</td><td>⭐</td></tr>
+                  <tr><td>Rank 5</td><td>${t.rank5 || "-"}</td><td>⭐</td></tr>
+                </table>
               </div>
             </div>
           `;
