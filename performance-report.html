@@ -9,13 +9,15 @@
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f0f2f5;
+      background: #ffeef5; /* light pink background */
       color: #333;
     }
     h2 {
       text-align: center;
-      color: #222;
+      color: #d6336c; /* deep pink heading */
       margin: 20px 0;
+      font-size: 26px;
+      font-weight: bold;
     }
     .container {
       max-width: 900px;
@@ -24,20 +26,25 @@
     }
     .card {
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
       overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
     }
     .card-header {
-      background: #4a90e2;
+      background: linear-gradient(90deg, #ff99cc, #ffb6d9);
       color: #fff;
-      padding: 12px 16px;
-      font-size: 18px;
+      padding: 14px 18px;
+      font-size: 20px;
       font-weight: bold;
+      letter-spacing: 0.5px;
     }
     .card-body {
-      padding: 15px;
+      padding: 18px;
     }
     table {
       width: 100%;
@@ -45,25 +52,27 @@
     }
     th, td {
       text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
+      padding: 12px;
+      border-bottom: 1px solid #f3d1e3;
       font-size: 15px;
     }
     th {
-      background: #f7f9fc;
+      background: #fff0f6;
       font-weight: 600;
       width: 40%;
+      color: #a61e4d;
     }
     tr:last-child td {
       border-bottom: none;
     }
+
     /* ✅ Progress bar styles */
     .progress-bar {
-      background: #e0e0e0;
-      border-radius: 6px;
+      background: #f8cde0;
+      border-radius: 8px;
       overflow: hidden;
       height: 18px;
-      margin-top: 5px;
+      margin-top: 6px;
     }
     .progress {
       height: 100%;
@@ -72,8 +81,9 @@
       font-size: 12px;
       line-height: 18px;
     }
-    .avg { background: #4caf50; }
-    .best { background: #2196f3; }
+    .avg { background: #ff69b4; } /* hot pink for avg */
+    .best { background: #ff4081; } /* pinkish highlight */
+
     @media (max-width: 600px) {
       th, td {
         display: block;
@@ -86,14 +96,14 @@
       }
       td {
         padding-bottom: 12px;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f3d1e3;
       }
       tr {
         margin-bottom: 10px;
         display: block;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        background: #fafafa;
+        border: 1px solid #ffd6e8;
+        border-radius: 10px;
+        background: #fff5f8;
         padding: 8px;
       }
     }
@@ -141,7 +151,7 @@
           const r = data.report;
           const t = data.topRankers;
 
-          // ✅ Performance Report Card
+          // ✅ Performance Report Card (without Worst/Weighted Score)
           const reportCard = `
             <div class="card">
               <div class="card-header">📌 Your Performance Summary</div>
@@ -162,16 +172,6 @@
                     <td>${r.bestScore || "-"}% ${createProgressBar(r.bestScore, "best")}</td>
                     <th>Best Score TestCode</th>
                     <td>${r.bestScoreTestCode || "-"}</td>
-                  </tr>
-                  <tr>
-                    <th>Worst Score</th>
-                    <td>${r.worstScore || "-"}</td>
-                    <th>Worst Score TestCode</th>
-                    <td>${r.worstScoreTestCode || "-"}</td>
-                  </tr>
-                  <tr>
-                    <th>Weighted Score</th>
-                    <td colspan="3">${r.weightedScore || "-"}</td>
                   </tr>
                   <tr>
                     <th>Improvement Insights</th>
