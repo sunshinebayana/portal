@@ -42,6 +42,9 @@
       font-size: 20px;
       font-weight: bold;
       letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .card-body {
       padding: 20px;
@@ -132,10 +135,19 @@
           const r = data.report;
           const t = data.topRankers;
 
-          // ✅ Performance Report Card
+          // ✅ Current Date in DD/MM/YYYY
+          const today = new Date();
+          const formattedDate = ("0" + today.getDate()).slice(-2) + "/" +
+                                ("0" + (today.getMonth() + 1)).slice(-2) + "/" +
+                                today.getFullYear();
+
+          // ✅ Performance Report Card with current date
           const reportCard = `
             <div class="card">
-              <div class="card-header">📌 Your Performance Summary</div>
+              <div class="card-header">
+                <span>📌 Your Performance Summary</span>
+                <span style="font-size:14px; font-weight:500; color:#ffebcd;">${formattedDate}</span>
+              </div>
               <div class="card-body">
                 <table>
                   <tr>
