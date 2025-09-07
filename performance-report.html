@@ -5,74 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RS-CIT Result Report</title>
   <style>
-    /* ===== Global Styles ===== */
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #eef2ff, #fdf2f7);
+      background: #f0f4ff; /* light pick-white tone */
       color: #333;
     }
-
     h2 {
       text-align: center;
-      color: #001f4d;
-      margin: 30px 0;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      color: #001f4d; /* navy blue */
+      margin: 25px 0;
+      font-size: 28px;
+      font-weight: bold;
     }
-
     .container {
-      max-width: 950px;
+      max-width: 900px;
       margin: auto;
-      padding: 20px;
-      overflow-x: auto; /* responsive tables */
+      padding: 15px;
     }
-
-    /* ===== Card Styles ===== */
     .card {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-      margin-bottom: 35px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: transform 0.2s ease;
     }
     .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
     }
-
     .card-header {
       background: linear-gradient(90deg, #001f4d, #ff6699);
       color: #fff;
-      padding: 16px 20px;
+      padding: 14px 18px;
       font-size: 20px;
       font-weight: bold;
-      letter-spacing: 0.6px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      letter-spacing: 0.5px;
     }
-
     .card-body {
-      padding: 22px;
-      animation: fadeIn 0.7s ease;
+      padding: 20px;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== Table Styles ===== */
     table {
       width: 100%;
       border-collapse: collapse;
     }
     th, td {
       text-align: left;
-      padding: 14px;
+      padding: 12px;
       border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
     }
@@ -86,62 +66,41 @@
       border-bottom: none;
     }
 
-    /* ===== Overall Rank Highlight ===== */
+    /* ✅ Overall Rank Highlight */
     .rank-highlight {
       display: inline-block;
-      background: linear-gradient(135deg, #001f4d, #003d99);
+      background: #001f4d;
       color: #fff;
       font-weight: bold;
-      padding: 8px 20px;
-      border-radius: 25px;
+      padding: 6px 16px;
+      border-radius: 20px;
       font-size: 18px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    /* ===== Top Rankers Table ===== */
+    /* ✅ Top Rankers Table */
     .rankers-table {
       width: 100%;
       border-collapse: collapse;
     }
     .rankers-table th {
-      background: linear-gradient(90deg, #001f4d, #003d99);
+      background: #001f4d;
       color: #fff;
       text-align: center;
-      font-size: 17px;
-      letter-spacing: 0.3px;
     }
     .rankers-table td {
       text-align: center;
       border-bottom: 1px solid #e3e6f0;
       font-size: 16px;
       font-weight: 500;
-      padding: 12px;
     }
     .rankers-table tr:nth-child(even) {
-      background: #fdf2f7;
-    }
-    .rankers-table tr:hover {
-      background: #f1f5ff;
-      transition: background 0.3s ease;
-    }
-
-    /* ===== Responsive Table ===== */
-    @media (max-width: 600px) {
-      th, td {
-        padding: 10px;
-        font-size: 14px;
-      }
-      .card-header {
-        font-size: 18px;
-      }
-      h2 {
-        font-size: 26px;
-      }
+      background: #fdf2f7; /* light pink shade */
     }
   </style>
 </head>
 <body>
-  <!-- ===== Header ===== -->
+  <!-- ✅ Header -->
   <header id="header"></header>
 
   <h2>📊 Performance Report</h2>
@@ -151,14 +110,13 @@
 
   <script src="protect.js"></script>
   <script>
-    const BASE_URL = "https://yourapi.com/api"; // 🔹 Replace with real API URL
-    const userData = JSON.parse(localStorage.getItem("userData") || '{}');
+    const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
 
     function loadResultReport() {
       if (!username) {
         document.getElementById("reportArea").innerHTML =
-          `<p style="color:red; text-align:center; font-weight:bold;">❌ User not found. Please login again.</p>`;
+          `<p style="color:red; text-align:center;">❌ User not found. Please login again.</p>`;
         return;
       }
 
@@ -167,7 +125,7 @@
         .then(data => {
           if (!data.success) {
             document.getElementById("reportArea").innerHTML =
-              `<p style="color:red; text-align:center; font-weight:bold;">⚠ ${data.message || "Error fetching report."}</p>`;
+              `<p style="color:red; text-align:center;">⚠ ${data.message || "Error fetching report."}</p>`;
             return;
           }
 
@@ -231,7 +189,7 @@
         .catch(err => {
           console.error("Error:", err);
           document.getElementById("reportArea").innerHTML =
-            `<p style="color:red; text-align:center; font-weight:bold;">⚠ Error loading report. Please try again later.</p>`;
+            `<p style="color:red; text-align:center;">⚠ Error loading report. Please try again later.</p>`;
         });
     }
 
@@ -242,7 +200,7 @@
     loadResultReport();
   </script>
 
-  <!-- ===== Footer ===== -->
+  <!-- ✅ Footer -->
   <footer id="footer"></footer>
   <script src="header-footer.js"></script>
 </body>
