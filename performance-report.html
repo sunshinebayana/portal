@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RS-CIT Result Report</title>
   <style>
+    /* ===== Global Styles ===== */
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
@@ -27,8 +28,10 @@
       max-width: 950px;
       margin: auto;
       padding: 20px;
+      overflow-x: auto; /* responsive tables */
     }
 
+    /* ===== Card Styles ===== */
     .card {
       background: #fff;
       border-radius: 16px;
@@ -62,6 +65,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* ===== Table Styles ===== */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -82,7 +86,7 @@
       border-bottom: none;
     }
 
-    /* ✅ Overall Rank Highlight */
+    /* ===== Overall Rank Highlight ===== */
     .rank-highlight {
       display: inline-block;
       background: linear-gradient(135deg, #001f4d, #003d99);
@@ -94,7 +98,7 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.25);
     }
 
-    /* ✅ Top Rankers Table */
+    /* ===== Top Rankers Table ===== */
     .rankers-table {
       width: 100%;
       border-collapse: collapse;
@@ -120,10 +124,24 @@
       background: #f1f5ff;
       transition: background 0.3s ease;
     }
+
+    /* ===== Responsive Table ===== */
+    @media (max-width: 600px) {
+      th, td {
+        padding: 10px;
+        font-size: 14px;
+      }
+      .card-header {
+        font-size: 18px;
+      }
+      h2 {
+        font-size: 26px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- ✅ Header -->
+  <!-- ===== Header ===== -->
   <header id="header"></header>
 
   <h2>📊 Performance Report</h2>
@@ -133,7 +151,8 @@
 
   <script src="protect.js"></script>
   <script>
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    const BASE_URL = "https://yourapi.com/api"; // 🔹 Replace with real API URL
+    const userData = JSON.parse(localStorage.getItem("userData") || '{}');
     const username = userData?.username?.trim() || "";
 
     function loadResultReport() {
@@ -143,12 +162,12 @@
         return;
       }
 
-      fetch(\`\${BASE_URL}?action=getperformancereport&username=\${encodeURIComponent(username)}\`)
+      fetch(`${BASE_URL}?action=getperformancereport&username=${encodeURIComponent(username)}`)
         .then(res => res.json())
         .then(data => {
           if (!data.success) {
             document.getElementById("reportArea").innerHTML =
-              `<p style="color:red; text-align:center; font-weight:bold;">⚠ \${data.message || "Error fetching report."}</p>`;
+              `<p style="color:red; text-align:center; font-weight:bold;">⚠ ${data.message || "Error fetching report."}</p>`;
             return;
           }
 
@@ -163,23 +182,23 @@
                 <table>
                   <tr>
                     <th>Overall Rank</th>
-                    <td colspan="3"><span class="rank-highlight">\${r.overallRank || "-"}</span></td>
+                    <td colspan="3"><span class="rank-highlight">${r.overallRank || "-"}</span></td>
                   </tr>
                   <tr>
                     <th>Total Test Given</th>
-                    <td>\${r.totalTest || 0}</td>
+                    <td>${r.totalTest || 0}</td>
                     <th>Average Marks</th>
-                    <td>\${r.averageMarks || "-"}%</td>
+                    <td>${r.averageMarks || "-"}%</td>
                   </tr>
                   <tr>
                     <th>Best Score</th>
-                    <td>\${r.bestScore || "-"}%</td>
+                    <td>${r.bestScore || "-"}%</td>
                     <th>Best Score TestCode</th>
-                    <td>\${r.bestScoreTestCode || "-"}</td>
+                    <td>${r.bestScoreTestCode || "-"}</td>
                   </tr>
                   <tr>
                     <th>Improvement Insights</th>
-                    <td colspan="3">\${r.improvementInsights || "-"}</td>
+                    <td colspan="3">${r.improvementInsights || "-"}</td>
                   </tr>
                 </table>
               </div>
@@ -197,11 +216,11 @@
                     <th>Name</th>
                     <th>Badge</th>
                   </tr>
-                  <tr><td>Rank 1</td><td>\${t.rank1 || "-"}</td><td>🥇</td></tr>
-                  <tr><td>Rank 2</td><td>\${t.rank2 || "-"}</td><td>🥈</td></tr>
-                  <tr><td>Rank 3</td><td>\${t.rank3 || "-"}</td><td>🥉</td></tr>
-                  <tr><td>Rank 4</td><td>\${t.rank4 || "-"}</td><td>⭐</td></tr>
-                  <tr><td>Rank 5</td><td>\${t.rank5 || "-"}</td><td>⭐</td></tr>
+                  <tr><td>Rank 1</td><td>${t.rank1 || "-"}</td><td>🥇</td></tr>
+                  <tr><td>Rank 2</td><td>${t.rank2 || "-"}</td><td>🥈</td></tr>
+                  <tr><td>Rank 3</td><td>${t.rank3 || "-"}</td><td>🥉</td></tr>
+                  <tr><td>Rank 4</td><td>${t.rank4 || "-"}</td><td>⭐</td></tr>
+                  <tr><td>Rank 5</td><td>${t.rank5 || "-"}</td><td>⭐</td></tr>
                 </table>
               </div>
             </div>
@@ -223,7 +242,7 @@
     loadResultReport();
   </script>
 
-  <!-- ✅ Footer -->
+  <!-- ===== Footer ===== -->
   <footer id="footer"></footer>
   <script src="header-footer.js"></script>
 </body>
