@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>RS-CIT Preparation — Sunshine Institute</title>
+<title>RSCIT Online Test & Learning Portal — Sunshine Institute Bayana</title>
+<meta name="description" content="Practice RSCIT online test, download RSCIT old papers, learn Hindi & English typing, Steno dictation 80/100 WPM, improve computer efficiency, and prepare for RSMSSB exams at Sunshine Institute Bayana.">
+
 <style>
 :root{
   --primary:#0d1b4c;
@@ -22,8 +24,6 @@ body{
   flex-direction:column;
   min-height:100vh;
 }
-
-/* ===== MAIN CONTENT ===== */
 main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
 .card{
   background:var(--bg);
@@ -34,9 +34,9 @@ main{max-width:1000px;margin:28px auto;padding:0 18px;flex:1}
   border:1px solid #f1f1f1;
 }
 h1{font-size:22px;margin:0 0 8px;color:var(--accent);text-align:center}
+h2{font-size:20px;color:var(--primary);margin-bottom:8px}
 p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 
-/* ===== GRID ICON STYLE ===== */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
@@ -81,8 +81,6 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
   opacity:0.9;
   margin-top:4px;
 }
-
-/* ✨ Shine Effect */
 .module-btn::before{
   content:"";
   position:absolute;
@@ -95,8 +93,6 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 .module-btn:hover::before{
   animation:shine 1.5s forwards;
 }
-
-/* 🎨 Unique Gradient Colors per Module */
 .module-btn.book-chapters{background:linear-gradient(135deg,#42a5f5,#1e88e5);}
 .module-btn.internal-test{background:linear-gradient(135deg,#66bb6a,#388e3c);}
 .module-btn.old-papers{background:linear-gradient(135deg,#ffa726,#fb8c00);}
@@ -106,7 +102,6 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 .module-btn.common-test{background:linear-gradient(135deg,#8d6e63,#6d4c41);}
 .module-btn.result-rank{background:linear-gradient(135deg,#ec407a,#c2185b);}
 
-/* ===== ANIMATIONS ===== */
 @keyframes pulse{
   0%,100%{transform:scale(1);}
   50%{transform:scale(1.04);}
@@ -115,13 +110,10 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
   0%{left:-75%;}
   100%{left:125%;}
 }
-/* 🎯 Emoji हल्का bounce effect */
 @keyframes emoji-bounce{
   0%,100%{transform:translateY(0);}
   50%{transform:translateY(-6px);}
 }
-
-/* ===== OTHER STYLES ===== */
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .btn.primary{background:var(--accent);color:white}
 .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.2);color:var(--primary)}
@@ -142,64 +134,64 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
 
 <main>
   <section class="card">
-    <h1>RS-CIT Preparation — Modules</h1>
-    <p class="lead">Select a module to start practice. Mix of Hindi/English labels for your students.</p>
+    <h1>RSCIT Online Test & Learning Modules</h1>
+    <p class="lead">Prepare for RSCIT exam, practice MCQ quiz, RSCIT old papers, Hindi/English typing, and Steno dictation at Sunshine Institute Bayana.</p>
 
     <div class="grid">
       <div class="module-btn book-chapters" onclick="openModule('book-chapters')">
         <div class="emoji">📘</div>
         <div class="meta">
           <div class="title">RS-CIT Book Chapter Tests</div>
-          <div class="desc">Topicwise chapter tests</div>
+          <div class="desc">RSCIT online test practice by chapter</div>
         </div>
       </div>
       <div class="module-btn internal-test" onclick="openModule('internal-test')">
         <div class="emoji">🧪</div>
         <div class="meta">
           <div class="title">RS-CIT Internal Test</div>
-          <div class="desc">Short quizzes to check concepts</div>
+          <div class="desc">MCQ quiz for beginners & intermediate learners</div>
         </div>
       </div>
       <div class="module-btn old-papers" onclick="openModule('old-papers')">
         <div class="emoji">📄</div>
         <div class="meta">
-          <div class="title">Old Papers — RS-CIT</div>
-          <div class="desc">Solve previous years' papers</div>
+          <div class="title">RSCIT Old Papers</div>
+          <div class="desc">Free RSCIT old paper download for exam prep</div>
         </div>
       </div>
       <div class="module-btn important-tests" onclick="openModule('important-tests')">
         <div class="emoji">💡</div>
         <div class="meta">
-          <div class="title">RS-CIT Important Tests</div>
-          <div class="desc">High-yield exam practice</div>
+          <div class="title">Important RSCIT Tests</div>
+          <div class="desc">High-yield exam preparation guide</div>
         </div>
       </div>
       <div class="module-btn digital-zone" onclick="openModule('digital-zone')">
         <div class="emoji">📖</div>
         <div class="meta">
           <div class="title">Digital Learning Zone</div>
-          <div class="desc">Interactive lessons & videos</div>
+          <div class="desc">ILEARN learning portal tips & interactive lessons</div>
         </div>
       </div>
       <div class="module-btn ai-skill-bot" onclick="openModule('ai-skill-bot')">
         <div class="emoji">🤖</div>
         <div class="meta">
           <div class="title">AI Skill Test</div>
-          <div class="desc">Smart RS-CIT assistant</div>
+          <div class="desc">Smart RS-CIT assistant for practice & guidance</div>
         </div>
       </div>
       <div class="module-btn common-test" onclick="openModule('common-test')">
         <div class="emoji">🟢</div>
         <div class="meta">
           <div class="title">स्पेशल कॉमन TEST</div>
-          <div class="desc">Full syllabus mock test</div>
+          <div class="desc">Full syllabus mock test before final exam</div>
         </div>
       </div>
       <div class="module-btn result-rank" onclick="openModule('result-rank')">
         <div class="emoji">📢</div>
         <div class="meta">
           <div class="title">View Result & Rank</div>
-          <div class="desc">Check score & performance</div>
+          <div class="desc">Check RSCIT exam score & performance report</div>
         </div>
       </div>
     </div>
@@ -208,22 +200,23 @@ p.lead{color:var(--primary);margin:0 0 12px;text-align:center}
       <div class="important-list" style="flex:1;min-width:220px">
         <div class="important-item">
           <div>📢 Announcements</div>
-          <div style="font-size:13px;color:var(--primary)">No new alerts</div>
+          <div style="font-size:13px;color:var(--primary)">RSMSSB exam updates, Steno dictation & typing classes info</div>
         </div>
         <div class="important-item">
           <div>🔔 Quick Links</div>
           <div style="display:flex;gap:8px">
-            <button class="btn ghost" onclick="openModule('schedule')">Schedule</button>
-            <button class="btn ghost" onclick="openModule('contact')">Contact</button>
+            <a href="schedule.html" class="btn ghost">Schedule</a>
+            <a href="contact.html" class="btn ghost">Contact</a>
           </div>
         </div>
       </div>
       <div style="min-width:240px;text-align:right">
         <div class="badge">Student Mode</div>
-        <div style="margin-top:10px;color:var(--primary);font-size:13px">Tip: Use timed tests to simulate exam.</div>
+        <div style="margin-top:10px;color:var(--primary);font-size:13px">Tip: Use timed tests to simulate RSCIT & Steno exams.</div>
       </div>
     </div>
   </section>
+
   <section id="contentArea" class="card" style="display:none"></section>
 </main>
 
@@ -250,14 +243,13 @@ function renderModule(key){
     case 'book-chapters':location.href='book-chapters.html';return'';
     case 'internal-test':location.href='internal-tests.html';return'';
     case 'old-papers':location.href='old-papers.html';return'';
-   case 'important-tests':location.href = 'rscit-important-test.html';return '';
-
+    case 'important-tests':location.href='rscit-important-test.html';return'';
     case 'digital-zone':location.href='digital-learning.html';return'';
     case 'ai-skill-bot':location.href='ai-skill-bot.html';return'';
-    case 'common-test':return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test before final exam.</p>`;
+    case 'common-test':return `<h2>🟢 स्पेशल कॉमन TEST</h2><p class="lead">Full syllabus mock test before final exam. Improve your computer efficiency, Hindi/English typing & RSCIT exam prep.</p>`;
     case 'result-rank':location.href='performance-report.html';return'';
-    case 'schedule':return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming classes and mock tests.</p>`;
-    case 'contact':return `<h2>📞 Contact</h2><p class="lead">Director: Atendra Sharma — 9929856121</p>`;
+    case 'schedule':return `<h2>🗓️ Schedule</h2><p class="lead">Upcoming RSCIT, Steno dictation & typing classes schedule.</p>`;
+    case 'contact':return `<h2>📞 Contact</h2><p class="lead">Sunshine Institute Bayana — Director: Atendra Sharma — 9929856121</p>`;
     default:return `<p>Module not found.</p>`;
   }
 }
@@ -265,6 +257,3 @@ function renderModule(key){
 <script src="header-footer.js"></script>
 </body>
 </html>
-
-
-
