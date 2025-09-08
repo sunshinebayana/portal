@@ -145,8 +145,9 @@
 
   <script src="protect.js"></script>
   <script>
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const username = userData?.username?.trim() || "";
+    cconst userData = JSON.parse(localStorage.getItem("userData"));
+const username = userData?.username?.trim() || "";
+const fullname = userData?.fullname?.trim() || "";
 
     function formatDate(value) {
       if (!value) return "-";
@@ -260,7 +261,7 @@
       document.getElementById("reportAllTestsArea").innerHTML = `
         <div class="card">
           <div class="card-header">📑 All Test Data</div>
-          <div class="card-body">⏳ Loading all tests for <b>${username}</b>...</div>
+          <div class="card-body">⏳ Loading all tests for <b>${fullname}</b>...</div>
         </div>
       `;
 
@@ -292,13 +293,13 @@
 
           document.getElementById("reportAllTestsArea").innerHTML = `
             <div class="card">
-              <div class="card-header">📑 All Test Data</div>
+              <div class="card-header">📑 Your All Test Data</div>
               <div class="card-body">
                 <table>
                   <tr>
                     <th>#</th>
                     <th>Test Code</th>
-                    <th>Date</th>
+                    <th>Test Date</th>
                     <th>Learner</th>
                     <th>Result</th>
                     <th>Max Marks</th>
