@@ -255,9 +255,14 @@
             rows += `
               <tr>
                 <td>${i + 1}</td>
-                <td>${test.testCode || "-"}</td>
-                <td>${test.date || "-"}</td>
-                <td>${test.score || "-"}</td>
+                <td>${test.Col1 || "-"}</td> <!-- Test Code -->
+                <td>${test.Col2 || "-"}</td> <!-- Date -->
+                <td>${test.Col3 || "-"}</td> <!-- Score -->
+                <td>${test.Col4 || "-"}</td> <!-- Duration -->
+                <td>${test.Col5 || "-"}</td> <!-- Correct -->
+                <td>${test.Col6 || "-"}</td> <!-- Wrong -->
+                <td>${test.Col7 || "-"}</td> <!-- Total Ques -->
+                <td>${test.Col8 || "-"}</td> <!-- Other Info -->
               </tr>
             `;
           });
@@ -272,6 +277,11 @@
                     <th>Test Code</th>
                     <th>Date</th>
                     <th>Score (%)</th>
+                    <th>Duration</th>
+                    <th>Correct</th>
+                    <th>Wrong</th>
+                    <th>Total Ques</th>
+                    <th>Other Info</th>
                   </tr>
                   ${rows}
                 </table>
