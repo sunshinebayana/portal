@@ -154,13 +154,11 @@
           const r = data.report;
           const t = data.topRankers;
 
-          // ✅ Current Date in DD/MM/YYYY
           const today = new Date();
           const formattedDate = ("0" + today.getDate()).slice(-2) + "/" +
                                 ("0" + (today.getMonth() + 1)).slice(-2) + "/" +
                                 today.getFullYear();
 
-          // ✅ Performance Report Card
           const reportCard = `
             <div class="card">
               <div class="card-header">
@@ -194,7 +192,6 @@
             </div>
           `;
 
-          // ✅ Top 5 Rankers Table
           const topRankersCard = `
             <div class="card">
               <div class="card-header">🏆 Top 5 Rankers</div>
@@ -215,10 +212,8 @@
             </div>
           `;
 
-          // ✅ Insert report + top rankers
           document.getElementById("reportArea").innerHTML = reportCard + topRankersCard;
 
-          // ✅ Add Show All Tests Button
           const btn = document.createElement("button");
           btn.className = "btn-show-tests";
           btn.textContent = "👉 अपने सभी टेस्ट का डाटा देखने के लिए क्लिक करें (Show All Test Data)";
@@ -232,7 +227,7 @@
         });
     }
 
-    // ✅ Show all test data in same page
+    // ✅ Show all test data
     function showAllTests() {
       document.getElementById("reportAllTestsArea").innerHTML = `
         <div class="card">
@@ -255,14 +250,14 @@
             rows += `
               <tr>
                 <td>${i + 1}</td>
-                <td>${test.Col1 || "-"}</td> <!-- Test Code -->
-                <td>${test.Col2 || "-"}</td> <!-- Date -->
-                <td>${test.Col3 || "-"}</td> <!-- Score -->
-                <td>${test.Col4 || "-"}</td> <!-- Duration -->
-                <td>${test.Col5 || "-"}</td> <!-- Correct -->
-                <td>${test.Col6 || "-"}</td> <!-- Wrong -->
-                <td>${test.Col7 || "-"}</td> <!-- Total Ques -->
-                <td>${test.Col8 || "-"}</td> <!-- Other Info -->
+                <td>${test.testCode || "-"}</td>
+                <td>${test.testDate || "-"}</td>
+                <td>${test.learnerName || "-"}</td>
+                <td>${test.result || "-"}</td>
+                <td>${test.maxMarks || "-"}</td>
+                <td>${test.obtainedMarks || "-"}</td>
+                <td>${test.percentage || "-"}</td>
+                <td>${test.testTime || "-"}</td>
               </tr>
             `;
           });
@@ -276,12 +271,12 @@
                     <th>#</th>
                     <th>Test Code</th>
                     <th>Date</th>
-                    <th>Score (%)</th>
-                    <th>Duration</th>
-                    <th>Correct</th>
-                    <th>Wrong</th>
-                    <th>Total Ques</th>
-                    <th>Other Info</th>
+                    <th>Learner</th>
+                    <th>Result</th>
+                    <th>Max Marks</th>
+                    <th>Obtained</th>
+                    <th>Percentage</th>
+                    <th>Time (min)</th>
                   </tr>
                   ${rows}
                 </table>
