@@ -119,14 +119,6 @@
     .btn-show-tests:hover {
       background: #003080;
     }
-
-    /* ✅ Indicator style */
-    .indicator {
-      text-align: center;
-      font-size: 16px;
-      font-weight: 500;
-      color: #001f4d;
-    }
   </style>
 </head>
 <body>
@@ -143,7 +135,6 @@
   <script>
     const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
-    const fullName = userData?.fullName?.trim() || username;
 
     function loadResultReport() {
       if (!username) {
@@ -227,7 +218,7 @@
 
           // ✅ Show All Test Data Button
           const btn = `
-            <button class="btn-show-tests" onclick="showAllTests()">Show All Test Data</button>
+            <button class="btn-show-tests" onclick="showAllTests()">👉 अपने सभी टेस्ट का डाटा देखने के लिए क्लिक करें (Show All Test Data)</button>
           `;
 
           document.getElementById("reportArea").innerHTML = reportCard + topRankersCard + btn;
@@ -240,13 +231,11 @@
     }
 
     function showAllTests() {
-      // ✅ Indicator message (FullName के साथ)
+      // ✅ अभी placeholder दिखाएंगे, बाद में backend से data लाएँगे
       document.getElementById("reportAllTestsArea").innerHTML = `
         <div class="card">
           <div class="card-header">📑 All Test Data</div>
-          <div class="card-body">
-            <p class="indicator">⏳ Loading all tests for <b>${fullName}</b>...</p>
-          </div>
+          <div class="card-body">⏳ Loading all tests for <b>${username}</b>...</div>
         </div>
       `;
     }
