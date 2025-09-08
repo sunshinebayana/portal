@@ -93,7 +93,7 @@ function loadHeader() {
 function loadFooter() {
   const footer = document.querySelector("footer");
   if (!footer) return;
-  footer.innerHTML = "@ 2025 AK Sharma · Sunshine Institute — RS-CIT Practice Portal";
+  footer.innerHTML = "@2025 AK Sharma (Online Test & Practice Web Portal)";
 }
 
 // ✅ Common Functions
