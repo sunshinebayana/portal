@@ -100,25 +100,6 @@
     .rankers-table tr:nth-child(even) {
       background: #fdf2f7; /* light pink shade */
     }
-
-    /* ✅ Show All Test Data Button */
-    .btn-show-tests {
-      margin-top: 20px;
-      padding: 12px 20px;
-      background: #001f4d;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .btn-show-tests:hover {
-      background: #003080;
-    }
   </style>
 </head>
 <body>
@@ -216,28 +197,32 @@
             </div>
           `;
 
-          // ✅ Show All Test Data Button
-          const btn = `
-            <button class="btn-show-tests" onclick="showAllTests()">👉 अपने सभी टेस्ट का डाटा देखने के लिए क्लिक करें (Show All Test Data)</button>
-          `;
+          // ✅ Show All Test Data Button को अब JS से append करेंगे
+          document.getElementById("reportArea").innerHTML = reportCard + topRankersCard;
 
-          document.getElementById("reportArea").innerHTML = reportCard + topRankersCard + btn;
+          // ✅ Add Button for All Test Data
+          const btn = document.createElement("button");
+          btn.textContent = "👉 अपने सभी टेस्ट का डाटा देखने के लिए क्लिक करें (Show All Test Data)";
+          btn.style.marginTop = "20px";
+          btn.style.padding = "12px 20px";
+          btn.style.background = "#001f4d";
+          btn.style.color = "#fff";
+          btn.style.border = "none";
+          btn.style.borderRadius = "8px";
+          btn.style.cursor = "pointer";
+          btn.style.fontSize = "16px";
+          btn.style.fontWeight = "600";
+          btn.onclick = function () {
+            window.location.href = `${BASE_URL}?action=getalltestdata&username=${encodeURIComponent(username)}`;
+          };
+
+          document.getElementById("reportArea").appendChild(btn);
         })
         .catch(err => {
           console.error("Error:", err);
           document.getElementById("reportArea").innerHTML =
             `<p style="color:red; text-align:center;">⚠ Error loading report. Please try again later.</p>`;
         });
-    }
-
-    function showAllTests() {
-      // ✅ अभी placeholder दिखाएंगे, बाद में backend से data लाएँगे
-      document.getElementById("reportAllTestsArea").innerHTML = `
-        <div class="card">
-          <div class="card-header">📑 All Test Data</div>
-          <div class="card-body">⏳ Loading all tests for <b>${username}</b>...</div>
-        </div>
-      `;
     }
 
     function goBack(){ 
