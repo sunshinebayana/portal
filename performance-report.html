@@ -9,12 +9,12 @@
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f0f4ff; /* light pick-white tone */
+      background: #f0f4ff;
       color: #333;
     }
     h2 {
       text-align: center;
-      color: #001f4d; /* navy blue */
+      color: #001f4d;
       margin: 25px 0;
       font-size: 28px;
       font-weight: bold;
@@ -62,7 +62,6 @@
     th {
       background: #f8f9ff;
       font-weight: 600;
-      width: 40%;
       color: #001f4d;
     }
     tr:last-child td {
@@ -98,7 +97,26 @@
       font-weight: 500;
     }
     .rankers-table tr:nth-child(even) {
-      background: #fdf2f7; /* light pink shade */
+      background: #fdf2f7;
+    }
+
+    /* ✅ Show All Test Data Button */
+    .btn-show-tests {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #001f4d;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn-show-tests:hover {
+      background: #003080;
     }
   </style>
 </head>
@@ -142,7 +160,7 @@
                                 ("0" + (today.getMonth() + 1)).slice(-2) + "/" +
                                 today.getFullYear();
 
-          // ✅ Performance Report Card with current date
+          // ✅ Performance Report Card
           const reportCard = `
             <div class="card">
               <div class="card-header">
@@ -197,31 +215,74 @@
             </div>
           `;
 
-          // ✅ Show All Test Data Button को अब JS से append करेंगे
+          // ✅ Insert report + top rankers
           document.getElementById("reportArea").innerHTML = reportCard + topRankersCard;
 
-          // ✅ Add Button for All Test Data
+          // ✅ Add Show All Tests Button
           const btn = document.createElement("button");
+          btn.className = "btn-show-tests";
           btn.textContent = "👉 अपने सभी टेस्ट का डाटा देखने के लिए क्लिक करें (Show All Test Data)";
-          btn.style.marginTop = "20px";
-          btn.style.padding = "12px 20px";
-          btn.style.background = "#001f4d";
-          btn.style.color = "#fff";
-          btn.style.border = "none";
-          btn.style.borderRadius = "8px";
-          btn.style.cursor = "pointer";
-          btn.style.fontSize = "16px";
-          btn.style.fontWeight = "600";
-          btn.onclick = function () {
-            window.location.href = `${BASE_URL}?action=getalltestdata&username=${encodeURIComponent(username)}`;
-          };
-
+          btn.onclick = showAllTests;
           document.getElementById("reportArea").appendChild(btn);
         })
         .catch(err => {
           console.error("Error:", err);
           document.getElementById("reportArea").innerHTML =
             `<p style="color:red; text-align:center;">⚠ Error loading report. Please try again later.</p>`;
+        });
+    }
+
+    // ✅ Show all test data in same page
+    function showAllTests() {
+      document.getElementById("reportAllTestsArea").innerHTML = `
+        <div class="card">
+          <div class="card-header">📑 All Test Data</div>
+          <div class="card-body">⏳ Loading all tests for <b>${username}</b>...</div>
+        </div>
+      `;
+
+      fetch(`${BASE_URL}?action=getalltestdata&username=${encodeURIComponent(username)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            document.getElementById("reportAllTestsArea").innerHTML =
+              `<p style="color:red; text-align:center;">⚠ ${data.message || "Error fetching all test data."}</p>`;
+            return;
+          }
+
+          let rows = "";
+          data.tests.forEach((test, i) => {
+            rows += `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${test.testCode || "-"}</td>
+                <td>${test.date || "-"}</td>
+                <td>${test.score || "-"}</td>
+              </tr>
+            `;
+          });
+
+          document.getElementById("reportAllTestsArea").innerHTML = `
+            <div class="card">
+              <div class="card-header">📑 All Test Data</div>
+              <div class="card-body">
+                <table>
+                  <tr>
+                    <th>#</th>
+                    <th>Test Code</th>
+                    <th>Date</th>
+                    <th>Score (%)</th>
+                  </tr>
+                  ${rows}
+                </table>
+              </div>
+            </div>
+          `;
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          document.getElementById("reportAllTestsArea").innerHTML =
+            `<p style="color:red; text-align:center;">⚠ Error loading test data. Please try again later.</p>`;
         });
     }
 
