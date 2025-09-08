@@ -48,16 +48,18 @@
     }
     .card-body {
       padding: 20px;
+      overflow-x: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: auto;
     }
     th, td {
       text-align: left;
-      padding: 12px;
+      padding: 10px;
       border-bottom: 1px solid #e3e6f0;
-      font-size: 16px;
+      font-size: 15px;
     }
     th {
       background: #f8f9ff;
@@ -67,6 +69,17 @@
     tr:last-child td {
       border-bottom: none;
     }
+
+    /* ✅ Column widths */
+    th:nth-child(1), td:nth-child(1) { min-width: 40px; text-align: center; }
+    th:nth-child(2), td:nth-child(2) { min-width: 90px; }
+    th:nth-child(3), td:nth-child(3) { min-width: 100px; }
+    th:nth-child(4), td:nth-child(4) { min-width: 140px; }
+    th:nth-child(5), td:nth-child(5) { min-width: 80px; text-align: center; }
+    th:nth-child(6), td:nth-child(6),
+    th:nth-child(7), td:nth-child(7),
+    th:nth-child(8), td:nth-child(8) { min-width: 100px; text-align: center; }
+    th:nth-child(9), td:nth-child(9) { min-width: 100px; text-align: center; }
 
     /* ✅ Overall Rank Highlight */
     .rank-highlight {
@@ -135,6 +148,22 @@
     const userData = JSON.parse(localStorage.getItem("userData"));
     const username = userData?.username?.trim() || "";
 
+    function formatDate(value) {
+      if (!value) return "-";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      const dd = ("0" + d.getDate()).slice(-2);
+      const mm = ("0" + (d.getMonth() + 1)).slice(-2);
+      const yyyy = d.getFullYear();
+      return `${dd}-${mm}/${yyyy}`;
+    }
+
+    function formatPercentage(value) {
+      const num = parseFloat(value);
+      if (isNaN(num)) return value || "-";
+      return num.toFixed(2);
+    }
+
     function loadResultReport() {
       if (!username) {
         document.getElementById("reportArea").innerHTML =
@@ -175,11 +204,11 @@
                     <th>Total Test Given</th>
                     <td>${r.totalTest || 0}</td>
                     <th>Average Marks</th>
-                    <td>${r.averageMarks || "-"}%</td>
+                    <td>${formatPercentage(r.averageMarks) || "-"}%</td>
                   </tr>
                   <tr>
                     <th>Best Score</th>
-                    <td>${r.bestScore || "-"}%</td>
+                    <td>${formatPercentage(r.bestScore) || "-"}%</td>
                     <th>Best Score TestCode</th>
                     <td>${r.bestScoreTestCode || "-"}</td>
                   </tr>
@@ -227,7 +256,6 @@
         });
     }
 
-    // ✅ Show all test data
     function showAllTests() {
       document.getElementById("reportAllTestsArea").innerHTML = `
         <div class="card">
@@ -251,12 +279,12 @@
               <tr>
                 <td>${i + 1}</td>
                 <td>${test.testCode || "-"}</td>
-                <td>${test.testDate || "-"}</td>
+                <td>${formatDate(test.testDate)}</td>
                 <td>${test.learnerName || "-"}</td>
                 <td>${test.result || "-"}</td>
                 <td>${test.maxMarks || "-"}</td>
                 <td>${test.obtainedMarks || "-"}</td>
-                <td>${test.percentage || "-"}</td>
+                <td>${formatPercentage(test.percentage)}%</td>
                 <td>${test.testTime || "-"}</td>
               </tr>
             `;
